@@ -74,11 +74,11 @@ void DrawCodons (ArrayList <Codon> CodonsIn, float XPos, float YPos) {
     Codon C = CodonsIn.get(i);
     fill (0);
     ellipse (XPos, YPos, CellWidth * 0.09, CellHeight * 0.09);
-    ShapeRenderer.Render (CodonShape , XPos, YPos, (float) i / Num * PI * 2, Num / 3.9);
+    ShapeRenderer.Render (CodonShape , XPos, YPos, (float) i / Num * PI * 2, Num / 3.9, 1);
     fill (GetColorFromCodon2(C));
-    ShapeRenderer.Render (Codon2Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0);
+    ShapeRenderer.Render (Codon2Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 * C.Health, 1);
     fill (GetColorFromCodon1(C));
-    ShapeRenderer.Render (Codon1Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0);
+    ShapeRenderer.Render (Codon1Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 * C.Health, 1);
   }
 }
 

@@ -50,10 +50,10 @@ public class Cell {
     DrawHand();
     DrawHandTrack();
     DrawInterpHand();
-    DrawHandLines();
-    DrawCodons(Codons, XMid, YMid);
+    DrawCodons (Codons, XMid, YMid);
     WallThickness = CellWidth * 0.1 * WallHealth * 0.005;
     DrawWalls();
+    DrawHandLines();
   }
   
   
@@ -79,7 +79,7 @@ public class Cell {
     fill (Color_Cell_Interpreter_Hand);
     stroke (Color_Cell_Interpreter_Hand_Edge);
     strokeWeight (Cell_Interpreter_Hand_Edge_Size);
-    ShapeRenderer.Render (InterpShape, XMid, YMid, InterpRotation, Codons.size() / 4.0);
+    ShapeRenderer.Render (InterpShape, XMid, YMid, InterpRotation, Codons.size() / 4.0, 1);
     noStroke();
   }
   
@@ -103,7 +103,8 @@ public class Cell {
     float[] HandPoint = GetHandPoint();
     for (int i = 0; i < HandLines.size(); i++) {
       float[] Line = HandLines.get(i);
-      stroke (lerpColor (color (255), Color_Cell_Hand_Lines, Line[2]));
+     // stroke (lerpColor (color (255), Color_Cell_Hand_Lines, Line[2]));
+     stroke (Color_Cell_Hand_Lines, Line[2] * 256);
       line (HandPoint[0], HandPoint[1], Line[0], Line[1]);
       Line[2] *= 0.95;
       if (Line[2] < 0.01) {
@@ -147,7 +148,7 @@ public class Cell {
     float AngleChange = (TargetAngle - AngleIn);
     float AngleChangePlusRad = (TargetAngle + PI * 2 - AngleIn);
     float AngleChangeMinusRad = (TargetAngle - PI * 2 - AngleIn);
-    return AngleIn + AbsMin (AngleChange, AngleChangePlusRad, AngleChangeMinusRad) * MoveAmount;
+    return (AngleIn + AbsMin (AngleChange, AngleChangePlusRad, AngleChangeMinusRad) * MoveAmount) % (PI * 2);
   }
   
   

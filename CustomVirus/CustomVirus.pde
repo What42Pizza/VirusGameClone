@@ -178,12 +178,14 @@ void setup() {
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
   
   CellHandShape = new float[][] {
+    {0, CellHeight * -0.32}, // Shape center
     {CellWidth * -0.075, CellHeight * -0.32}, // Bottom left ------------------------ MAKE BACKUP BEFORE CHANGING ANY OF THESE
     {CellWidth *  0.0  , CellHeight * -0.4 }, // Top
     {CellWidth *  0.075, CellHeight * -0.32}  // Bottom right
   };
   
   CodonShape = new float[][] {
+    {0, CellHeight * -0.85}, // Shape center
     {CellWidth * -0.03 , CellHeight * -0.06 }, // Bottom left
     {CellWidth * -0.07 , CellHeight * -0.11 }, // Lower top left
     {CellWidth * -0.055, CellHeight * -0.125}, // Higher top left
@@ -193,6 +195,7 @@ void setup() {
   };
   
   Codon1Shape = new float[][] {
+    {0, 0}, // Shape center
     {CellWidth * -0.03 , CellHeight * -0.06}, // Bottom left
     {CellWidth * -0.054, CellHeight * -0.09}, // Mid left
     {CellWidth *  0.054, CellHeight * -0.09}, // Mid right
@@ -200,6 +203,7 @@ void setup() {
   };
   
   Codon2Shape = new float[][] {
+    {0, 0}, // Shape center
     {CellWidth * -0.05 , CellHeight * -0.085}, // Mid left
     {CellWidth * -0.07 , CellHeight * -0.11 }, // Lower top left
     {CellWidth * -0.055, CellHeight * -0.125}, // Higher top left
@@ -209,6 +213,7 @@ void setup() {
   };
   
   InterpShape = new float[][] {
+    {0, 0}, // Shape center
     {0               , 0                 }, // Bottom
     {CellWidth * -0.1, CellHeight * -0.14}, // Top left
     {CellWidth *  0.1, CellHeight * -0.14}, // Top right
