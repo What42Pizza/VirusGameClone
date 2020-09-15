@@ -79,6 +79,8 @@ final float Cell_Wall_Health_Gain_Cost      = 1.0 ; // X% of health gain takes X
 final float Cell_Wall_Health_Drain_Percent  = 0.5 ; // For Digest_Wall
 final float Cell_Wall_Health_Drain_Cost     = 0.5 ; // X% of health gives 0.5X% of energy
 final float Cell_Codon_Health_Drain_Percent = 0.33; // For Digest_Inward or Digest_RGL
+final float Cell_Codon_Damage_Percent_Low   = 0.05; // Random codon damage per update (low)
+final float Cell_Codon_Damage_Percent_High  = 0.1 ; // Random codon damage per update (high)
 
 final int Num_Of_Food_Particles  = 100;
 final int Num_Of_Waste_Particles = 80;
@@ -124,7 +126,7 @@ final color Color_Codon_Error = color (255, 0, 255);
 
 
 
-final float Camera_Speed = 7;
+final float Camera_Speed = 10;
 final float Camera_Scroll_Speed = 0.075;
 
 
@@ -179,8 +181,8 @@ void setup() {
   
   CellHandShape = new float[][] {
     {0, CellHeight * -0.32}, // Shape center
-    {CellWidth * -0.075, CellHeight * -0.32}, // Bottom left ------------------------ MAKE BACKUP BEFORE CHANGING ANY OF THESE
-    {CellWidth *  0.0  , CellHeight * -0.4 }, // Top
+    {CellWidth * -0.075, CellHeight * -0.32}, // Bottom left ------------------------------------------------------------------------------- MAKE BACKUP BEFORE CHANGING ANY OF THESE
+    {CellWidth *  0.0  , CellHeight * -0.4 }, // Top            // Update Cell.GetHandPoint() line 2 if the tip of the hand is changed
     {CellWidth *  0.075, CellHeight * -0.32}  // Bottom right
   };
   

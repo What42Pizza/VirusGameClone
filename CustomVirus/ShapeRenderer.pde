@@ -33,15 +33,15 @@ public class Shape_Renderer {
   
   
   
-  public void Render (float[][] In, float XPos, float YPos, float Angle, float CenterAngle, float CenterX, float CenterY) {
+  public void Render (float[][] In, float XPos, float YPos, float Angle, float CenterAngle) {
     beginShape();
     for (int i = 1; i < In.length; i ++) { // Start at 1 to skip shape center
       float[] Vertex = new float[] {In[i][0], In[i][1]};
-      Vertex[0] -= CenterX;
-      Vertex[1] -= CenterY;
+      Vertex[0] -= In[0][0];
+      Vertex[1] -= In[0][1];
       Vertex = RotateVertex (Vertex, CenterAngle);
-      Vertex[0] += CenterX;
-      Vertex[1] += CenterY;
+      Vertex[0] += In[0][0];
+      Vertex[1] += In[0][1];
       float[] RotatedVertex = RotateVertex (Vertex, Angle);
       vertex (RotatedVertex[0] + XPos, RotatedVertex[1] + YPos);
     }

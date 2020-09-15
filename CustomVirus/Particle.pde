@@ -138,11 +138,13 @@ public class Particle {
     Cell NextYCell = GetCellAtPosition (XPos, YPos + YVel);
     if (CurrCell != NextXCell) { // This also needs Curr extists && Prev exists, but that will always be true if Curr != Prev
       XVel *= -1;
-      if (CurrCell != null) CurrCell.DamageWall();
+      if (NextXCell != null) NextXCell.DamageWall();
+      if (CurrCell  != null) CurrCell .DamageWall();
     }
     if (CurrCell != NextYCell) {
       YVel *= -1;
-      if (CurrCell != null) CurrCell.DamageWall();
+      if (NextYCell != null) NextYCell.DamageWall();
+      if (CurrCell  != null) CurrCell .DamageWall(); // If the particle hits the corner of the cell it's in then this would fire twice, but the chances of that happening (and therefore the frequency of it happening) are so low that it doesn't matter (at least to me)
     }
   }
   

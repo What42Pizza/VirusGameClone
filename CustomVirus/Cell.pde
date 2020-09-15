@@ -17,18 +17,22 @@ public class Cell {
   
   float WallHealth = 100;
   float Energy = 100;
-  boolean Alive = true;
+  ArrayList <Codon> Codons;
+  
   float HandRotation = 0;
   int HandCodonPos = 0;
+  float HandCenterRotation = 0;
+  float TargetHandCenterRotation = 0;
   float InterpRotation = 0;
   int InterpCodonPos = 0;
+  int InterpColorChange = 255;
   
   int HandPosition = HandPositions.Inward;
   ArrayList <float[]> HandLines = new ArrayList <float[]> ();
   
   float WallThickness;
-  ArrayList <Codon> Codons;
   
+  boolean Alive = true;
   boolean ShouldBeRemoved = false;
   
   
@@ -60,7 +64,7 @@ public class Cell {
   
   private void DrawHand() {
     fill (Color_Cell_Hand);
-    ShapeRenderer.Render (CellHandShape, XMid, YMid, HandRotation);
+    ShapeRenderer.Render (CellHandShape, XMid, YMid, HandRotation, HandCenterRotation);
   }
   
   
@@ -76,8 +80,8 @@ public class Cell {
   
   
   private void DrawInterpHand() {
-    fill (Color_Cell_Interpreter_Hand);
-    stroke (Color_Cell_Interpreter_Hand_Edge);
+    fill (Color_Cell_Interpreter_Hand, InterpColorChange); // This makes the inter hand lighter by making it transparent, which isn't great
+    stroke (Color_Cell_Interpreter_Hand_Edge, InterpColorChange);
     strokeWeight (Cell_Interpreter_Hand_Edge_Size);
     ShapeRenderer.Render (InterpShape, XMid, YMid, InterpRotation, Codons.size() / 4.0, 1);
     noStroke();
@@ -118,7 +122,15 @@ public class Cell {
   
   
   private float[] GetHandPoint() {
-    return new float[] {XMid, YMid};
+    float[] HandTip = new float[] {CellHandShape[2][0], CellHandShape[2][1]};
+    //float[] HandTip = CellHandShape[2].clone(); // IDK how well I can trust .clone()
+    HandTip[0] -= CellHandShape[0][0]; // Move hand to center
+    HandTip[1] -= CellHandShape[0][1];
+    HandTip = ShapeRenderer.RotateVertex (HandTip, HandCenterRotation); // Rotate around center
+    HandTip[0] += CellHandShape[0][0]; // Move hand to center
+    HandTip[1] += CellHandShape[0][1];
+    HandTip = ShapeRenderer.RotateVertex (HandTip, HandRotation); // Rotate to hand trach position
+    return new float[] {HandTip[0] + XMid, HandTip[1] + YMid};
   }
   
   
@@ -129,16 +141,20 @@ public class Cell {
   
   public void Update() {
     MoveHands();
+    InterpColorChange = InterpColorChange + (int) ((255 - InterpColorChange) * 0.1);
     if (Energy > 0 && (frameCount % FrameRate) == 0)
       AdvanceInterpHand();
-    if (Energy > 0 && (frameCount % FrameRate) == FrameRate/2)
+    if (Energy > 0 && (frameCount % FrameRate) == FrameRate/2) {
       Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this);
+      InterpColorChange = 63;
+    }
   }
   
   
   
   private void MoveHands() {
     HandRotation = MoveAngleTowards (HandRotation, ((float) HandCodonPos / Codons.size() * PI * 2), 0.1);
+    HandCenterRotation = MoveAngleTowards (HandCenterRotation, TargetHandCenterRotation, 0.1);
     InterpRotation = MoveAngleTowards (InterpRotation, ((float) InterpCodonPos / Codons.size() * PI * 2), 0.1);
   }
   
@@ -243,8 +259,10 @@ public class Cell {
   public void DigestCodon (int CodonI) {
     Codon C = Codons.get(CodonI);
     C.Health -= Cell_Codon_Health_Drain_Percent;
-    if (C.Health <= 0)
+    if (C.Health <= 0) {
       C.Info = new int[] {Codon1_None, Codon2_None};
+      C.Health = 1;
+    }
   }
   
   
