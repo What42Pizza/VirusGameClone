@@ -18,6 +18,7 @@ public class Cell {
   float WallHealth = 100;
   float Energy = 100;
   ArrayList <Codon> Codons;
+  int[] CodonMemory = new int [0];
   
   float HandRotation = 0;
   int HandCodonPos = 0;
@@ -51,6 +52,7 @@ public class Cell {
   
   
   public void Draw() {
+    if (!IsOnScreen()) return;
     DrawHand();
     DrawHandTrack();
     DrawInterpHand();
@@ -58,6 +60,17 @@ public class Cell {
     WallThickness = CellWidth * 0.1 * WallHealth * 0.005;
     DrawWalls();
     DrawHandLines();
+  }
+  
+  
+  
+  private boolean IsOnScreen() {
+    return
+      (XPos + CellWidth ) * Camera.Zoom + Camera.XPos > 0      &&
+      (XPos)              * Camera.Zoom + Camera.XPos < width  &&
+      (YPos + CellHeight) * Camera.Zoom + Camera.YPos > 0      &&
+      (YPos)              * Camera.Zoom + Camera.YPos < height
+   ;
   }
   
   
@@ -145,7 +158,7 @@ public class Cell {
     if (Energy > 0 && (frameCount % FrameRate) == 0)
       AdvanceInterpHand();
     if (Energy > 0 && (frameCount % FrameRate) == FrameRate/2) {
-      Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this);
+      Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this, InterpCodonPos);
       InterpColorChange = 63;
     }
   }

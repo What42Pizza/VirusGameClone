@@ -78,6 +78,28 @@ ArrayList <Codon> ProcessCodonInformation (int[] In) {
 
 
 
+int[] ProcessCodons (ArrayList <Codon> In) {
+  IntList Output = new IntList();
+  for (Codon C : In) {
+    for (int Int : C.Info) {
+      Output.append (Int);
+    }
+  }
+  return ConvertIntList (Output);
+}
+
+
+
+int[] ConvertIntList (IntList In) {
+  int[] Output = new int [In.size()];
+  for (int i = 0; i < Output.length; i ++) {
+    Output[i] = In.get(i);
+  }
+  return Output;
+}
+
+
+
 Cell GetCellAtLocation (int XLoc, int YLoc) {
   float TargetWorldXPos = XLoc * CellWidth;
   float TargetWorldYPos = YLoc * CellHeight;
