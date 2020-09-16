@@ -28,7 +28,7 @@ public class Cell {
   int InterpCodonPos = 0;
   int InterpColorChange = 255;
   
-  int HandPosition = HandPositions.Inward;
+  int HandPosition = HandPositions.Outward;
   ArrayList <float[]> HandLines = new ArrayList <float[]> ();
   
   float WallThickness;
@@ -301,6 +301,16 @@ public class Cell {
     DrawLineFromHandTo (XPos + CellWidth, YPos             );
     DrawLineFromHandTo (XPos + CellWidth, YPos + CellHeight);
     DrawLineFromHandTo (XPos            , YPos + CellHeight);
+  }
+  
+  
+  
+  public boolean IsInward() {
+    return HandPosition == HandPositions.Inward;
+  }
+  
+  public boolean IsOutward() {
+    return HandPosition == HandPositions.Outward;
   }
   
   

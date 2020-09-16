@@ -42,6 +42,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Food):
+        if (!Cell.IsOutward()) return;
         for (Particle F : FoodParticles) {
           if (ParticleIsInCell (F, Cell)) {
             Cell.GainEnergy();
@@ -54,6 +55,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Waste):
+        if (!Cell.IsOutward()) return;
         for (Particle W : WasteParticles) {
           if (ParticleIsInCell (W, Cell)) {
             Cell.DrawLineFromHandTo (W.XPos, W.YPos);
@@ -64,6 +66,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Wall):
+        if (!Cell.IsOutward()) return;
         Cell.DigestWall();
         Cell.DrawLinesFromHandToWall();
         return;
@@ -72,6 +75,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Inward):
+        if (!Cell.IsInward()) return;
         for (int i = 0; i < Cell.Codons.size(); i ++) {
           Cell.DigestCodon(i);
           float[] ICodonPos = Cell.GetCodonPosition (i);
@@ -80,11 +84,13 @@ public class Interpreter {
         return;
       
       case (Codon2_Outward):
+        if (!Cell.IsOutward()) return;
         Cell.DigestWall();
         Cell.DrawLinesFromHandToWall();
         return;
       
       case (Codon2_RGL):
+        if (!Cell.IsInward()) return;
         int[] RGLLocation = GetRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) {
           Cell.DigestCodon(i);
@@ -107,7 +113,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Food):
-        if (Cell.HandPosition != HandPositions.Inward) return;
+        if (!Cell.IsOutward()) return;
         for (Particle F : FoodParticles) {
           if (ParticleIsInCell (F, Cell)) {
             Cell.DrawLineFromHandTo (F.XPos, F.YPos);
@@ -119,7 +125,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Waste):
-        if (Cell.HandPosition != HandPositions.Inward) return;
+        if (!Cell.IsOutward()) return;
         for (Particle W : WasteParticles) {
           if (ParticleIsInCell (W, Cell)) {
             Cell.DrawLineFromHandTo (W.XPos, W.YPos);
@@ -131,6 +137,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Wall):
+        if (!Cell.IsOutward()) return;
         Cell.Die();
         return;
       
@@ -141,10 +148,12 @@ public class Interpreter {
         return;
       
       case (Codon2_Outward):
+        if (!Cell.IsOutward()) return;
         Cell.Die();
         return;
       
       case (Codon2_RGL):
+        if (!Cell.IsInward()) return;
         int[] RGLLocation = GetRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) { // Draw lines
           float[] ICodonPos = Cell.GetCodonPosition(i);
@@ -230,6 +239,7 @@ public class Interpreter {
         return;
       
       case (Codon2_Inward):
+        if (!Cell.IsInward()) return;
         Cell.CodonMemory = ProcessCodons (Cell.Codons);
         return;
       
@@ -237,6 +247,7 @@ public class Interpreter {
         return;
       
       case (Codon2_RGL):
+        if (!Cell.IsInward()) return;
         int[] RGLLocation = GetRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
         ArrayList <Codon> CodonsToProcess = new ArrayList <Codon> ();
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) {
