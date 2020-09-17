@@ -24,6 +24,7 @@ final int Codon2_WeakestLocation = 4;
 final int Codon2_Inward = 5;
 final int Codon2_Outward = 6;
 final int Codon2_RGL = 7;
+final int Codon2_UGO = 8;
 
 
 

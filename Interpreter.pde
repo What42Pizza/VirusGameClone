@@ -35,7 +35,7 @@ public class Interpreter {
   
   
   
-  private void Digest (Codon Codon, Cell Cell, int CodonPos) {
+  private void Digest (Codon Codon, Cell Cell, int CodonI) {
     switch (Codon.Info[1]) {
       
       case (Codon2_None):
@@ -91,12 +91,16 @@ public class Interpreter {
       
       case (Codon2_RGL):
         if (!Cell.HandIsInward()) return;
-        int[] RGLLocation = GetRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
+        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) {
           Cell.DigestCodon(i);
           float[] ICodonPos = Cell.GetCodonPosition(i);
           Cell.DrawLineFromHandTo (ICodonPos[0], ICodonPos[1]);
         }
+        return;
+      
+      case (Codon2_UGO):
+        
         return;
       
     }
@@ -106,7 +110,7 @@ public class Interpreter {
   
   
   
-  private void Remove (Codon Codon, Cell Cell, int CodonPos) {
+  private void Remove (Codon Codon, Cell Cell, int CodonI) {
     switch (Codon.Info[1]) {
       
       case (Codon2_None):
@@ -154,7 +158,7 @@ public class Interpreter {
       
       case (Codon2_RGL):
         if (!Cell.HandIsInward()) return;
-        int[] RGLLocation = GetRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
+        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) { // -------------- Draw lines
           float[] ICodonPos = Cell.GetCodonPosition(i);
           Cell.DrawLineFromHandTo (ICodonPos[0], ICodonPos[1]);
@@ -170,6 +174,10 @@ public class Interpreter {
         //Cell.InterpCodonPos %= Cell.Codons.size();
         return;
       
+      case (Codon2_UGO):
+        
+        return;
+      
     }
   }
   
@@ -177,7 +185,7 @@ public class Interpreter {
   
   
   
-  private void MoveHand (Codon Codon, Cell Cell, int CodonPos) {
+  private void MoveHand (Codon Codon, Cell Cell, int CodonI) {
     switch (Codon.Info[1]) {
       
       case (Codon2_None):
@@ -217,7 +225,11 @@ public class Interpreter {
       
       case (Codon2_RGL):
         int Mod = Cell.Codons.size();
-        Cell.InterpCodonPos = (CodonPos + Codon.Info[2] + Mod * 1000) % Mod;
+        Cell.InterpCodonPos = (CodonI + Codon.Info[2] + Mod * 1000) % Mod;
+        return;
+      
+      case (Codon2_UGO):
+        
         return;
       
     }
@@ -227,7 +239,7 @@ public class Interpreter {
   
   
   
-  private void Read (Codon Codon, Cell Cell, int CodonPos) {
+  private void Read (Codon Codon, Cell Cell, int CodonI) {
     switch (Codon.Info[1]) {
       
       case (Codon2_None):
@@ -249,6 +261,10 @@ public class Interpreter {
       case (Codon2_Inward):
         if (!Cell.HandIsInward()) return;
         Cell.CodonMemory = ProcessCodonsIntoInfo (Cell.Codons);
+        for (int i = 0; i < Cell.Codons.size(); i ++) {
+          float[] CodonPos = Cell.GetCodonPosition (i);
+          Cell.DrawLineFromHandTo (CodonPos[0], CodonPos[1]);
+        }
         return;
       
       case (Codon2_Outward):
@@ -256,12 +272,19 @@ public class Interpreter {
       
       case (Codon2_RGL):
         if (!Cell.HandIsInward()) return;
-        int[] RGLLocation = GetRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
+        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
         ArrayList <Codon> CodonsToProcess = new ArrayList <Codon> ();
+        ArrayList <Codon> Codons = Cell.Codons;
+        int Mod = Codons.size();
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) {
-          CodonsToProcess.add (Cell.Codons.get(i));
+          int CodonIndex = (i + Mod * 1000) % Mod;
+          CodonsToProcess.add (Codons.get(CodonIndex));
+          Cell.DrawLineFromHandToCodon (CodonIndex);
         }
         Cell.CodonMemory = ProcessCodonsIntoInfo (CodonsToProcess);
+        return;
+      
+      case (Codon2_UGO):
         return;
       
     }
@@ -271,48 +294,58 @@ public class Interpreter {
   
   
   
-  private void Write (Codon Codon, Cell Cell, int CodonPos) {
+  private void Write (Codon Codon, Cell Cell, int CodonI) {
+    float[] CellHandPos;
     switch (Codon.Info[1]) {
       
       case (Codon2_None):
-        if (!Cell.HandIsOutward()) return;
-        float[] CellHandPos1 = Cell.GetHandPoint(); // Weird naming is because following cases use the same var names
-        UGOs.add (new UGO (CellHandPos1[0], CellHandPos1[1], ProcessInfoIntoCodons (Cell.CodonMemory)));
         return;
       
       case (Codon2_Food):
         if (!Cell.HandIsOutward()) return;
-        float[] CellHandPos2 = Cell.GetHandPoint();
-        FoodParticles.add (new Particle (ParticleTypes.Food, CellHandPos2[0], CellHandPos2[1], true));
+        CellHandPos = Cell.GetHandPoint();
+        FoodParticles.add (new Particle (ParticleTypes.Food, CellHandPos[0], CellHandPos[1], true));
         Cell.DrainEnergy();
         return;
       
       case (Codon2_Waste):
         if (!Cell.HandIsOutward()) return;
-        float[] CellHandPos3 = Cell.GetHandPoint();
-        WasteParticles.add (new Particle (ParticleTypes.Waste, CellHandPos3[0], CellHandPos3[1], true));
+        CellHandPos = Cell.GetHandPoint();
+        WasteParticles.add (new Particle (ParticleTypes.Waste, CellHandPos[0], CellHandPos[1], true));
         Cell.DrainEnergy();
         return;
       
       case (Codon2_Wall):
+        if (!Cell.HandIsOutward()) return;
+        Cell.RepairWall();
+        Cell.DrawLinesFromHandToWall();
         return;
       
       case (Codon2_WeakestLocation):
         return;
       
       case (Codon2_Inward):
+        if (!Cell.HandIsInward()) return;
         Cell.SetCodons (ProcessInfoIntoCodons (Cell.CodonMemory));
+        for (int i = 0; i < Cell.Codons.size(); i ++)
+          Cell.DrawLineFromHandToCodon (i);
         return;
       
       case (Codon2_Outward):
-        if (!Cell.HandIsOutward()) return;
-        float[] CellHandPos4 = Cell.GetHandPoint();
-        UGOs.add (new UGO (CellHandPos4[0], CellHandPos4[1], ProcessInfoIntoCodons (Cell.CodonMemory)));
         return;
       
       case (Codon2_RGL):
-        int RGLStart = GetRGLLocation (Cell, Codon.Info[2]);
-        Cell.ReplaceCodons (RGLStart, ProcessInfoIntoCodons (Cell.CodonMemory));
+        int RGLStart = GetHandRGLLocation (Cell, Codon.Info[2]);
+        ArrayList <Codon> CodonsToWrite = ProcessInfoIntoCodons (Cell.CodonMemory);
+        Cell.ReplaceCodons (RGLStart, CodonsToWrite);
+        for (int i = RGLStart; i < RGLStart + CodonsToWrite.size(); i ++)
+          Cell.DrawLineFromHandToCodon (i);
+        return;
+      
+      case (Codon2_UGO):
+        if (!Cell.HandIsOutward()) return;
+        CellHandPos = Cell.GetHandPoint();
+        UGOs.add (new UGO (CellHandPos[0], CellHandPos[1], ProcessInfoIntoCodons (Cell.CodonMemory)));
         return;
       
     }
@@ -327,20 +360,20 @@ public class Interpreter {
   
   
   
-  int[] GetRGLLocation (Cell Cell, int RGLStart, int RGLEnd) {
+  int[] GetHandRGLLocation (Cell Cell, int RGLStart, int RGLEnd) {
     ArrayList <Codon> Codons = Cell.Codons;
     int Mod = Codons.size();
-    int Start = (RGLStart + Cell.InterpCodonPos + Mod * 1000) % Mod; // The +Mod*1000 is because mod (-1, 4) returns -1 and not 3 (this wraps correctly when negative)
-    int End = (RGLEnd + Cell.InterpCodonPos + 1 + Mod * 1000) % Mod;
+    int Start = (RGLStart + Cell.HandCodonPos + Mod * 1000) % Mod; // The +Mod*1000 is because mod (-1, 4) returns -1 and not 3 (this wraps correctly when negative)
+    int End = (RGLEnd + Cell.HandCodonPos + 1 + Mod * 1000) % Mod;
     return new int[] {Start, End};
   }
   
   
   
-  int GetRGLLocation (Cell Cell, int RGLStart) {
+  int GetHandRGLLocation (Cell Cell, int RGLStart) {
     ArrayList <Codon> Codons = Cell.Codons;
     int Mod = Codons.size();
-    int Start = (RGLStart + Cell.InterpCodonPos + Mod * 1000) % Mod; // The +Mod*1000 is because mod (-1, 4) returns -1 and not 3 (this wraps correctly when negative)
+    int Start = (RGLStart + Cell.HandCodonPos + Mod * 1000) % Mod; // The +Mod*1000 is because mod (-1, 4) returns -1 and not 3 (this wraps correctly when negative)
     return Start;
   }
   

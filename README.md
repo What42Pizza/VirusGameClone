@@ -10,5 +10,6 @@ Missing features:
 - GUI
 
 ## Biggest changes:
+- There is a new UGO codon which is used for creating UGOs
 - GUI layout is completely different
 - The codon Repair_Wall has been replaced with Write_Wall

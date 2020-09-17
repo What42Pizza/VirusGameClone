@@ -140,7 +140,7 @@ public class Cell {
      // stroke (lerpColor (color (255), Color_Cell_Hand_Lines, Line[2]));
      stroke (Color_Cell_Hand_Lines, Line[2] * 256);
       line (HandPoint[0], HandPoint[1], Line[0], Line[1]);
-      Line[2] *= 0.95;
+      Line[2] *= 0.9;
       if (Line[2] < 0.01) {
         HandLines.remove(i);
         i --;
@@ -261,11 +261,11 @@ public class Cell {
   
   
   
-  public float[] GetCodonPosition (int CodonI) {
-    float Rot = (float) CodonI / Codons.size() * PI * 2;
+  public float[] GetCodonPosition (int CodonIndex) {
+    float Rot = (float) CodonIndex / Codons.size() * PI * 2;
     return new float[] {
       XMid + sin(Rot) * CellWidth * 0.1,
-      YMid + cos(Rot) * CellHeight * 0.1
+      YMid - cos(Rot) * CellHeight * 0.1
     };
   }
   
@@ -285,7 +285,7 @@ public class Cell {
   
   public void RepairWall() {
     float WallHealthGain = (100 - WallHealth) * Cell_Wall_Health_Gain_Percent;
-    WallHealth =+ WallHealthGain;
+    WallHealth += WallHealthGain;
     Energy = max (Energy - (WallHealthGain * Cell_Wall_Health_Gain_Cost), 0);
   }
   
@@ -338,6 +338,13 @@ public class Cell {
     DrawLineFromHandTo (XPos + CellWidth, YPos             );
     DrawLineFromHandTo (XPos + CellWidth, YPos + CellHeight);
     DrawLineFromHandTo (XPos            , YPos + CellHeight);
+  }
+  
+  
+  
+  public void DrawLineFromHandToCodon (int CodonIndex) {
+    float[] CodonPos = GetCodonPosition (CodonIndex);
+    DrawLineFromHandTo (CodonPos[0], CodonPos[1]);
   }
   
   
