@@ -2,7 +2,7 @@
 This is a clone of https://github.com/carykh/VirusGame/.
 
 ## THIS IS A WORK IN PROGRESS
-Readme last updated 09/14/20
+Readme last updated 09/17/20
 
 Missing features:
 - Codon interpretation
