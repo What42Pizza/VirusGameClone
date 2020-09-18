@@ -1,5 +1,5 @@
 # Virus Game Clone
-![GitHub Logo] (/Logo.png)
+![GitHub Logo](/Logo.png)
 This is a clone of https://github.com/carykh/VirusGame/.
 
 ## THIS IS A WORK IN PROGRESS
