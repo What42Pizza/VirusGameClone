@@ -170,9 +170,9 @@ public class Cell {
   
   
   public void Update() {
+    //if (true) return; // Use this to stop updates
     MoveHands();
     InterpColorChange = InterpColorChange + (int) ((255 - InterpColorChange) * 0.1);
-    DamageCodons();
     if (Energy > 0 && (frameCount % FrameRate) == 0)
       AdvanceInterpHand();
     if (Energy > 0 && (frameCount % FrameRate) == FrameRate/2) {

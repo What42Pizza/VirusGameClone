@@ -44,7 +44,7 @@ final int[] Starting_Codons = {
 
 
 
-final int[][] Starting_Cells = new int[][] {
+final int[][] Starting_Cells = {
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
   {0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0},
   {0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0},
@@ -58,6 +58,21 @@ final int[][] Starting_Cells = new int[][] {
   {0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0},
   {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
+
+
+
+/*
+// This was used for the logo
+final int[] Starting_Codons = {
+  Codon1_MoveHand, Codon2_Inward,
+  Codon1_MoveHand, Codon2_RGL, 0, 0,
+  Codon1_Read    , Codon2_RGL, -1, 3,
+  Codon1_MoveHand, Codon2_Outward,
+  Codon1_Write   , Codon2_UGO
+};
+
+final int[][] Starting_Cells = {{1}};
+//*/
 
 
 
@@ -123,6 +138,7 @@ final color Color_Codon2_WeakestLocation = color (255, 95, 95);
 final color Color_Codon2_Inward = color (0, 0, 255);
 final color Color_Codon2_Outward = color (95, 95, 255);
 final color Color_Codon2_RGL = color (191, 191, 191);
+final color Color_Codon2_UGO = color (255, 0, 0);
 
 final color Color_Codon_Error = color (255, 0, 255);
 

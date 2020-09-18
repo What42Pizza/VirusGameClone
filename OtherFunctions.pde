@@ -191,6 +191,7 @@ color GetColorFromCodon2 (Codon CodonIn) {
     case (Codon2_Inward         ): return Color_Codon2_Inward          ;
     case (Codon2_Outward        ): return Color_Codon2_Outward         ;
     case (Codon2_RGL            ): return Color_Codon2_RGL             ;
+    case (Codon2_UGO            ): return Color_Codon2_UGO             ;
   }
   return color (255, 0, 255);
 }
