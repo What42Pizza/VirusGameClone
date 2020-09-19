@@ -31,7 +31,7 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    ShouldBeRemoved = GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null; // Destroy particle if strating in cell
+    ShouldBeRemoved = IsInCell(); // Destroy particle if strating in cell
   }
   
   
@@ -43,7 +43,7 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    ShouldBeRemoved = !OverrideCellCheck && (GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null); // Destroy particle if strating in cell
+    ShouldBeRemoved = IsInCell() && !OverrideCellCheck; // Destroy particle if strating in cell
   }
   
   
@@ -55,7 +55,7 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    ShouldBeRemoved = !OverrideCellCheck && (GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null); // Destroy particle if strating in cell
+    ShouldBeRemoved = IsInCell() && !OverrideCellCheck; // Destroy particle if strating in cell
   }
   
   
@@ -165,6 +165,12 @@ public class Particle {
       YPos = (ThisYLoc + 1.1) * CellHeight;
     }
     
+  }
+  
+  
+  
+  public boolean IsInCell() {
+    return GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null;
   }
   
   

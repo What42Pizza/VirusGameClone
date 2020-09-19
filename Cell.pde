@@ -221,7 +221,7 @@ public class Cell {
   
   private void DamageCodons() {
     for (Codon C : Codons) {
-      C.Health -= random (Cell_Codon_Damage_Percent_Low / 350.0, Cell_Codon_Damage_Percent_High / 350.0);
+      C.Health -= random (Cell_Codon_Damage_Percent_Low / 250.0, Cell_Codon_Damage_Percent_High / 250.0);
       if (C.Health <= 0) {
         C.Info = new int[] {Codon1_None, Codon2_None};
         C.Health = 1;
@@ -274,20 +274,30 @@ public class Cell {
   private void Die(){
     if (!Alive) return;
     Alive = false;
+    AliveCells --;
+    DeadCells ++;
     ShouldBeRemoved = true;
     ReplaceCodonsWithWaste();
     
-    ///*
-    println ();
-    println ("Cell " + ID + " has died.");
-    println ("Wall health: " + WallHealth);
-    println ("Energy: " + Energy);
-    println ("Codon healths:");
-    for (Codon C : Codons) {
-      println ("    " + C.Health);
+    if (Debug_Explain_Cell_Death) {
+      println ();
+      println ();
+      println ();
+      println ("Cell " + ID + " has died.");
+      println ("Wall health: " + WallHealth);
+      println ("Energy: " + Energy);
+      println ("Codon healths:");
+      for (Codon C : Codons)
+        println ("    " + C.Health);
+      println ();
+      println ("Food Particles: " + FoodParticles.size());
+      println ("Waste Particles: " + WasteParticles.size());
+      println ("UGOs: " + UGOs.size());
+      println ();
+      println ("Cells still alive: " + AliveCells);
+      println ("Cells dead: " + DeadCells);
+      Paused = true;
     }
-    println ("WasteParticles: " + WasteParticles.size());
-    //*/
     
   }
   

@@ -195,3 +195,15 @@ color GetColorFromCodon2 (Codon CodonIn) {
   }
   return color (255, 0, 255);
 }
+
+
+
+int CountAliveCells (int[][] CellsGrid) {
+  int Output = 0;
+  for (int[] Row : CellsGrid) {
+    for (int i : Row) {
+      Output += (i == 1) ? 1 : 0; // I know I could just do += i % 2 but this is more expandable
+    }
+  }
+  return Output;
+}

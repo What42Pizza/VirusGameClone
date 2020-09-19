@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 09/17/20
+// Last updated 09/19/20
 
 
 
@@ -76,31 +76,34 @@ final int[][] Starting_Cells = {{1}};
 
 
 
-final float CellWidth  = 1.0 / Starting_Cells   .length; // Not settings
-final float CellHeight = 1.0 / Starting_Cells[0].length;
+final int Frame_Rate = 60;
+
+final boolean Debug_Show_FPS           = true ;
+final boolean Debug_Super_Speed        = false; // Use this to go really fast (use can also comment out fullScreen() to make it go faster)
+final boolean Debug_Explain_Cell_Death = true ;
 
 
 
-final int FrameRate = 60;
+final float CellWidth  = 1.0 / Starting_Cells   .length        ; // Not settings
+final float CellHeight = 1.0 / Starting_Cells[0].length        ;
+final float FrameRate  = Debug_Super_Speed ? 10000 : Frame_Rate;
 
-final boolean Show_FPS = true;
 
 
-
-final float Particle_Wall_Damage            = 1.5 ; // For particle collisions
+final float Particle_Wall_Damage            = 1.5 ; // For particle collisions ---------------------------------------------------------------------------- Balance these
 final float Cell_Energy_Gain_Percent        = 0.33; // For Digest_Food
 final float Cell_Energy_Drain_Percent       = 0.5 ; // For Digest_Waste
 final float Cell_Energy_Loss_Percent        = 0.3 ; // For just existing
 final float Cell_Wall_Health_Gain_Percent   = 0.33; // For Repair_Wall
-final float Cell_Wall_Health_Gain_Cost      = 0.4 ; // X% of health gain takes X% of energy
+final float Cell_Wall_Health_Gain_Cost      = 0.33; // X% of health gain takes X% of energy
 final float Cell_Wall_Health_Drain_Percent  = 0.5 ; // For Digest_Wall
 final float Cell_Wall_Health_Drain_Cost     = 0.5 ; // X% of health gives 0.5X% of energy
 final float Cell_Codon_Health_Drain_Percent = 0.33; // For Digest_Inward or Digest_RGL
 final float Cell_Codon_Damage_Percent_Low   = 0.01; // Random codon damage per update (low)
 final float Cell_Codon_Damage_Percent_High  = 0.02; // Random codon damage per update (high)
-final float Cell_Codon_Write_Cost           = 1.3 ; // For Write_
+final float Cell_Codon_Write_Cost           = 1.4 ; // For Write_
 
-final int Num_Of_Food_Particles  = 150;
+final int Num_Of_Food_Particles  = 175;
 final int Num_Of_Waste_Particles = 100;
 
 
@@ -168,6 +171,10 @@ ArrayList <Particle> WasteParticles = new ArrayList <Particle> ();
 ArrayList <UGO> UGOs = new ArrayList <UGO> ();
 ArrayList <Cell> Cells = new ArrayList <Cell> ();
 ArrayList <CenterBlock> CenterBlocks = new ArrayList <CenterBlock> ();
+
+int AliveCells;
+int DeadCells;
+int TamperedCells;
 
 Camera Camera;
 Interpreter Interpreter = new Interpreter();
@@ -259,11 +266,13 @@ void setup() {
   
   // Basic setup
   fullScreen();
+  //size (256, 256);
   background (255);
   frameRate (FrameRate);
   
   // Other setup
   boolean SettingsAreValid = CheckIfSettingsAreValid();
+  AliveCells = CountAliveCells (Starting_Cells);
   if (!SettingsAreValid) exit();
   CreateStartingCells();
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
@@ -289,20 +298,21 @@ void draw() {
     UpdateCells();
   }
   
-  //if (Paused) {
-  pushMatrix();
-  translate (Camera.XPos, Camera.YPos);
-  scale (Camera.Zoom);
-  DrawCells();
-  DrawCenterBlocks();
-  DrawFoodParticles();
-  DrawWasteParticles();
-  DrawUGOs();
-  popMatrix();
-  //}
+  if (!Debug_Super_Speed || (Debug_Super_Speed && Paused)) { // Disable rendering during super speed
+    pushMatrix();
+    translate (Camera.XPos, Camera.YPos);
+    scale (Camera.Zoom);
+    DrawCells();
+    DrawCenterBlocks();
+    DrawFoodParticles();
+    DrawWasteParticles();
+    DrawUGOs();
+    popMatrix();
+  }
   
   UpdateKeys();
   
-  if (Show_FPS) DrawFPS (StartingMillis);
+  if (Debug_Show_FPS)
+    DrawFPS (StartingMillis);
   
 }

@@ -67,7 +67,12 @@ void UpdateFoodParticles() {
 void UpdateWasteParticles() {
   
   while (WasteParticles.size() < Num_Of_Waste_Particles) WasteParticles.add (new Particle (ParticleTypes.Waste));
-  if (WasteParticles.size() > Num_Of_Waste_Particles) WasteParticles.get((int) random (WasteParticles.size())).Disapearing = true;
+  
+  if (WasteParticles.size() > Num_Of_Waste_Particles) {                                   // If there are too many waste particles (which could kill cells)
+    Particle ParticleToRemove = WasteParticles.get((int) random (WasteParticles.size())); // Take random waste particle
+    while (ParticleToRemove.IsInCell()) ParticleToRemove = WasteParticles.get((int) random (WasteParticles.size())); // Take one that isn't in a cell
+    ParticleToRemove.Disapearing = true;                                                                             // Remove it
+  }
   
   for (int i = 0; i < WasteParticles.size(); i ++) {
     Particle W = WasteParticles.get(i);
