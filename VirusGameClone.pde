@@ -87,20 +87,21 @@ final boolean Show_FPS = true;
 
 
 
-final float Particle_Wall_Damage            = 1.0 ; // For particle collisions
+final float Particle_Wall_Damage            = 1.5 ; // For particle collisions
 final float Cell_Energy_Gain_Percent        = 0.33; // For Digest_Food
 final float Cell_Energy_Drain_Percent       = 0.5 ; // For Digest_Waste
+final float Cell_Energy_Loss_Percent        = 0.3 ; // For just existing
 final float Cell_Wall_Health_Gain_Percent   = 0.33; // For Repair_Wall
-final float Cell_Wall_Health_Gain_Cost      = 1.0 ; // X% of health gain takes X% of energy
+final float Cell_Wall_Health_Gain_Cost      = 0.4 ; // X% of health gain takes X% of energy
 final float Cell_Wall_Health_Drain_Percent  = 0.5 ; // For Digest_Wall
 final float Cell_Wall_Health_Drain_Cost     = 0.5 ; // X% of health gives 0.5X% of energy
 final float Cell_Codon_Health_Drain_Percent = 0.33; // For Digest_Inward or Digest_RGL
 final float Cell_Codon_Damage_Percent_Low   = 0.01; // Random codon damage per update (low)
 final float Cell_Codon_Damage_Percent_High  = 0.02; // Random codon damage per update (high)
-final float Cell_Codon_Write_Cost           = 2.0 ; // For Write_
+final float Cell_Codon_Write_Cost           = 1.3 ; // For Write_
 
-final int Num_Of_Food_Particles  = 100;
-final int Num_Of_Waste_Particles = 80;
+final int Num_Of_Food_Particles  = 150;
+final int Num_Of_Waste_Particles = 100;
 
 
 
@@ -118,10 +119,11 @@ final color Color_Waste_Particle = color (127, 63, 0);
 final color Color_Cell_Wall = color (255, 63, 255);
 final color Color_Cell_Hand = color (15, 239, 15);
 final color Color_Cell_Hand_Track = color (15, 223, 15);
-final color Color_Center_Block = color (191);
+final color Color_Cell_Energy_Symbol = color (255, 255, 0);
 final color Color_Cell_Interpreter_Hand = color (191);
 final color Color_Cell_Interpreter_Hand_Edge = color (159);
 final color Color_Cell_Hand_Lines = color (15, 191, 15);
+final color Color_Center_Block = color (191);
 
 final color Color_Codon1_None = color (0);
 final color Color_Codon1_Digest = color (255, 95, 95);
@@ -173,11 +175,81 @@ Shape_Renderer ShapeRenderer = new Shape_Renderer();
 
 
 
-float[][] CellHandShape;
-float[][] CodonShape;
-float[][] Codon1Shape;
-float[][] Codon2Shape;
-float[][] InterpShape;
+
+
+final float[][] Cell_Hand_Shape = {
+  {0, CellHeight * -0.32}, // Shape center
+  {CellWidth * -0.075, CellHeight * -0.32}, // Bottom left ------------------------------------------------------------------------------- MAKE BACKUP BEFORE CHANGING ANY OF THESE
+  {CellWidth *  0.0  , CellHeight * -0.4 }, // Top            // Update Cell.GetHandPoint() line 2 if the tip of the hand is changed
+  {CellWidth *  0.075, CellHeight * -0.32}  // Bottom right
+};
+
+
+final float[][] Codon_Shape = {
+  {0, CellHeight * -0.85}, // Shape center
+  {CellWidth * -0.03 , CellHeight * -0.0601}, // Bottom left
+  {CellWidth * -0.07 , CellHeight * -0.1099}, // Lower top left
+  {CellWidth * -0.055, CellHeight * -0.1249}, // Higher top left
+  {CellWidth *  0.055, CellHeight * -0.1249}, // Higher top right
+  {CellWidth *  0.07 , CellHeight * -0.1099}, // Lower top right
+  {CellWidth *  0.03 , CellHeight * -0.0601}  // Bottom right
+};
+
+
+final float[][] Codon1_Shape = {
+  {0, 0}, // Shape center
+  {CellWidth * -0.03 , CellHeight * -0.06}, // Bottom left
+  {CellWidth * -0.054, CellHeight * -0.09}, // Mid left
+  {CellWidth *  0.054, CellHeight * -0.09}, // Mid right
+  {CellWidth *  0.03 , CellHeight * -0.06}  // Bottom right
+};
+
+
+final float[][] Codon2_Shape = {
+  {0, 0}, // Shape center
+  {CellWidth * -0.05 , CellHeight * -0.085}, // Mid left
+  {CellWidth * -0.07 , CellHeight * -0.11 }, // Lower top left
+  {CellWidth * -0.055, CellHeight * -0.125}, // Higher top left
+  {CellWidth *  0.055, CellHeight * -0.125}, // Higher top right
+  {CellWidth *  0.07 , CellHeight * -0.11 }, // Lower top right
+  {CellWidth *  0.05 , CellHeight * -0.085}  // Mid right
+};
+
+
+final float[][] Interpreter_Shape = {
+  {0, 0}, // Shape center
+  {0               , 0                 }, // Bottom
+  {CellWidth * -0.1, CellHeight * -0.14}, // Top left
+  {CellWidth *  0.1, CellHeight * -0.14}, // Top right
+  {0               , 0                 }  // Bottom again (needed to connect stroke)
+};
+
+
+final float[][] Cell_Energy_Symbol = {
+  {0, 0}, // Shape center
+  {CellWidth * -0.005, CellHeight *  0.037}, // Bottom
+  {CellWidth *  0.004, CellHeight *  0.003}, // Middle bottom right
+  {CellWidth * -0.025, CellHeight *  0.003}, // Middle bottom left
+  {CellWidth * -0.015, CellHeight * -0.037}, // Top left
+  {CellWidth *  0.01 , CellHeight * -0.037}, // Top right
+  {CellWidth *  0.00 , CellHeight * -0.012}, // Middle top left
+  {CellWidth *  0.025, CellHeight * -0.012}, // Middle top right
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -196,49 +268,6 @@ void setup() {
   CreateStartingCells();
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
-  
-  CellHandShape = new float[][] {
-    {0, CellHeight * -0.32}, // Shape center
-    {CellWidth * -0.075, CellHeight * -0.32}, // Bottom left ------------------------------------------------------------------------------- MAKE BACKUP BEFORE CHANGING ANY OF THESE
-    {CellWidth *  0.0  , CellHeight * -0.4 }, // Top            // Update Cell.GetHandPoint() line 2 if the tip of the hand is changed
-    {CellWidth *  0.075, CellHeight * -0.32}  // Bottom right
-  };
-  
-  CodonShape = new float[][] {
-    {0, CellHeight * -0.85}, // Shape center
-    {CellWidth * -0.03 , CellHeight * -0.06 }, // Bottom left
-    {CellWidth * -0.07 , CellHeight * -0.11 }, // Lower top left
-    {CellWidth * -0.055, CellHeight * -0.125}, // Higher top left
-    {CellWidth *  0.055, CellHeight * -0.125}, // Higher top right
-    {CellWidth *  0.07 , CellHeight * -0.11 }, // Lower top right
-    {CellWidth *  0.03 , CellHeight * -0.06 }  // Bottom right
-  };
-  
-  Codon1Shape = new float[][] {
-    {0, 0}, // Shape center
-    {CellWidth * -0.03 , CellHeight * -0.06}, // Bottom left
-    {CellWidth * -0.054, CellHeight * -0.09}, // Mid left
-    {CellWidth *  0.054, CellHeight * -0.09}, // Mid right
-    {CellWidth *  0.03 , CellHeight * -0.06}  // Bottom right
-  };
-  
-  Codon2Shape = new float[][] {
-    {0, 0}, // Shape center
-    {CellWidth * -0.05 , CellHeight * -0.085}, // Mid left
-    {CellWidth * -0.07 , CellHeight * -0.11 }, // Lower top left
-    {CellWidth * -0.055, CellHeight * -0.125}, // Higher top left
-    {CellWidth *  0.055, CellHeight * -0.125}, // Higher top right
-    {CellWidth *  0.07 , CellHeight * -0.11 }, // Lower top right
-    {CellWidth *  0.05 , CellHeight * -0.085}  // Mid right
-  };
-  
-  InterpShape = new float[][] {
-    {0, 0}, // Shape center
-    {0               , 0                 }, // Bottom
-    {CellWidth * -0.1, CellHeight * -0.14}, // Top left
-    {CellWidth *  0.1, CellHeight * -0.14}, // Top right
-    {0               , 0                 }  // Bottom again (needed to connect stroke)
-  };
   
 }
 
@@ -260,6 +289,7 @@ void draw() {
     UpdateCells();
   }
   
+  //if (Paused) {
   pushMatrix();
   translate (Camera.XPos, Camera.YPos);
   scale (Camera.Zoom);
@@ -269,9 +299,10 @@ void draw() {
   DrawWasteParticles();
   DrawUGOs();
   popMatrix();
+  //}
   
   UpdateKeys();
   
-  if (Show_FPS) DrawFPS(StartingMillis);
+  if (Show_FPS) DrawFPS (StartingMillis);
   
 }

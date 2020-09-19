@@ -91,8 +91,8 @@ public class Interpreter {
       
       case (Codon2_RGL):
         if (!Cell.HandIsInward()) return;
-        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
-        for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) {
+        int[] RGLIndexes = GetRGLIndexes (Cell, Codon.Info[2], Codon.Info[3]);
+        for (int i : RGLIndexes) {
           Cell.DigestCodon(i);
           float[] ICodonPos = Cell.GetCodonPosition(i);
           Cell.DrawLineFromHandTo (ICodonPos[0], ICodonPos[1]);
@@ -158,7 +158,14 @@ public class Interpreter {
       
       case (Codon2_RGL):
         if (!Cell.HandIsInward()) return;
-        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
+        int[] RGLIndexes = GetRGLIndexes (Cell, Codon.Info[2], Codon.Info[3]);
+        for (int i : RGLIndexes)
+          Cell.DrawLineFromHandToCodon(i);
+        for (int i = 0; i < RGLIndexes.length; i ++)
+          Cell.Codons.remove ((RGLIndexes[0] + Cell.Codons.size() * 1000) % Cell.Codons.size());
+        
+        /*
+        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]); // This code doesn't account for wrapping
         for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) { // -------------- Draw lines
           float[] ICodonPos = Cell.GetCodonPosition(i);
           Cell.DrawLineFromHandTo (ICodonPos[0], ICodonPos[1]);
@@ -167,6 +174,8 @@ public class Interpreter {
           int Mod = Cell.Codons.size();
           Cell.Codons.remove ((RGLLocation[0] + Mod * 1000) % Mod);
         }
+        */
+        
         int Mod = Cell.Codons.size();
         Cell.InterpCodonPos = (Cell.InterpCodonPos - (Codon.Info[3] - Codon.Info[2]) + Mod * 1000) % Mod;
         //Cell.InterpCodonPos -= Codon.Info[3] - Codon.Info[2];
@@ -272,15 +281,25 @@ public class Interpreter {
       
       case (Codon2_RGL):
         if (!Cell.HandIsInward()) return;
-        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]);
+        ArrayList <Codon> CodonsToProcess = new ArrayList <Codon> ();
+        int[] RGLIndexes = GetRGLIndexes (Cell, Codon.Info[2], Codon.Info[3]);
+        for (int i : RGLIndexes) {
+          CodonsToProcess.add (Cell.Codons.get(i));
+          Cell.DrawLineFromHandToCodon(i);
+        }
+        
+        /*
+        int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]); // This code doesn't account for wrapping
         ArrayList <Codon> CodonsToProcess = new ArrayList <Codon> ();
         ArrayList <Codon> Codons = Cell.Codons;
         int Mod = Codons.size();
-        for (int i = RGLLocation[0]; i < RGLLocation[1]; i ++) {
+        for (int i = RGLLocation[0]; i < RGLLocation[1] + 1; i ++) {
           int CodonIndex = (i + Mod * 1000) % Mod;
           CodonsToProcess.add (Codons.get(CodonIndex));
           Cell.DrawLineFromHandToCodon (CodonIndex);
         }
+        */
+        
         Cell.CodonMemory = ProcessCodonsIntoInfo (CodonsToProcess);
         return;
       
@@ -361,20 +380,29 @@ public class Interpreter {
   
   
   int[] GetHandRGLLocation (Cell Cell, int RGLStart, int RGLEnd) {
-    ArrayList <Codon> Codons = Cell.Codons;
-    int Mod = Codons.size();
+    int Mod = Cell.Codons.size();
     int Start = (RGLStart + Cell.HandCodonPos + Mod * 1000) % Mod; // The +Mod*1000 is because mod (-1, 4) returns -1 and not 3 (this wraps correctly when negative)
-    int End = (RGLEnd + Cell.HandCodonPos + 1 + Mod * 1000) % Mod;
+    int End = (RGLEnd + Cell.HandCodonPos + Mod * 1000) % Mod;
     return new int[] {Start, End};
   }
   
   
   
   int GetHandRGLLocation (Cell Cell, int RGLStart) {
-    ArrayList <Codon> Codons = Cell.Codons;
-    int Mod = Codons.size();
+    int Mod = Cell.Codons.size();
     int Start = (RGLStart + Cell.HandCodonPos + Mod * 1000) % Mod; // The +Mod*1000 is because mod (-1, 4) returns -1 and not 3 (this wraps correctly when negative)
     return Start;
+  }
+  
+  
+  
+  int[] GetRGLIndexes (Cell Cell, int RGLStart, int RGLEnd) { // This is needed for if the start is after the end
+    int[] Output = new int [RGLEnd - RGLStart + 1];
+    int Mod = Cell.Codons.size();
+    for (int i = 0; i < Output.length; i ++) {
+      Output[i] = (Cell.HandCodonPos + RGLStart + i + Mod * 1000) % Mod;
+    }
+    return Output;
   }
   
   

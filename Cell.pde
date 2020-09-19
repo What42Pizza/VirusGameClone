@@ -13,7 +13,7 @@ public class Cell {
   float YPos;
   float XMid;
   float YMid;
-  int CellIndex = -1;
+  int ID = -1;
   
   float WallHealth = 100;
   float Energy = 100;
@@ -57,6 +57,7 @@ public class Cell {
     DrawHandTrack();
     DrawInterpHand();
     DrawCodons (Codons, XMid, YMid);
+    if (Energy > 0) DrawEnergySymbol();
     WallThickness = CellWidth * 0.1 * WallHealth * 0.005;
     DrawWalls();
     DrawHandLines();
@@ -77,7 +78,7 @@ public class Cell {
   
   private void DrawHand() {
     fill (Color_Cell_Hand);
-    ShapeRenderer.Render (CellHandShape, XMid, YMid, HandRotation, HandCenterRotation);
+    ShapeRenderer.Render (Cell_Hand_Shape, XMid, YMid, HandRotation, HandCenterRotation);
   }
   
   
@@ -96,7 +97,7 @@ public class Cell {
     fill (Color_Cell_Interpreter_Hand, InterpColorChange); // This makes the inter hand lighter by making it transparent, which isn't great
     stroke (Color_Cell_Interpreter_Hand_Edge, InterpColorChange);
     strokeWeight (Cell_Interpreter_Hand_Edge_Size);
-    ShapeRenderer.Render (InterpShape, XMid, YMid, InterpRotation, Codons.size() / 4.0, 1);
+    ShapeRenderer.Render (Interpreter_Shape, XMid, YMid, InterpRotation, Codons.size() / 4.0, 1);
     noStroke();
   }
   
@@ -109,12 +110,19 @@ public class Cell {
       Codon C = CodonsIn.get(i);
       fill (0);
       ellipse (XPos, YPos, CellWidth * 0.09, CellHeight * 0.09);
-      ShapeRenderer.Render (CodonShape , XPos, YPos, (float) i / Num * PI * 2, Num / 3.9, 1);
+      ShapeRenderer.Render (Codon_Shape , XPos, YPos, (float) i / Num * PI * 2, Num / 3.9, 1);
       fill (GetColorFromCodon2(C));
-      ShapeRenderer.Render (Codon2Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
+      ShapeRenderer.Render (Codon2_Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
       fill (GetColorFromCodon1(C));
-      ShapeRenderer.Render (Codon1Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
+      ShapeRenderer.Render (Codon1_Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
     }
+  }
+  
+  
+  
+  private void DrawEnergySymbol() {
+    fill (Color_Cell_Energy_Symbol);
+    ShapeRenderer.Render (Cell_Energy_Symbol, XMid, YMid, new float[] {100.0 / Energy, 100.0 / Energy});
   }
   
   
@@ -124,10 +132,10 @@ public class Cell {
     float DBuffer = Buffer * 2;
     fill (Color_Cell_Wall);
     noStroke();
-    rect (XPos - Buffer, YPos - Buffer, CellWidth + DBuffer, WallThickness + DBuffer); // Top
-    rect (XPos + CellWidth - WallThickness - Buffer, YPos - Buffer, WallThickness + DBuffer, CellHeight + DBuffer); // Right
-    rect (XPos - Buffer, YPos + CellHeight - WallThickness - Buffer, CellWidth + DBuffer, WallThickness + DBuffer); // Bottom
-    rect (XPos - Buffer, YPos - Buffer, WallThickness + DBuffer, CellHeight + DBuffer); // Left
+    rect (XPos                             - Buffer, YPos                              - Buffer, CellWidth     + DBuffer, WallThickness + DBuffer); // Top
+    rect (XPos + CellWidth - WallThickness - Buffer, YPos                              - Buffer, WallThickness + DBuffer, CellHeight    + DBuffer); // Right
+    rect (XPos                             - Buffer, YPos + CellHeight - WallThickness - Buffer, CellWidth     + DBuffer, WallThickness + DBuffer); // Bottom
+    rect (XPos                             - Buffer, YPos                              - Buffer, WallThickness + DBuffer, CellHeight    + DBuffer); // Left
   }
   
   
@@ -139,12 +147,7 @@ public class Cell {
       float[] Line = HandLines.get(i);
      // stroke (lerpColor (color (255), Color_Cell_Hand_Lines, Line[2]));
      stroke (Color_Cell_Hand_Lines, Line[2] * 256);
-      line (HandPoint[0], HandPoint[1], Line[0], Line[1]);
-      Line[2] *= 0.9;
-      if (Line[2] < 0.01) {
-        HandLines.remove(i);
-        i --;
-      }
+     line (HandPoint[0], HandPoint[1], Line[0], Line[1]);
     }
     noStroke();
   }
@@ -152,13 +155,13 @@ public class Cell {
   
   
   public float[] GetHandPoint() {
-    float[] HandTip = new float[] {CellHandShape[2][0], CellHandShape[2][1]};
+    float[] HandTip = new float[] {Cell_Hand_Shape[2][0], Cell_Hand_Shape[2][1]};
     //float[] HandTip = CellHandShape[2].clone(); // IDK how well I can trust .clone()
-    HandTip[0] -= CellHandShape[0][0]; // Move hand to center
-    HandTip[1] -= CellHandShape[0][1];
+    HandTip[0] -= Cell_Hand_Shape[0][0]; // Move hand to center
+    HandTip[1] -= Cell_Hand_Shape[0][1];
     HandTip = ShapeRenderer.RotateVertex (HandTip, HandCenterRotation); // Rotate around center
-    HandTip[0] += CellHandShape[0][0]; // Move hand to center
-    HandTip[1] += CellHandShape[0][1];
+    HandTip[0] += Cell_Hand_Shape[0][0]; // Move hand to center
+    HandTip[1] += Cell_Hand_Shape[0][1];
     HandTip = ShapeRenderer.RotateVertex (HandTip, HandRotation); // Rotate to hand trach position
     return new float[] {HandTip[0] + XMid, HandTip[1] + YMid};
   }
@@ -169,16 +172,22 @@ public class Cell {
   
   
   
+  
+  
+  
   public void Update() {
     //if (true) return; // Use this to stop updates
     MoveHands();
+    DamageCodons();
+    LoseEnergy();
     InterpColorChange = InterpColorChange + (int) ((255 - InterpColorChange) * 0.1);
-    if (Energy > 0 && (frameCount % FrameRate) == 0)
+    if (Energy > 0 && (frameCount % 60) == 0) // I know locking it at 60 isn't great, but nothing else responds to framerate so I guess that's the route I'm going
       AdvanceInterpHand();
-    if (Energy > 0 && (frameCount % FrameRate) == FrameRate/2) {
+    if (Energy > 0 && (frameCount % 60) == 30) {
       Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this, InterpCodonPos);
       InterpColorChange = 63;
     }
+    UpdateHandLines();
   }
   
   
@@ -212,7 +221,7 @@ public class Cell {
   
   private void DamageCodons() {
     for (Codon C : Codons) {
-      C.Health -= random (Cell_Codon_Damage_Percent_Low / 100.0, Cell_Codon_Damage_Percent_High / 100.0);
+      C.Health -= random (Cell_Codon_Damage_Percent_Low / 350.0, Cell_Codon_Damage_Percent_High / 350.0);
       if (C.Health <= 0) {
         C.Info = new int[] {Codon1_None, Codon2_None};
         C.Health = 1;
@@ -222,9 +231,28 @@ public class Cell {
   
   
   
+  private void LoseEnergy() {
+    Energy = max (Energy - Cell_Energy_Loss_Percent / 50.0, 0);
+  }
+  
+  
+  
   private void AdvanceInterpHand() {
     InterpCodonPos ++;
     InterpCodonPos %= Codons.size();
+  }
+  
+  
+  
+  private void UpdateHandLines() {
+    for (int i = 0; i < HandLines.size(); i ++) {
+      float[] Line = HandLines.get(i);
+      Line[2] *= 0.9;
+      if (Line[2] < 0.01) {
+        HandLines.remove(i);
+        i --;
+      }
+    }
   }
   
   
@@ -248,6 +276,19 @@ public class Cell {
     Alive = false;
     ShouldBeRemoved = true;
     ReplaceCodonsWithWaste();
+    
+    ///*
+    println ();
+    println ("Cell " + ID + " has died.");
+    println ("Wall health: " + WallHealth);
+    println ("Energy: " + Energy);
+    println ("Codon healths:");
+    for (Codon C : Codons) {
+      println ("    " + C.Health);
+    }
+    println ("WasteParticles: " + WasteParticles.size());
+    //*/
+    
   }
   
   private void ReplaceCodonsWithWaste() {
@@ -322,7 +363,7 @@ public class Cell {
       Codons.remove (StartPos + i);
       Codons.add (StartPos + i, NewCodons.get(i));
     }
-    Energy = max (Energy = NewCodons.size() * Cell_Codon_Write_Cost, 0);
+    Energy = max (Energy - NewCodons.size() * Cell_Codon_Write_Cost, 0);
   }
   
   

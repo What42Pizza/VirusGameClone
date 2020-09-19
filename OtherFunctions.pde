@@ -31,13 +31,13 @@ boolean CheckIfSettingsAreValid() {
 
 void CreateStartingCells() {
   
-  int CellIndex = 0;
+  int CellID = 0;
   for (int y = 0; y < Starting_Cells[0].length; y ++) {
     for (int x = 0; x < Starting_Cells   .length; x ++) {
       if (Starting_Cells[x][y] == 1) {
         Cells.add (new Cell (x, y));
-        Cells.get(CellIndex).CellIndex = CellIndex;
-        CellIndex ++;
+        Cells.get(CellID).ID = CellID;
+        CellID ++;
       } else if (Starting_Cells[x][y] == 2) {
         CenterBlocks.add (new CenterBlock (x, y));
       }

@@ -57,7 +57,7 @@ void DrawCenterBlocks() {
 
 void DrawFPS (int StartingMillis) {
   fill (0);
-  float TextSize = width / 100;
+  float TextSize = max (width / 100, 15);
   textSize (TextSize);
   text ("FPS: " + (round (frameRate * 100) / 100.0), 5, TextSize);
   text ("Millis: " + (millis() - StartingMillis), 5, TextSize * 2);

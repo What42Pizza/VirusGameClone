@@ -67,6 +67,7 @@ void UpdateFoodParticles() {
 void UpdateWasteParticles() {
   
   while (WasteParticles.size() < Num_Of_Waste_Particles) WasteParticles.add (new Particle (ParticleTypes.Waste));
+  if (WasteParticles.size() > Num_Of_Waste_Particles) WasteParticles.get((int) random (WasteParticles.size())).Disapearing = true;
   
   for (int i = 0; i < WasteParticles.size(); i ++) {
     Particle W = WasteParticles.get(i);
