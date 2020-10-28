@@ -70,7 +70,7 @@ void UpdateWasteParticles() {
   
   if (WasteParticles.size() > Num_Of_Waste_Particles) {                                   // If there are too many waste particles (which could kill cells)
     Particle ParticleToRemove = WasteParticles.get((int) random (WasteParticles.size())); // Take random waste particle
-    while (ParticleToRemove.IsInCell()) ParticleToRemove = WasteParticles.get((int) random (WasteParticles.size())); // Take one that isn't in a cell
+    while (ParticleToRemove.IsInCell) ParticleToRemove = WasteParticles.get((int) random (WasteParticles.size())); // Take one that isn't in a cell
     ParticleToRemove.Disapearing = true;                                                                             // Remove it
   }
   
@@ -88,7 +88,14 @@ void UpdateWasteParticles() {
 
 
 void UpdateUGOs(){
-  
+  for (int i = 0; i < UGOs.size(); i ++) {
+    UGO U = UGOs.get(i);
+    U.Update();
+    if (U.ShouldBeRemoved) {
+      UGOs.remove(i);
+      i --;
+    }
+  }
 }
 
 

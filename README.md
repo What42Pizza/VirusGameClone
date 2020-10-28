@@ -15,4 +15,4 @@ This is a clone of https://github.com/carykh/VirusGame/.
 - UGOs
 - GUI
 
-Readme last updated 09/19/20
+Readme last updated 10/28/20

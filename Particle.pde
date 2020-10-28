@@ -13,6 +13,7 @@ public class Particle {
   float YVel;
   int Age = 0;
   int ParticleType;
+  boolean IsInCell;
   
   boolean Appearing = true;
   boolean Disapearing = false;
@@ -31,7 +32,8 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    ShouldBeRemoved = IsInCell(); // Destroy particle if strating in cell
+    CalcIsInCell();
+    ShouldBeRemoved = IsInCell; // Destroy particle if starting in cell
   }
   
   
@@ -43,7 +45,8 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    ShouldBeRemoved = IsInCell() && !OverrideCellCheck; // Destroy particle if strating in cell
+    CalcIsInCell();
+    ShouldBeRemoved = !OverrideCellCheck && IsInCell; // Destroy particle if strating in cell
   }
   
   
@@ -55,7 +58,8 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    ShouldBeRemoved = IsInCell() && !OverrideCellCheck; // Destroy particle if strating in cell
+    CalcIsInCell();
+    ShouldBeRemoved = !OverrideCellCheck && IsInCell; // Destroy particle if strating in cell
   }
   
   
@@ -109,7 +113,7 @@ public class Particle {
   
   
   
-  private void DamageTransitioningCells() {
+  public void DamageTransitioningCells() {
     Cell CurrOccupiedCell = GetCellAtPosition (XPos, YPos);
     if (CurrOccupiedCell != PrevOccupiedCell) {
       if (PrevOccupiedCell != null) PrevOccupiedCell.DamageWall();
@@ -120,7 +124,7 @@ public class Particle {
   
   
   
-  private void BounceOffCenterBlocks() {
+  public void BounceOffCenterBlocks() {
     CenterBlock CurrOccupiedCenterBlock = GetCenterBlockAtPosition (XPos, YPos);
     if (CurrOccupiedCenterBlock != null) {
       CenterBlock PrevXBlock = GetCenterBlockAtPosition (XPos - XVel, YPos);
@@ -132,7 +136,7 @@ public class Particle {
   
   
   
-  private void BounceWithinCell() {
+  public void BounceWithinCell() {
     Cell CurrCell  = GetCellAtPosition (XPos, YPos);
     Cell NextXCell = GetCellAtPosition (XPos + XVel, YPos);
     Cell NextYCell = GetCellAtPosition (XPos, YPos + YVel);
@@ -169,56 +173,9 @@ public class Particle {
   
   
   
-  public boolean IsInCell() {
-    return GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null;
+  public void CalcIsInCell() {
+    IsInCell = GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null;
   }
-  
-  
-  
-  /*
-  public void LeaveCell_OLD() { // Doesn't work
-    
-    ArrayList <int[]> AdjacentLocations = new ArrayList <int[]> ();
-    AdjacentLocations.add (new int[] {-1,  1});
-    AdjacentLocations.add (new int[] { 0,  1});
-    AdjacentLocations.add (new int[] { 1,  1});
-    AdjacentLocations.add (new int[] {-1,  0});
-    AdjacentLocations.add (new int[] { 1,  0});
-    AdjacentLocations.add (new int[] {-1, -1});
-    AdjacentLocations.add (new int[] { 0, -1});
-    AdjacentLocations.add (new int[] { 1, -1});
-    
-    int ThisCellXLoc = floor (XPos / CellWidth);
-    int ThisCellYLoc = floor (YPos / CellHeight);
-    
-    while (AdjacentLocations.size() > 0) {
-      int NewCellLocI = floor(random(AdjacentLocations.size()));
-      int[] NewCellLoc = AdjacentLocations.get(NewCellLocI);
-      AdjacentLocations.remove(NewCellLocI);
-      Cell C = GetCellAtLocation (ThisCellXLoc + NewCellLoc[0], ThisCellYLoc + NewCellLoc[1]);
-      if (C == null) {
-        MoveToCell (C); // C is null???
-        return;
-      }
-    }
-    
-  }
-  
-  
-  
-  private void MoveToCell (Cell C) {
-    if (XPos > C.XPos) {
-      XPos = C.XPos + CellWidth * 0.9;
-    } else if (XPos < C.XPos) {
-      XPos = C.XPos + CellWidth * 0.1;
-    }
-    if (YPos > C.YPos) {
-      YPos = C.YPos + CellHeight * 0.9;
-    } else if (YPos < C.YPos) {
-      YPos = C.YPos + CellHeight * 0.1;
-    }
-  }
-  */
   
   
   

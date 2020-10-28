@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 09/19/20
+// Last updated 10/28/20
 
 
 
@@ -80,7 +80,7 @@ final int Frame_Rate = 60;
 
 final boolean Debug_Show_FPS           = true ;
 final boolean Debug_Super_Speed        = false; // Use this to go really fast (use can also comment out fullScreen() to make it go faster)
-final boolean Debug_Explain_Cell_Death = true ;
+final boolean Debug_Explain_Cell_Death = false;
 
 
 
@@ -160,30 +160,6 @@ final float Render_Buffer_Extension = 0.0005;
 
 
 
-
-
-// Vars
-
-boolean Paused = false;
-
-ArrayList <Particle> FoodParticles  = new ArrayList <Particle> ();
-ArrayList <Particle> WasteParticles = new ArrayList <Particle> ();
-ArrayList <UGO> UGOs = new ArrayList <UGO> ();
-ArrayList <Cell> Cells = new ArrayList <Cell> ();
-ArrayList <CenterBlock> CenterBlocks = new ArrayList <CenterBlock> ();
-
-int AliveCells;
-int DeadCells;
-int TamperedCells;
-
-Camera Camera;
-Interpreter Interpreter = new Interpreter();
-Shape_Renderer ShapeRenderer = new Shape_Renderer();
-
-
-
-
-
 final float[][] Cell_Hand_Shape = {
   {0, CellHeight * -0.32}, // Shape center
   {CellWidth * -0.075, CellHeight * -0.32}, // Bottom left ------------------------------------------------------------------------------- MAKE BACKUP BEFORE CHANGING ANY OF THESE
@@ -240,7 +216,7 @@ final float[][] Cell_Energy_Symbol = {
   {CellWidth * -0.015, CellHeight * -0.037}, // Top left
   {CellWidth *  0.01 , CellHeight * -0.037}, // Top right
   {CellWidth *  0.00 , CellHeight * -0.012}, // Middle top left
-  {CellWidth *  0.025, CellHeight * -0.012}, // Middle top right
+  {CellWidth *  0.025, CellHeight * -0.012}  // Middle top right
 };
 
 
@@ -249,9 +225,23 @@ final float[][] Cell_Energy_Symbol = {
 
 
 
+// Vars
 
+boolean Paused = false;
 
+ArrayList <Particle> FoodParticles  = new ArrayList <Particle> ();
+ArrayList <Particle> WasteParticles = new ArrayList <Particle> ();
+ArrayList <UGO> UGOs = new ArrayList <UGO> ();
+ArrayList <Cell> Cells = new ArrayList <Cell> ();
+ArrayList <CenterBlock> CenterBlocks = new ArrayList <CenterBlock> ();
 
+int AliveCells;
+int DeadCells;
+int TamperedCells;
+
+Camera Camera;
+Interpreter Interpreter = new Interpreter();
+Shape_Renderer ShapeRenderer = new Shape_Renderer();
 
 
 
@@ -263,6 +253,16 @@ final float[][] Cell_Energy_Symbol = {
 
 
 void setup() {
+  
+  /*
+  ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
+  UGOCodons.add (new Codon (new int[] {Codon1_MoveHand, Codon2_Outward}));
+  UGOCodons.add (new Codon (new int[] {Codon1_Digest, Codon2_Food}));
+  UGOCodons.add (new Codon (new int[] {Codon1_Remove, Codon2_Waste}));
+  UGOCodons.add (new Codon (new int[] {Codon1_Write, Codon2_Wall}));
+  UGOCodons.add (new Codon (new int[] {Codon1_Remove, Codon2_Wall}));
+  UGOs.add (new UGO (0.05, 0.05, UGOCodons));
+  */
   
   // Basic setup
   fullScreen();

@@ -1,56 +1,53 @@
-public class UGO {
+public class UGO extends Particle {
   
-  float XPos;
-  float YPos;
-  float XVel;
-  float YVel;
-  boolean ShouldBeRemoved = false;
+  
+  
+  
+  
+  // Vars
+  
   ArrayList <Codon> Codons;
-  
-  Cell PrevOccupiedCell = null;
-  
+  Cell StartingCell;
   
   
   
-  public UGO () {
-    XPos = random(1);
-    YPos = random(1);
-    PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
-    XVel = random(0.00025, 0.0005) * RandomSign();
-    YVel = random(0.00025, 0.0005) * RandomSign();
+  
+  
+  // Constructors
+  
+  /*
+  public UGO (ArrayList <Codon> CodonsIn) {
+    super(0);
+    Codons = CodonsIn;
+    StartingCell = GetCellAtPosition (XPos, YPos);
   }
-  
-  
+  */
   
   public UGO (float XPosIn, float YPosIn, ArrayList <Codon> CodonsIn) {
-    XPos = XPosIn;
-    YPos = YPosIn;
+    super (0, XPosIn, YPosIn, true);
     Codons = CodonsIn;
-    PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
-    XVel = random(0.00025, 0.0005) * RandomSign();
-    YVel = random(0.00025, 0.0005) * RandomSign();
-  }
-  
-  
-  
-  public UGO (float XPosIn, float YPosIn, float XVelIn, float YVelIn, ArrayList <Codon> CodonsIn) {
-    XPos = XPosIn;
-    YPos = YPosIn;
-    XVel = XVelIn;
-    YVel = YVelIn;
-    Codons = CodonsIn;
-    PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
+    StartingCell = GetCellAtPosition (XPos, YPos);
   }
   
   
   
   
+  
+  // Functions
+  
+  
+  
+  @Override
   
   public void Draw() {
-    
+    DrawCodons (Codons, XPos, YPos);
   }
   
   
+  
+  
+  
+  @Override
   
   public void Update() {
     
@@ -59,20 +56,37 @@ public class UGO {
     XPos %= 1;
     YPos %= 1;
     
-    BounceOffCenterBlocks();
+    Cell EnteredCell = GetCellAtPosition (XPos, YPos);
+    if (EnteredCell != StartingCell) {
+      InfectCell (EnteredCell);
+      this.ShouldBeRemoved = true;
+    }
+    
+    if (StartingCell != null)
+      BounceWithinCell();
     
   }
   
   
   
-  private void BounceOffCenterBlocks() {
-    CenterBlock CurrOccupiedCenterBlock = GetCenterBlockAtPosition (XPos, YPos);
-    if (CurrOccupiedCenterBlock != null) {
-      CenterBlock PrevXBlock = GetCenterBlockAtPosition (XPos - XVel, YPos);
-      if (PrevXBlock == null) XVel *= -1;
-      CenterBlock PrevYBlock = GetCenterBlockAtPosition (XPos, YPos - YVel);
-      if (PrevYBlock == null) YVel *= -1;
+  
+  
+  public void InfectCell (Cell CellToInfect) {
+    
+    int CellHandPos = CellToInfect.HandCodonPos;
+    ArrayList <Codon> CodonsToInfect = CellToInfect.Codons;
+    
+    for (int i = Codons.size() - 1; i >= 0; i --) {
+      Codon C = Codons.get(i);
+      CodonsToInfect.add (CellHandPos, C);
     }
+    
+    CellToInfect.HandCodonPos += Codons.size();
+    
   }
+  
+  
+  
+  
   
 }
