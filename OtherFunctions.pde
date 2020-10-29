@@ -31,15 +31,31 @@ boolean CheckIfSettingsAreValid() {
 
 void CreateStartingCells() {
   
+  int MapWidth  = Starting_Cells   .length;
+  int MapHeight = Starting_Cells[0].length;
+  CellsGrid = new Cell [MapWidth] [MapHeight];
+  CenterBlocksGrid = new CenterBlock [MapWidth] [MapHeight];
+  
+  for (int y = 0; y < MapHeight; y ++) {
+    for (int x = 0; x < MapWidth ; x ++) {
+      CellsGrid[x][y] = null;
+      CenterBlocksGrid[x][y] = null;
+    }
+  }
+  
   int CellID = 0;
-  for (int y = 0; y < Starting_Cells[0].length; y ++) {
-    for (int x = 0; x < Starting_Cells   .length; x ++) {
+  for (int y = 0; y < MapHeight; y ++) {
+    for (int x = 0; x < MapWidth ; x ++) {
       if (Starting_Cells[x][y] == 1) {
-        Cells.add (new Cell (x, y));
-        Cells.get(CellID).ID = CellID;
+        Cell NewCell = new Cell (x, y);
+        NewCell.ID = CellID;
+        Cells.add (NewCell);
+        CellsGrid[x][y] = NewCell;
         CellID ++;
       } else if (Starting_Cells[x][y] == 2) {
-        CenterBlocks.add (new CenterBlock (x, y));
+        CenterBlock NewCenterBlock = new CenterBlock (x, y);
+        CenterBlocks.add (NewCenterBlock);
+        CenterBlocksGrid[x][y] = NewCenterBlock;
       }
     }
   }
@@ -101,6 +117,11 @@ int[] ConvertIntList (IntList In) {
 
 
 Cell GetCellAtLocation (int XLoc, int YLoc) {
+  return CellsGrid [XLoc] [YLoc];
+}
+
+/*
+Cell GetCellAtLocation (int XLoc, int YLoc) {
   float TargetWorldXPos = XLoc * CellWidth;
   float TargetWorldYPos = YLoc * CellHeight;
   for (Cell C : Cells) {
@@ -110,9 +131,18 @@ Cell GetCellAtLocation (int XLoc, int YLoc) {
   }
   return null;
 }
+*/
 
 
 
+Cell GetCellAtPosition (float XPos, float YPos) {
+  if (XPos < 0 || XPos >= 1 || YPos < 0 || YPos >= 1) return  null;
+  int CellX = floor (XPos / CellWidth );
+  int CellY = floor (YPos / CellHeight);
+  return CellsGrid [CellX] [CellY];
+}
+
+/*
 Cell GetCellAtPosition (float XPos, float YPos) {
   float TargetWorldXPos = floor (XPos / CellWidth ) * CellWidth ;
   float TargetWorldYPos = floor (YPos / CellHeight) * CellHeight;
@@ -123,9 +153,18 @@ Cell GetCellAtPosition (float XPos, float YPos) {
   }
   return null;
 }
+*/
 
 
 
+CenterBlock GetCenterBlockAtPosition (float XPos, float YPos) {
+  if (XPos < 0 || XPos >= 1 || YPos < 0 || YPos >= 1) return  null;
+  int CellX = floor (XPos / CellWidth );
+  int CellY = floor (YPos / CellHeight);
+  return CenterBlocksGrid [CellX] [CellY];
+}
+
+/*
 CenterBlock GetCenterBlockAtPosition (float XPos, float YPos) {
   float TargetWorldXPos = floor (XPos / CellWidth ) * CellWidth ;
   float TargetWorldYPos = floor (YPos / CellHeight) * CellHeight;
@@ -136,9 +175,15 @@ CenterBlock GetCenterBlockAtPosition (float XPos, float YPos) {
   }
   return null;
 }
+*/
 
 
 
+CenterBlock GetCenterBlockAtLocation (int XLoc, int YLoc) {
+  return CenterBlocksGrid [XLoc] [YLoc];
+}
+
+/*
 CenterBlock GetCenterBlockAtLocation (int XLoc, int YLoc) {
   float TargetWorldXPos = XLoc * CellWidth;
   float TargetWorldYPos = YLoc * CellHeight;
@@ -149,6 +194,7 @@ CenterBlock GetCenterBlockAtLocation (int XLoc, int YLoc) {
   }
   return null;
 }
+*/
 
 
 

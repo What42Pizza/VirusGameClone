@@ -13,7 +13,6 @@ public class Particle {
   float YVel;
   int Age = 0;
   int ParticleType;
-  boolean IsInCell;
   
   boolean Appearing = true;
   boolean Disapearing = false;
@@ -32,8 +31,7 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    CalcIsInCell();
-    ShouldBeRemoved = IsInCell; // Destroy particle if starting in cell
+    ShouldBeRemoved = IsInCell(); // Destroy particle if starting in cell
   }
   
   
@@ -45,8 +43,7 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    CalcIsInCell();
-    ShouldBeRemoved = !OverrideCellCheck && IsInCell; // Destroy particle if strating in cell
+    ShouldBeRemoved = !OverrideCellCheck && IsInCell(); // Destroy particle if strating in cell
   }
   
   
@@ -58,8 +55,7 @@ public class Particle {
     PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
     XVel = random(0.00025, 0.0005) * RandomSign();
     YVel = random(0.00025, 0.0005) * RandomSign();
-    CalcIsInCell();
-    ShouldBeRemoved = !OverrideCellCheck && IsInCell; // Destroy particle if strating in cell
+    ShouldBeRemoved = !OverrideCellCheck && IsInCell(); // Destroy particle if strating in cell
   }
   
   
@@ -140,7 +136,7 @@ public class Particle {
     Cell CurrCell  = GetCellAtPosition (XPos, YPos);
     Cell NextXCell = GetCellAtPosition (XPos + XVel, YPos);
     Cell NextYCell = GetCellAtPosition (XPos, YPos + YVel);
-    if (CurrCell != NextXCell) { // This also needs Curr extists && Prev exists, but that will always be true if Curr != Prev
+    if (CurrCell != NextXCell) { // This would also need Curr extists && Prev exists, but that will always be true if Curr != Prev
       XVel *= -1;
       if (NextXCell != null) NextXCell.DamageWall();
       if (CurrCell  != null) CurrCell .DamageWall();
@@ -173,8 +169,8 @@ public class Particle {
   
   
   
-  public void CalcIsInCell() {
-    IsInCell = GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null;
+  public boolean IsInCell() {
+    return GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null;
   }
   
   

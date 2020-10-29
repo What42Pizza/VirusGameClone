@@ -8,6 +8,7 @@ public class UGO extends Particle {
   
   ArrayList <Codon> Codons;
   Cell StartingCell;
+  boolean BounceInCell = true;
   
   
   
@@ -23,10 +24,11 @@ public class UGO extends Particle {
   }
   */
   
-  public UGO (float XPosIn, float YPosIn, ArrayList <Codon> CodonsIn) {
+  public UGO (float XPosIn, float YPosIn, ArrayList <Codon> CodonsIn, boolean BounceInCellIn) {
     super (0, XPosIn, YPosIn, true);
     Codons = CodonsIn;
     StartingCell = GetCellAtPosition (XPos, YPos);
+    BounceInCell = BounceInCellIn;
   }
   
   
@@ -57,13 +59,16 @@ public class UGO extends Particle {
     YPos %= 1;
     
     Cell EnteredCell = GetCellAtPosition (XPos, YPos);
-    if (EnteredCell != StartingCell) {
+    if (EnteredCell != StartingCell && EnteredCell != null) {
       InfectCell (EnteredCell);
       this.ShouldBeRemoved = true;
     }
     
-    if (StartingCell != null)
+    if (BounceInCell)
       BounceWithinCell();
+    
+    DamageTransitioningCells();
+    BounceOffCenterBlocks();
     
   }
   
@@ -73,15 +78,15 @@ public class UGO extends Particle {
   
   public void InfectCell (Cell CellToInfect) {
     
-    int CellHandPos = CellToInfect.HandCodonPos;
+    int CellInterpPos = CellToInfect.InterpCodonPos;
     ArrayList <Codon> CodonsToInfect = CellToInfect.Codons;
     
     for (int i = Codons.size() - 1; i >= 0; i --) {
       Codon C = Codons.get(i);
-      CodonsToInfect.add (CellHandPos, C);
+      CodonsToInfect.add (CellInterpPos, C);
     }
     
-    CellToInfect.HandCodonPos += Codons.size();
+    CellToInfect.InterpCodonPos += Codons.size();
     
   }
   

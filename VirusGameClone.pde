@@ -243,6 +243,9 @@ Camera Camera;
 Interpreter Interpreter = new Interpreter();
 Shape_Renderer ShapeRenderer = new Shape_Renderer();
 
+Cell[][] CellsGrid;
+CenterBlock[][] CenterBlocksGrid;
+
 
 
 
@@ -253,16 +256,6 @@ Shape_Renderer ShapeRenderer = new Shape_Renderer();
 
 
 void setup() {
-  
-  /*
-  ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
-  UGOCodons.add (new Codon (new int[] {Codon1_MoveHand, Codon2_Outward}));
-  UGOCodons.add (new Codon (new int[] {Codon1_Digest, Codon2_Food}));
-  UGOCodons.add (new Codon (new int[] {Codon1_Remove, Codon2_Waste}));
-  UGOCodons.add (new Codon (new int[] {Codon1_Write, Codon2_Wall}));
-  UGOCodons.add (new Codon (new int[] {Codon1_Remove, Codon2_Wall}));
-  UGOs.add (new UGO (0.05, 0.05, UGOCodons));
-  */
   
   // Basic setup
   fullScreen();
@@ -278,6 +271,17 @@ void setup() {
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
   
+  /*
+  ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
+  UGOCodons.add (new Codon (new int[] {Codon1_MoveHand, Codon2_Inward    }));
+  UGOCodons.add (new Codon (new int[] {Codon1_MoveHand, Codon2_RGL,  0, 0}));
+  UGOCodons.add (new Codon (new int[] {Codon1_Read    , Codon2_RGL, -1, 4}));
+  UGOCodons.add (new Codon (new int[] {Codon1_MoveHand, Codon2_Outward   }));
+  UGOCodons.add (new Codon (new int[] {Codon1_Write   , Codon2_UGO       }));
+  UGOCodons.add (new Codon (new int[] {Codon1_Remove  , Codon2_UGO       }));
+  UGOs.add (new UGO (0.05, 0.05, UGOCodons, false));
+  //*/
+  
 }
 
 
@@ -290,6 +294,33 @@ void draw() {
   DrawBackground();
   
   UpdateInputs();
+  
+  /*
+  if (!Paused) { // Tells you how many microseconds each update type is taking
+    println();
+    
+    long StartTime = System.nanoTime();
+    UpdateFoodParticles();
+    long NewTime = System.nanoTime();
+    println ("Food: " + (NewTime - StartTime) / 1000);
+    
+    StartTime = NewTime;
+    UpdateWasteParticles();
+    NewTime = System.nanoTime();
+    println ("Waste: " + (NewTime - StartTime) / 1000);
+    
+    StartTime = NewTime;
+    UpdateUGOs();
+    NewTime = System.nanoTime();
+    println ("UGOs: " + (NewTime - StartTime) / 1000);
+    
+    StartTime = NewTime;
+    UpdateCells();
+    NewTime = System.nanoTime();
+    println ("Cells: " + (NewTime - StartTime) / 1000);
+    
+  }
+  */
   
   if (!Paused) {
     UpdateFoodParticles();
