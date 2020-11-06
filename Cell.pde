@@ -34,6 +34,7 @@ public class Cell {
   float WallThickness;
   
   boolean Alive = true;
+  boolean Modified = false;
   boolean ShouldBeRemoved = false;
   
   
@@ -259,6 +260,7 @@ public class Cell {
     Alive = false;
     AliveCells --;
     DeadCells ++;
+    if (Modified) ModifiedCells --;
     ShouldBeRemoved = true;
     ReplaceCodonsWithWaste();
     

@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 10/28/20
+// Last updated 11/06/20
 
 
 
@@ -79,6 +79,7 @@ final int[][] Starting_Cells = {{1}};
 final int Frame_Rate = 60;
 
 final boolean Debug_Show_FPS           = true ;
+final boolean Debug_Show_Millis        = true ;
 final boolean Debug_Super_Speed        = false; // Use this to go really fast (use can also comment out fullScreen() to make it go faster)
 final boolean Debug_Explain_Cell_Death = false;
 
@@ -225,6 +226,9 @@ final float[][] Cell_Energy_Symbol = {
 
 
 
+
+
+
 // Vars
 
 boolean Paused = false;
@@ -237,7 +241,7 @@ ArrayList <CenterBlock> CenterBlocks = new ArrayList <CenterBlock> ();
 
 int AliveCells;
 int DeadCells;
-int TamperedCells;
+int ModifiedCells;
 
 Camera Camera;
 Interpreter Interpreter = new Interpreter();
@@ -270,6 +274,7 @@ void setup() {
   CreateStartingCells();
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
+  InitGUI();
   
   /*
   ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
@@ -289,8 +294,10 @@ void setup() {
 
 
 void draw() {
-  int StartingMillis = millis();
+  int TotalStartMillis = millis();
   if (Camera == null) Camera = new Camera();
+  noStroke();
+  
   DrawBackground();
   
   UpdateInputs();
@@ -322,12 +329,17 @@ void draw() {
   }
   */
   
+  int UpdateStartMillis = millis();
   if (!Paused) {
     UpdateFoodParticles();
     UpdateWasteParticles();
     UpdateUGOs();
     UpdateCells();
   }
+  UpdateGUIs();
+  
+  int DrawStartMillis = millis();
+  int UpdateMillis = DrawStartMillis - UpdateStartMillis; // End - start; DrawStart = UpdateEnd
   
   if (!Debug_Super_Speed || (Debug_Super_Speed && Paused)) { // Disable rendering during super speed
     pushMatrix();
@@ -339,11 +351,15 @@ void draw() {
     DrawWasteParticles();
     DrawUGOs();
     popMatrix();
+    RenderGUIs();
   }
   
   UpdateKeys();
   
-  if (Debug_Show_FPS)
-    DrawFPS (StartingMillis);
+  int NewMillis = millis();
+  int DrawMillis = NewMillis - DrawStartMillis;
+  int TotalMillis = NewMillis - TotalStartMillis;
+  
+  DrawFPSAndMillis (UpdateMillis, DrawMillis, TotalMillis);
   
 }

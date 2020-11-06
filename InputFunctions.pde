@@ -4,15 +4,15 @@ boolean[] PrevKeys = new boolean [128];
 
 
 void keyPressed() {
-  if (key < 128)
-    Keys[key] = true;
+  GUIFunctions.keyPressed();
+  if (key < 128) Keys[key] = true;
+  if (key == 27) key = 0;
 }
 
 
 
 void keyReleased() {
-  if (key < 128)
-    Keys[key] = false;
+  if (key < 128) Keys[key] = false;
 }
 
 
@@ -24,6 +24,7 @@ boolean KeyJustPressed (char Key) {
 
 
 void mouseWheel (MouseEvent event) {
+  GUIFunctions.mouseWheel(event);
   float[] MousePosBeforeScroll = ConvertScreenPosToWorldPos (mouseX, mouseY);
   
   float ScrollAmount = event.getAmount(); // This is deprecated but I don't know what to replace it with

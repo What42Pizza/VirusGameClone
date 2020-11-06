@@ -1,11 +1,10 @@
 void DrawBackground() {
   
-  background (191); // 3/4 * 256 - 1 // Outer background
-  
-  pushMatrix();
-  translate(Camera.XPos, Camera.YPos); // Inner background
-  scale (Camera.Zoom);
+  background (191); // 3/4 of 256 - 1 // Outer background
   fill (255);
+  pushMatrix();
+  translate (Camera.XPos, Camera.YPos); // Inner background
+  scale (Camera.Zoom);
   rect(0, 0, 1, 1);
   popMatrix();
   
@@ -55,12 +54,26 @@ void DrawCenterBlocks() {
 
 
 
-void DrawFPS (int StartingMillis) {
-  fill (0);
+void DrawFPSAndMillis (int UpdateMillis, int DrawMillis, int TotalMillis) {
+  if (!(Debug_Show_FPS || Debug_Show_Millis)) return;
+  
   float TextSize = max (width / 100, 15);
+  float YOffset = height * 0.05;
+  fill (0);
   textSize (TextSize);
-  text ("FPS: " + (round (frameRate * 100) / 100.0), 5, TextSize);
-  text ("Millis: " + (millis() - StartingMillis), 5, TextSize * 2);
+  textAlign (LEFT, TOP);
+  
+  if (Debug_Show_FPS) {
+    text ("FPS: " + (round (frameRate * 100) / 100.0), 5, YOffset);
+  } else {
+    YOffset -= TextSize; // If rendering Millis but not FPS, move Millis up
+  }
+  if (Debug_Show_Millis) {
+    text ("Update millis: " + UpdateMillis, 5, TextSize   + YOffset);
+    text ("Draw millis: "   + DrawMillis  , 5, TextSize*2 + YOffset);
+    text ("Total millis: "  + TotalMillis , 5, TextSize*3 + YOffset);
+  }
+  
 }
 
 

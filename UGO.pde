@@ -88,6 +88,11 @@ public class UGO extends Particle {
     
     CellToInfect.InterpCodonPos += Codons.size();
     
+    if (!CellToInfect.Modified) {
+      CellToInfect.Modified = true;
+      ModifiedCells ++;
+    }
+    
   }
   
   
