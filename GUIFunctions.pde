@@ -5,8 +5,9 @@
 GUI_Functions GUIFunctions = new GUI_Functions();
 
 GUI_Element GUI_TopBar;
-GUI_Element   GUI_TopBar_ExitButton;
 GUI_Element   GUI_TopBar_CellsData ;
+GUI_Element   GUI_TopBar_CreateUGO ;
+GUI_Element   GUI_TopBar_ExitButton;
 
 GUI_Element GUI_CellData;
 
@@ -20,8 +21,9 @@ void InitGUI() {
   String DataPath = dataPath("");
   
   GUI_TopBar = new GUI_Element (new File (DataPath + "/GUI/Child.TopBar"));
-    GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
     GUI_TopBar_CellsData  = GUI_TopBar.Child("CellsData" );
+    GUI_TopBar_CreateUGO  = GUI_TopBar.Child("CreateUGO" );
+    GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
   
   GUI_CellData = new GUI_Element (new File (DataPath + "/GUI/Child.CellData"));
   
@@ -36,6 +38,7 @@ void InitGUI() {
 void UpdateGUIs() {
   
   if (GUI_TopBar_ExitButton.JustClicked()) exit();
+  if (GUI_TopBar_CreateUGO .JustClicked()) GUI_UGOCreation.Enabled = !GUI_UGOCreation.Enabled;
   
 }
 

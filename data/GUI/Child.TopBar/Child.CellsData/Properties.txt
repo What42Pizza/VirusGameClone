@@ -11,15 +11,15 @@ Loading...
 TextColor:
 FFFFFFFF
 TextSize:
-2
+0.95
 TextSizeIsRelativeTo:
-SCREEN
+FRAME
 
 XPos:
 0
 YPos:
--0.1
+0
 XSize:
-0.45
+0.4
 YSize:
 1

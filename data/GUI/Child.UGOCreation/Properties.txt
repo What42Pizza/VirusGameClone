@@ -14,6 +14,6 @@ YSize:
 0.95
 
 BackgroundColor:
-0
+7F
 EdgeSize:
-0
+1
