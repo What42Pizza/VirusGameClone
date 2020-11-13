@@ -6,7 +6,7 @@ boolean[] PrevKeys = new boolean [128];
 void keyPressed() {
   GUIFunctions.keyPressed();
   if (key < 128) Keys[key] = true;
-  if (key == 27) key = 0;
+  if (key == 27) {GUIFunctions_EscKeyPressed(); key = 0;}
 }
 
 
@@ -17,7 +17,7 @@ void keyReleased() {
 
 
 
-boolean KeyJustPressed (char Key) {
+boolean InputFunctions_KeyJustPressed (char Key) {
   return Keys[Key] && !PrevKeys[Key];
 }
 
@@ -25,12 +25,12 @@ boolean KeyJustPressed (char Key) {
 
 void mouseWheel (MouseEvent event) {
   GUIFunctions.mouseWheel(event);
-  float[] MousePosBeforeScroll = ConvertScreenPosToWorldPos (mouseX, mouseY);
+  float[] MousePosBeforeScroll = OtherFunctions_ConvertScreenPosToWorldPos (mouseX, mouseY);
   
   float ScrollAmount = event.getAmount(); // This is deprecated but I don't know what to replace it with
   Camera.Zoom *= pow (2, ScrollAmount * Camera_Scroll_Speed * -1);
   
-  float[] MousePosAfterScroll = ConvertScreenPosToWorldPos (mouseX, mouseY);
+  float[] MousePosAfterScroll = OtherFunctions_ConvertScreenPosToWorldPos (mouseX, mouseY);
   float[] MousePosChange = new float[] {
     MousePosAfterScroll[0] - MousePosBeforeScroll[0],
     MousePosAfterScroll[1] - MousePosBeforeScroll[1]

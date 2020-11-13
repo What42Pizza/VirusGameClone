@@ -1,0 +1,17 @@
+Name:
+CloseButton
+
+ElementType:
+TextButton
+
+Text:
+X
+
+XPos:
+0.85
+YPos:
+0.01
+XSize:
+0.14
+YSize:
+0.05

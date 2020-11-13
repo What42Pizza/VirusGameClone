@@ -1,0 +1,19 @@
+Name:
+TopText
+
+ElementType:
+TextFrame
+HasFrame:
+false
+
+Text:
+UGO Creation
+
+XPos:
+0
+YPos:
+0
+XSize:
+0.75
+YSize:
+0.075

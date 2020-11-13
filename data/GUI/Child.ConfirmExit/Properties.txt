@@ -1,0 +1,14 @@
+Name:
+ConfirmExit
+
+Draggable:
+true
+
+XPos:
+0.4
+YPos:
+0.4
+XSize:
+0.2
+YSize:
+0.2

@@ -27,7 +27,7 @@ public class UGO extends Particle {
   public UGO (float XPosIn, float YPosIn, ArrayList <Codon> CodonsIn, boolean BounceInCellIn) {
     super (0, XPosIn, YPosIn, true);
     Codons = CodonsIn;
-    StartingCell = GetCellAtPosition (XPos, YPos);
+    StartingCell = OtherFunctions_GetCellAtPosition (XPos, YPos);
     BounceInCell = BounceInCellIn;
   }
   
@@ -42,7 +42,7 @@ public class UGO extends Particle {
   @Override
   
   public void Draw() {
-    DrawCodons (Codons, XPos, YPos);
+    DrawFunctions_DrawCodons (Codons, XPos, YPos);
   }
   
   
@@ -58,7 +58,7 @@ public class UGO extends Particle {
     XPos %= 1;
     YPos %= 1;
     
-    Cell EnteredCell = GetCellAtPosition (XPos, YPos);
+    Cell EnteredCell = OtherFunctions_GetCellAtPosition (XPos, YPos);
     if (EnteredCell != StartingCell && EnteredCell != null) {
       InfectCell (EnteredCell);
       this.ShouldBeRemoved = true;

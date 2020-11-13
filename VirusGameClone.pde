@@ -268,13 +268,13 @@ void setup() {
   frameRate (FrameRate);
   
   // Other setup
-  boolean SettingsAreValid = CheckIfSettingsAreValid();
-  AliveCells = CountAliveCells (Starting_Cells);
+  boolean SettingsAreValid = OtherFunctions_CheckIfSettingsAreValid();
+  AliveCells = OtherFunctions_CountAliveCells (Starting_Cells);
   if (!SettingsAreValid) exit();
-  CreateStartingCells();
+  OtherFunctions_CreateStartingCells();
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
-  InitGUI();
+  GUIFunctions_InitGUI();
   
   /*
   ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
@@ -298,9 +298,9 @@ void draw() {
   if (Camera == null) Camera = new Camera();
   noStroke();
   
-  DrawBackground();
+  DrawFunctions_DrawBackground();
   
-  UpdateInputs();
+  UpdateFunctions_UpdateInputs();
   
   /*
   if (!Paused) { // Tells you how many microseconds each update type is taking
@@ -331,12 +331,12 @@ void draw() {
   
   int UpdateStartMillis = millis();
   if (!Paused) {
-    UpdateFoodParticles();
-    UpdateWasteParticles();
-    UpdateUGOs();
-    UpdateCells();
+    UpdateFunctions_UpdateFoodParticles();
+    UpdateFunctions_UpdateWasteParticles();
+    UpdateFunctions_UpdateUGOs();
+    UpdateFunctions_UpdateCells();
   }
-  UpdateGUIs();
+  GUIFunctions_UpdateGUIs();
   
   int DrawStartMillis = millis();
   int UpdateMillis = DrawStartMillis - UpdateStartMillis; // End - start; DrawStart = UpdateEnd
@@ -345,21 +345,21 @@ void draw() {
     pushMatrix();
     translate (Camera.XPos, Camera.YPos);
     scale (Camera.Zoom);
-    DrawCells();
-    DrawCenterBlocks();
-    DrawFoodParticles();
-    DrawWasteParticles();
-    DrawUGOs();
+    DrawFunctions_DrawCells();
+    DrawFunctions_DrawCenterBlocks();
+    DrawFunctions_DrawFoodParticles();
+    DrawFunctions_DrawWasteParticles();
+    DrawFunctions_DrawUGOs();
     popMatrix();
-    RenderGUIs();
+    GUIFunctions_RenderGUIs();
   }
   
-  UpdateKeys();
+  UpdateFunctions_UpdateKeys();
   
   int NewMillis = millis();
   int DrawMillis = NewMillis - DrawStartMillis;
   int TotalMillis = NewMillis - TotalStartMillis;
   
-  DrawFPSAndMillis (UpdateMillis, DrawMillis, TotalMillis);
+  DrawFunctions_DrawFPSAndMillis (UpdateMillis, DrawMillis, TotalMillis);
   
 }

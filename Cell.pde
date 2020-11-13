@@ -45,7 +45,7 @@ public class Cell {
     YPos = CellY * CellHeight;
     XMid = XPos + CellWidth / 2;
     YMid = YPos + CellHeight / 2;
-    Codons = ProcessInfoIntoCodons (Starting_Codons);
+    Codons = OtherFunctions_ProcessInfoIntoCodons (Starting_Codons);
   }
   
   
@@ -57,7 +57,7 @@ public class Cell {
     DrawHand();
     DrawHandTrack();
     DrawInterpHand();
-    DrawCodons (Codons, XMid, YMid);
+    DrawFunctions_DrawCodons (Codons, XMid, YMid);
     if (Energy > 0) DrawEnergySymbol();
     WallThickness = CellWidth * 0.1 * WallHealth * 0.005;
     DrawWalls();

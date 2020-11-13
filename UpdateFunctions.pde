@@ -1,4 +1,8 @@
-boolean MakingUGO = false;
+// Vars
+
+
+
+boolean MakingUGO = false; // Updated in GUIFunctions
 
 boolean PrevMousePressed = false;
 int StartMouseX = 0;
@@ -8,19 +12,25 @@ float StartCameraYPos = 0;
 
 
 
-void UpdateInputs() {
+
+
+// Functions
+
+
+
+void UpdateFunctions_UpdateInputs() {
   
-  if (mousePressed && !PrevMousePressed) MouseJustPressed();
+  if (mousePressed && !PrevMousePressed) UpdateFunctions_StartMouseDrag();
   
   if (mousePressed) {
     if (MakingUGO) {
       
     } else {
-      MoveCameraToMouse();
+      if (!GUIFunctions_MouseIsOverGUI()) MoveCameraToMouse();
     }
   }
   
-  if (KeyJustPressed(' ')) Paused = !Paused;
+  if (InputFunctions_KeyJustPressed(' ')) Paused = !Paused;
   
   if (Keys['w']) Camera.YPos += Camera_Speed;
   if (Keys['a']) Camera.XPos += Camera_Speed;
@@ -31,7 +41,7 @@ void UpdateInputs() {
 
 
 
-void MouseJustPressed() {
+void UpdateFunctions_StartMouseDrag() {
   StartMouseX = mouseX;
   StartMouseY = mouseY;
   StartCameraXPos = Camera.XPos;
@@ -47,7 +57,7 @@ void MoveCameraToMouse() {
 
 
 
-void UpdateFoodParticles() {
+void UpdateFunctions_UpdateFoodParticles() {
   
   while (FoodParticles.size() < Num_Of_Food_Particles) FoodParticles.add (new Particle (ParticleTypes.Food));
   
@@ -64,7 +74,7 @@ void UpdateFoodParticles() {
 
 
 
-void UpdateWasteParticles() {
+void UpdateFunctions_UpdateWasteParticles() {
   
   while (WasteParticles.size() < Num_Of_Waste_Particles) WasteParticles.add (new Particle (ParticleTypes.Waste));
   
@@ -87,7 +97,7 @@ void UpdateWasteParticles() {
 
 
 
-void UpdateUGOs(){
+void UpdateFunctions_UpdateUGOs(){
   for (int i = 0; i < UGOs.size(); i ++) {
     UGO U = UGOs.get(i);
     U.Update();
@@ -100,7 +110,7 @@ void UpdateUGOs(){
 
 
 
-void UpdateCells() {
+void UpdateFunctions_UpdateCells() {
   for (int i = 0; i < Cells.size(); i ++) {
     Cell C = Cells.get(i);
     C.Update();
@@ -113,7 +123,7 @@ void UpdateCells() {
 
 
 
-void UpdateKeys() {
+void UpdateFunctions_UpdateKeys() {
   arrayCopy (Keys, PrevKeys); // This does PrevKeys = Keys;
   PrevMousePressed = mousePressed;
 }
