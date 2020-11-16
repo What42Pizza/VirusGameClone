@@ -6,18 +6,12 @@ GUI_Functions GUIFunctions = new GUI_Functions();
 
 GUI_Element GUI_TopBar;
 GUI_Element   GUI_TopBar_CellsData ;
-GUI_Element   GUI_TopBar_CreateUGO ;
-GUI_Element   GUI_TopBar_ExitButton;
 
 GUI_Element GUI_CellData;
 
 GUI_Element GUI_UGOCreation;
-GUI_Element   GUI_UGOCreation_CloseButton;
 
 GUI_Element GUI_ConfirmExit;
-  GUI_Element GUI_ConfirmExit_CloseButton;
-  GUI_Element GUI_ConfirmExit_YesButton;
-  GUI_Element GUI_ConfirmExit_NoButton;
 
 
 
@@ -27,19 +21,11 @@ void GUIFunctions_InitGUI() {
   String DataPath = dataPath("");
   
   GUI_TopBar = new GUI_Element (new File (DataPath + "/GUI/Child.TopBar"));
-    GUI_TopBar_CellsData  = GUI_TopBar.Child("CellsData" );
-    GUI_TopBar_CreateUGO  = GUI_TopBar.Child("CreateUGO" );
-    GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
+  GUI_TopBar_CellsData = GUI_TopBar.Child("CellsData");
   
   GUI_CellData = new GUI_Element (new File (DataPath + "/GUI/Child.CellData"));
-  
   GUI_UGOCreation = new GUI_Element (new File (DataPath + "/GUI/Child.UGOCreation"));
-     GUI_UGOCreation_CloseButton = GUI_UGOCreation.Child("CloseButton");
-  
   GUI_ConfirmExit = new GUI_Element (new File (DataPath + "/GUI/Child.ConfirmExit"));
-     GUI_ConfirmExit_CloseButton = GUI_ConfirmExit.Child("TopBar")   .Child("CloseButton");
-     //GUI_ConfirmExit_YesButton   = GUI_ConfirmExit.Child("MainFrame").Child("YesButton"  );
-     //GUI_ConfirmExit_NoButton    = GUI_ConfirmExit.Child("MainFrame").Child("NoButton"   );
   
 }
 
@@ -48,10 +34,6 @@ void GUIFunctions_InitGUI() {
 
 
 void GUIFunctions_UpdateGUIs() {
-  
-  if (GUI_TopBar_ExitButton.JustClicked()) exit();
-  if (GUI_TopBar_CreateUGO .JustClicked()) GUI_UGOCreation.Enabled = !GUI_UGOCreation.Enabled;
-  if (GUI_UGOCreation_CloseButton.JustClicked()) GUI_UGOCreation.Enabled = false;
   
   MakingUGO = GUI_UGOCreation.Enabled;
   
@@ -93,8 +75,13 @@ void GUIFunctions_EscKeyPressed() {
     return;
   }
   
+  if (GUI_ConfirmExit.Enabled) {
+    GUI_ConfirmExit.Enabled = false;
+    return;
+  }
+  
   // else
-  exit();
+  GUI_ConfirmExit.Enabled = true;
   return;
   
 }

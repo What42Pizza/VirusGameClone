@@ -1,20 +1,20 @@
 Name:
-CloseButton
+CancleButton
 
 ElementType:
 TextButton
 
 Text:
-X
+Cancle
 
 ButtonAction:
 Disable this.Parent.Parent
 
 XPos:
-0.8
+0.075
 YPos:
-0
+0.5
 XSize:
-0.2
+0.4
 YSize:
-1
+0.3

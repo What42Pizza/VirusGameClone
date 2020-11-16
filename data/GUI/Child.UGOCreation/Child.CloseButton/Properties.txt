@@ -7,6 +7,9 @@ TextButton
 Text:
 X
 
+ButtonAction:
+Disable this.Parent
+
 XPos:
 0.85
 YPos:

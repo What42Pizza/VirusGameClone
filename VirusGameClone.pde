@@ -285,7 +285,7 @@ void setup() {
   UGOCodons.add (new Codon (new int[] {Codon1_Write   , Codon2_UGO       }));
   UGOCodons.add (new Codon (new int[] {Codon1_Remove  , Codon2_UGO       }));
   UGOs.add (new UGO (0.05, 0.05, UGOCodons, false));
-  //*/
+  */
   
 }
 

@@ -4,6 +4,9 @@ ExitButton
 ElementType:
 TextButton
 
+ButtonAction:
+Enable all.ConfirmExit
+
 XPos:
 0.89
 YPos:

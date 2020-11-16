@@ -4,6 +4,9 @@ CreateUGO
 ElementType:
 TextButton
 
+ButtonAction:
+Toggle all.UGOCreation
+
 XPos:
 0.78
 YPos:

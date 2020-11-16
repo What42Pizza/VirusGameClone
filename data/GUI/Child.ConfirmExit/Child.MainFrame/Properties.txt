@@ -1,11 +1,14 @@
 Name:
-TopBar
+MainFrame
+
+ElementType:
+Holder
 
 XPos:
 0
 YPos:
-0
+0.15
 XSize:
 1
 YSize:
-0.1
+0.85

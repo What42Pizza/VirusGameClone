@@ -1,17 +1,20 @@
 Name:
-CloseButton
+ExitButton
 
 ElementType:
 TextButton
 
 Text:
-X
+Exit
+
+ButtonAction:
+Exit
 
 XPos:
-0.8
+0.525
 YPos:
-0
+0.5
 XSize:
-0.2
+0.4
 YSize:
-1
+0.3

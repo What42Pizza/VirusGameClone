@@ -4,6 +4,9 @@ ConfirmExit
 Draggable:
 true
 
+Enabled:
+false
+
 XPos:
 0.4
 YPos:
