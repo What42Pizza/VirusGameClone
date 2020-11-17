@@ -1,0 +1,17 @@
+Name:
+CodonsFrame
+
+ElementType:
+ScrollingFrame
+
+XPos:
+0.1
+YPos:
+0.45
+XSize:
+0.5
+YSize:
+0.5
+
+BackgroundColor:
+5F

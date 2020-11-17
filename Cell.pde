@@ -19,6 +19,7 @@ public class Cell {
   float Energy = 100;
   ArrayList <Codon> Codons;
   int[] CodonMemory = new int [0];
+  boolean CodonsChanged = false; // Used in GUIFunctions to know when to redo GUI elements
   
   float HandRotation = 0;
   int HandCodonPos = 0;
@@ -161,6 +162,7 @@ public class Cell {
   
   public void Update() {
     //if (true) return; // Use this to stop updates
+    CodonsChanged = false;
     MoveHands();
     DamageCodons();
     LoseEnergy();
@@ -317,6 +319,10 @@ public class Cell {
     Energy = 100 - (100 - Energy) / (1 - Cell_Energy_Drain_Percent); // GainEnergy() w/ X Gain_Percent then DrainEnergy() w/ X Drain_Percent returns energy to starting amount
   }
   
+  public void DrainEnergyFromCodons (int NumOfCodons) {
+    Energy = max (Energy - NumOfCodons * Cell_Codon_Write_Cost, 0);
+  }
+  
   
   
   public void RepairWall() {
@@ -341,6 +347,7 @@ public class Cell {
     if (C.Health <= 0) {
       C.Info = new int[] {Codon1_None, Codon2_None};
       C.Health = 1;
+      CodonsChanged = true;
     }
   }
   
@@ -348,7 +355,7 @@ public class Cell {
   
   public void SetCodons (ArrayList <Codon> NewCodons) {
     Codons = NewCodons;
-    Energy = max (Energy - NewCodons.size() * Cell_Codon_Write_Cost, 0);
+    DrainEnergyFromCodons (NewCodons.size());
   }
   
   
@@ -358,7 +365,7 @@ public class Cell {
       Codons.remove (StartPos + i);
       Codons.add (StartPos + i, NewCodons.get(i));
     }
-    Energy = max (Energy - NewCodons.size() * Cell_Codon_Write_Cost, 0);
+    DrainEnergyFromCodons (NewCodons.size());
   }
   
   

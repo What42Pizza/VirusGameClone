@@ -12,8 +12,3 @@ XSize:
 0.25
 YSize:
 0.95
-
-BackgroundColor:
-7F
-EdgeSize:
-1

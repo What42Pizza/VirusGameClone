@@ -163,6 +163,7 @@ public class Interpreter {
           Cell.DrawLineFromHandToCodon(i);
         for (int i = 0; i < RGLIndexes.length; i ++)
           Cell.Codons.remove ((RGLIndexes[0] + Cell.Codons.size() * 1000) % Cell.Codons.size());
+        Cell.CodonsChanged = true;
         
         /*
         int[] RGLLocation = GetHandRGLLocation (Cell, Codon.Info[2], Codon.Info[3]); // This code doesn't account for wrapping
@@ -351,6 +352,7 @@ public class Interpreter {
         Cell.SetCodons (OtherFunctions_ProcessInfoIntoCodons (Cell.CodonMemory));
         for (int i = 0; i < Cell.Codons.size(); i ++)
           Cell.DrawLineFromHandToCodon (i);
+        Cell.CodonsChanged = true;
         return;
       
       case (Codon2_Outward):
@@ -362,12 +364,15 @@ public class Interpreter {
         Cell.ReplaceCodons (RGLStart, CodonsToWrite);
         for (int i = RGLStart; i < RGLStart + CodonsToWrite.size(); i ++)
           Cell.DrawLineFromHandToCodon (i);
+        Cell.CodonsChanged = true;
         return;
       
       case (Codon2_UGO):
         if (!Cell.HandIsOutward()) return;
         CellHandPos = Cell.GetHandPoint();
-        UGOs.add (new UGO (CellHandPos[0], CellHandPos[1], OtherFunctions_ProcessInfoIntoCodons (Cell.CodonMemory), true));
+        ArrayList <Codon> UGOCodons = OtherFunctions_ProcessInfoIntoCodons (Cell.CodonMemory);
+        UGOs.add (new UGO (CellHandPos[0], CellHandPos[1], UGOCodons, true));
+        Cell.DrainEnergyFromCodons (UGOCodons.size());
         return;
       
     }

@@ -70,7 +70,7 @@ int OtherFunctions_RandomSign() {
 
 
 
-float[] OtherFunctions_ConvertScreenPosToWorldPos (float XPos, float YPos) {
+float[] OtherFunctions_ConvertScreenPosToWorldPos (int XPos, int YPos) {
   return new float[] {
     ((XPos - Camera.XPos) / Camera.Zoom),
     ((YPos - Camera.YPos) / Camera.Zoom)
@@ -116,22 +116,11 @@ int[] OtherFunctions_ConvertIntList (IntList In) {
 
 
 
+
+
 Cell OtherFunctions_GetCellAtLocation (int XLoc, int YLoc) {
   return CellsGrid [XLoc] [YLoc];
 }
-
-/*
-Cell GetCellAtLocation (int XLoc, int YLoc) {
-  float TargetWorldXPos = XLoc * CellWidth;
-  float TargetWorldYPos = YLoc * CellHeight;
-  for (Cell C : Cells) {
-    if (C.XPos == TargetWorldXPos && C.YPos == TargetWorldYPos) {
-      return C;
-    }
-  }
-  return null;
-}
-*/
 
 
 
@@ -142,19 +131,6 @@ Cell OtherFunctions_GetCellAtPosition (float XPos, float YPos) {
   return CellsGrid [CellX] [CellY];
 }
 
-/*
-Cell GetCellAtPosition (float XPos, float YPos) {
-  float TargetWorldXPos = floor (XPos / CellWidth ) * CellWidth ;
-  float TargetWorldYPos = floor (YPos / CellHeight) * CellHeight;
-  for (Cell C : Cells) {
-    if (C.XPos == TargetWorldXPos && C.YPos == TargetWorldYPos) {
-      return C;
-    }
-  }
-  return null;
-}
-*/
-
 
 
 CenterBlock OtherFunctions_GetCenterBlockAtPosition (float XPos, float YPos) {
@@ -164,37 +140,11 @@ CenterBlock OtherFunctions_GetCenterBlockAtPosition (float XPos, float YPos) {
   return CenterBlocksGrid [CellX] [CellY];
 }
 
-/*
-CenterBlock GetCenterBlockAtPosition (float XPos, float YPos) {
-  float TargetWorldXPos = floor (XPos / CellWidth ) * CellWidth ;
-  float TargetWorldYPos = floor (YPos / CellHeight) * CellHeight;
-  for (CenterBlock B : CenterBlocks) {
-    if (B.XPos == TargetWorldXPos && B.YPos == TargetWorldYPos) {
-      return B;
-    }
-  }
-  return null;
-}
-*/
-
 
 
 CenterBlock OtherFunctions_GetCenterBlockAtLocation (int XLoc, int YLoc) {
   return CenterBlocksGrid [XLoc] [YLoc];
 }
-
-/*
-CenterBlock GetCenterBlockAtLocation (int XLoc, int YLoc) {
-  float TargetWorldXPos = XLoc * CellWidth;
-  float TargetWorldYPos = YLoc * CellHeight;
-  for (CenterBlock B : CenterBlocks) {
-    if (B.XPos == TargetWorldXPos && B.YPos == TargetWorldYPos) {
-      return B;
-    }
-  }
-  return null;
-}
-*/
 
 
 

@@ -4,11 +4,11 @@
 
 boolean MakingUGO = false; // Updated in GUIFunctions
 
-boolean PrevMousePressed = false;
-int StartMouseX = 0;
-int StartMouseY = 0;
-float StartCameraXPos = 0;
-float StartCameraYPos = 0;
+boolean UpdateFunctions_PrevMousePressed = false;
+int UpdateFunctions_StartMouseX = 0;
+int UpdateFunctions_StartMouseY = 0;
+float UpdateFunctions_StartCameraXPos = 0;
+float UpdateFunctions_StartCameraYPos = 0;
 
 
 
@@ -20,7 +20,7 @@ float StartCameraYPos = 0;
 
 void UpdateFunctions_UpdateInputs() {
   
-  if (mousePressed && !PrevMousePressed) UpdateFunctions_StartMouseDrag();
+  if (mousePressed && !UpdateFunctions_PrevMousePressed) UpdateFunctions_StartMouseDrag();
   
   if (mousePressed) {
     if (MakingUGO) {
@@ -42,17 +42,17 @@ void UpdateFunctions_UpdateInputs() {
 
 
 void UpdateFunctions_StartMouseDrag() {
-  StartMouseX = mouseX;
-  StartMouseY = mouseY;
-  StartCameraXPos = Camera.XPos;
-  StartCameraYPos = Camera.YPos;
+  UpdateFunctions_StartMouseX = mouseX;
+  UpdateFunctions_StartMouseY = mouseY;
+  UpdateFunctions_StartCameraXPos = Camera.XPos;
+  UpdateFunctions_StartCameraYPos = Camera.YPos;
 }
 
 
 
 void MoveCameraToMouse() {
-  Camera.XPos = StartCameraXPos + (mouseX - StartMouseX);
-  Camera.YPos = StartCameraYPos + (mouseY - StartMouseY);
+  Camera.XPos = UpdateFunctions_StartCameraXPos + (mouseX - UpdateFunctions_StartMouseX);
+  Camera.YPos = UpdateFunctions_StartCameraYPos + (mouseY - UpdateFunctions_StartMouseY);
 }
 
 
@@ -125,5 +125,5 @@ void UpdateFunctions_UpdateCells() {
 
 void UpdateFunctions_UpdateKeys() {
   arrayCopy (Keys, PrevKeys); // This does PrevKeys = Keys;
-  PrevMousePressed = mousePressed;
+  UpdateFunctions_PrevMousePressed = mousePressed;
 }

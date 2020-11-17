@@ -137,6 +137,7 @@ public class GUI_Element {
     
     String[] Properties = loadStrings (PropertiesFile);
     GUIFunctions.SetGUIElementProperties (this, Properties);
+    FullName = Name;
     
     File[] FolderDir = ElementFolder.listFiles();
     
@@ -147,11 +148,6 @@ public class GUI_Element {
       }
     }
     
-    if (Parent == null) {
-      FullName = Name;
-    } else {
-      FullName = Parent.FullName + '.' + Name;
-    }
     GUIFunctions.AllGUIElements.add(this);
     
   }
@@ -565,6 +561,7 @@ public class GUI_Element {
     Children.add (NewChild);
     NewChild.Parent = this;
     NewChild.FamilyLevel = FamilyLevel + 1;
+    NewChild.FullName = this.FullName + "." + NewChild.Name;
   }
   
   
@@ -687,6 +684,21 @@ public class GUI_Element {
   
   
   
+  public void Delete() {
+    ArrayList <GUI_Element> AllGUIElements = GUIFunctions.AllGUIElements;
+    for (int i = 0; i < AllGUIElements.size(); i ++) {
+      GUI_Element E = AllGUIElements.get(i);
+      if (E == this) {
+        AllGUIElements.remove(i); // This is a pointer, so it removes this from GUIFunctions
+        return;
+      }
+    }
+  }
+  
+  
+  
+  
+  
   
   
   
@@ -700,7 +712,7 @@ public class GUI_Element {
     int ScreenYEnd   = GUIFunctions.GetScreenY (YPos + YSize);
     return mouseX >= ScreenXStart && mouseX <= ScreenXEnd && mouseY >= ScreenYStart && mouseY <= ScreenYEnd;
     */
-    return IsDragging || (mouseX > ScreenXPos && mouseX < ScreenXPos + ScreenXSize && mouseY > ScreenYPos && mouseY < ScreenYPos + ScreenYSize);
+    return Enabled && (IsDragging || (mouseX > ScreenXPos && mouseX < ScreenXPos + ScreenXSize && mouseY > ScreenYPos && mouseY < ScreenYPos + ScreenYSize));
   }
   
   
