@@ -5,7 +5,8 @@
 GUI_Functions GUIFunctions = new GUI_Functions();
 
 GUI_Element GUI_TopBar;
-GUI_Element   GUI_TopBar_CellsData ;
+GUI_Element   GUI_TopBar_CellsData;
+GUI_Element   GUI_TopBar_ExitButton;
 
 GUI_Element GUI_CellData;
 GUI_Element   GUI_CellData_HealthText;
@@ -23,11 +24,12 @@ Cell CellBeingTracked = null;
 
 
 
-void GUIFunctions_InitGUI() {
+void InitGUI() {
   String DataPath = dataPath("");
   
   GUI_TopBar = new GUI_Element (new File (DataPath + "/GUI/Child.TopBar"));
     GUI_TopBar_CellsData = GUI_TopBar.Child("CellsData");
+    GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
   
   GUI_CellData = new GUI_Element (new File (DataPath + "/GUI/Child.CellData"));
     GUI_CellData_HealthText = GUI_CellData.Child("HealthText");
@@ -43,23 +45,26 @@ void GUIFunctions_InitGUI() {
 
 
 
-void GUIFunctions_UpdateGUIs() {
+void UpdateGUIs() {
   
-  if (!mousePressed && UpdateFunctions_PrevMousePressed) { // When mouse is released
-    int DeltaX = mouseX - UpdateFunctions_StartMouseX;
-    int DeltaY = mouseY - UpdateFunctions_StartMouseY;
-    if (abs (DeltaX) < 3 && abs (DeltaY) < 3) {            // If mouse hasn't dragged too much
-      float[] WorldMousePos = OtherFunctions_ConvertScreenPosToWorldPos (UpdateFunctions_StartMouseX, UpdateFunctions_StartMouseY);
-      Cell ClickedCell = OtherFunctions_GetCellAtPosition (WorldMousePos[0], WorldMousePos[1]);
-      if (ClickedCell != null) {
-        GUIFunctions_OpenCellDataForCell (ClickedCell);
-      }
+  if (MouseJustReleased) {
+    float[] WorldMousePos = ConvertScreenPosToWorldPos (StartMouseX, StartMouseY);
+    Cell ClickedCell = GetCellAtPosition (WorldMousePos[0], WorldMousePos[1]);
+    if (ClickedCell != null) {
+      OpenCellDataForCell (ClickedCell);
+    } else {
+      GUI_CellData.Enabled = false;
     }
   }
   
   if (CellBeingTracked != null) {
     GUI_CellData_HealthText.Text = "Health: " + ceil (CellBeingTracked.WallHealth);
     GUI_CellData_EnergyText.Text = "Energy: " + ceil (CellBeingTracked.Energy);
+  }
+  
+  if (GUI_TopBar_ExitButton.JustClicked()) {
+    GUI_ConfirmExit.XPos = 0.4;
+    GUI_ConfirmExit.YPos = 0.4; // It also toggles ConfirmExit by its ButtonAction
   }
   
   MakingUGO = GUI_UGOCreation.Enabled;
@@ -70,8 +75,9 @@ void GUIFunctions_UpdateGUIs() {
 
 
 
-void GUIFunctions_OpenCellDataForCell (Cell ClickedCell) {
+void OpenCellDataForCell (Cell ClickedCell) {
   
+  GUI_UGOCreation.Enabled = false;
   GUI_CellData.Enabled = true;
   CellBeingTracked = ClickedCell;
   
@@ -81,7 +87,7 @@ void GUIFunctions_OpenCellDataForCell (Cell ClickedCell) {
 
 
 
-void GUIFunctions_RenderGUIs() {
+void RenderGUIs() {
   
   GUI_TopBar_CellsData.Text = "Cells alive: " + AliveCells + ", Cells dead:" + DeadCells + ", Cells modified: " + ModifiedCells;
   
@@ -101,7 +107,7 @@ void GUIFunctions_RenderGUIs() {
 
 
 
-void GUIFunctions_EscKeyPressed() {
+void EscKeyPressed() {
   
   if (GUI_CellData.Enabled) {
     GUI_CellData.Enabled = false;
@@ -120,6 +126,8 @@ void GUIFunctions_EscKeyPressed() {
   
   // else
   GUI_ConfirmExit.Enabled = true;
+  GUI_ConfirmExit.XPos = 0.4;
+  GUI_ConfirmExit.YPos = 0.4;
   return;
   
 }
@@ -128,6 +136,6 @@ void GUIFunctions_EscKeyPressed() {
 
 
 
-boolean GUIFunctions_MouseIsOverGUI() {
+boolean MouseIsOverGUI() {
   return GUI_TopBar.HasMouseHovering() || GUI_CellData.HasMouseHovering() || GUI_UGOCreation.HasMouseHovering() || GUI_ConfirmExit.HasMouseHovering();
 }

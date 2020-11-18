@@ -1,4 +1,4 @@
-boolean OtherFunctions_CheckIfSettingsAreValid() {
+boolean CheckIfSettingsAreValid() {
   
   if (Starting_Cells == null) {
     println ("Error: Starting_Cells cannot be null.");
@@ -29,7 +29,7 @@ boolean OtherFunctions_CheckIfSettingsAreValid() {
 
 
 
-void OtherFunctions_CreateStartingCells() {
+void CreateStartingCells() {
   
   int MapWidth  = Starting_Cells   .length;
   int MapHeight = Starting_Cells[0].length;
@@ -64,13 +64,13 @@ void OtherFunctions_CreateStartingCells() {
 
 
 
-int OtherFunctions_RandomSign() {
+int RandomSign() {
   return random(1) > 0.5 ? 1 : -1;
 }
 
 
 
-float[] OtherFunctions_ConvertScreenPosToWorldPos (int XPos, int YPos) {
+float[] ConvertScreenPosToWorldPos (int XPos, int YPos) {
   return new float[] {
     ((XPos - Camera.XPos) / Camera.Zoom),
     ((YPos - Camera.YPos) / Camera.Zoom)
@@ -79,7 +79,7 @@ float[] OtherFunctions_ConvertScreenPosToWorldPos (int XPos, int YPos) {
 
 
 
-ArrayList <Codon> OtherFunctions_ProcessInfoIntoCodons (int[] In) {
+ArrayList <Codon> ProcessInfoIntoCodons (int[] In) {
   ArrayList <Codon> Output= new ArrayList <Codon> ();
   for (int i = 0; i < In.length; i += 2) {
     if (In[i+1] == Codon2_RGL) {
@@ -94,19 +94,19 @@ ArrayList <Codon> OtherFunctions_ProcessInfoIntoCodons (int[] In) {
 
 
 
-int[] OtherFunctions_ProcessCodonsIntoInfo (ArrayList <Codon> In) {
+int[] ProcessCodonsIntoInfo (ArrayList <Codon> In) {
   IntList Output = new IntList();
   for (Codon C : In) {
     for (int Int : C.Info) {
       Output.append (Int);
     }
   }
-  return OtherFunctions_ConvertIntList (Output);
+  return ConvertIntList (Output);
 }
 
 
 
-int[] OtherFunctions_ConvertIntList (IntList In) {
+int[] ConvertIntList (IntList In) {
   int[] Output = new int [In.size()];
   for (int i = 0; i < Output.length; i ++) {
     Output[i] = In.get(i);
@@ -118,13 +118,13 @@ int[] OtherFunctions_ConvertIntList (IntList In) {
 
 
 
-Cell OtherFunctions_GetCellAtLocation (int XLoc, int YLoc) {
+Cell GetCellAtLocation (int XLoc, int YLoc) {
   return CellsGrid [XLoc] [YLoc];
 }
 
 
 
-Cell OtherFunctions_GetCellAtPosition (float XPos, float YPos) {
+Cell GetCellAtPosition (float XPos, float YPos) {
   if (XPos < 0 || XPos >= 1 || YPos < 0 || YPos >= 1) return  null;
   int CellX = floor (XPos / CellWidth );
   int CellY = floor (YPos / CellHeight);
@@ -133,7 +133,7 @@ Cell OtherFunctions_GetCellAtPosition (float XPos, float YPos) {
 
 
 
-CenterBlock OtherFunctions_GetCenterBlockAtPosition (float XPos, float YPos) {
+CenterBlock GetCenterBlockAtPosition (float XPos, float YPos) {
   if (XPos < 0 || XPos >= 1 || YPos < 0 || YPos >= 1) return  null;
   int CellX = floor (XPos / CellWidth );
   int CellY = floor (YPos / CellHeight);
@@ -142,7 +142,7 @@ CenterBlock OtherFunctions_GetCenterBlockAtPosition (float XPos, float YPos) {
 
 
 
-CenterBlock OtherFunctions_GetCenterBlockAtLocation (int XLoc, int YLoc) {
+CenterBlock GetCenterBlockAtLocation (int XLoc, int YLoc) {
   return CenterBlocksGrid [XLoc] [YLoc];
 }
 
@@ -150,7 +150,7 @@ CenterBlock OtherFunctions_GetCenterBlockAtLocation (int XLoc, int YLoc) {
 
 
 
-boolean OtherFunctions_ParticleIsInCell (Particle P, Cell C) {
+boolean ParticleIsInCell (Particle P, Cell C) {
   return
     P.XPos > C.XPos &&
     P.XPos < C.XPos + CellWidth &&
@@ -163,7 +163,7 @@ boolean OtherFunctions_ParticleIsInCell (Particle P, Cell C) {
 
 
 
-color OtherFunctions_GetColorFromCodon1 (Codon CodonIn) {
+color GetColorFromCodon1 (Codon CodonIn) {
   switch (CodonIn.Info[0]) {
     case (Codon1_None    ): return Color_Codon1_None    ;
     case (Codon1_Digest  ): return Color_Codon1_Digest  ;
@@ -177,7 +177,7 @@ color OtherFunctions_GetColorFromCodon1 (Codon CodonIn) {
 
 
 
-color OtherFunctions_GetColorFromCodon2 (Codon CodonIn) {
+color GetColorFromCodon2 (Codon CodonIn) {
   switch (CodonIn.Info[1]) {
     case (Codon2_None           ): return Color_Codon2_None            ;
     case (Codon2_Food           ): return Color_Codon2_Food            ;
@@ -194,7 +194,7 @@ color OtherFunctions_GetColorFromCodon2 (Codon CodonIn) {
 
 
 
-int OtherFunctions_CountAliveCells (int[][] CellsGrid) {
+int CountAliveCells (int[][] CellsGrid) {
   int Output = 0;
   for (int[] Row : CellsGrid) {
     for (int i : Row) {

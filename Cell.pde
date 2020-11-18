@@ -46,7 +46,7 @@ public class Cell {
     YPos = CellY * CellHeight;
     XMid = XPos + CellWidth / 2;
     YMid = YPos + CellHeight / 2;
-    Codons = OtherFunctions_ProcessInfoIntoCodons (Starting_Codons);
+    Codons = ProcessInfoIntoCodons (Starting_Codons);
   }
   
   
@@ -58,7 +58,7 @@ public class Cell {
     DrawHand();
     DrawHandTrack();
     DrawInterpHand();
-    DrawFunctions_DrawCodons (Codons, XMid, YMid);
+    DrawCodons (Codons, XMid, YMid);
     if (Energy > 0) DrawEnergySymbol();
     WallThickness = CellWidth * 0.1 * WallHealth * 0.005;
     DrawWalls();
@@ -181,7 +181,7 @@ public class Cell {
   private void MoveHands() {
     HandRotation = MoveAngleTowards (HandRotation, ((float) HandCodonPos / Codons.size() * PI * 2), 0.1);
     HandCenterRotation = MoveAngleTowards (HandCenterRotation, TargetHandCenterRotation, 0.1);
-    InterpRotation = MoveAngleTowards (InterpRotation, ((float) InterpCodonPos / Codons.size() * PI * 2), 0.1);
+    InterpRotation = MoveAngleTowards (InterpRotation, ((float) InterpCodonPos / Codons.size() * PI * 2), 0.125);
   }
   
   

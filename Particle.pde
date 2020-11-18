@@ -28,9 +28,9 @@ public class Particle {
     ParticleType = ParticleTypeIn;
     XPos = random(1);
     YPos = random(1);
-    PrevOccupiedCell = OtherFunctions_GetCellAtPosition (XPos, YPos);
-    XVel = random(0.00025, 0.0005) * OtherFunctions_RandomSign();
-    YVel = random(0.00025, 0.0005) * OtherFunctions_RandomSign();
+    PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
+    XVel = random(0.00025, 0.0005) * RandomSign();
+    YVel = random(0.00025, 0.0005) * RandomSign();
     ShouldBeRemoved = IsInCell(); // Destroy particle if starting in cell
   }
   
@@ -40,9 +40,9 @@ public class Particle {
     ParticleType = ParticleTypeIn;
     XPos = random(1);
     YPos = random(1);
-    PrevOccupiedCell = OtherFunctions_GetCellAtPosition (XPos, YPos);
-    XVel = random(0.00025, 0.0005) * OtherFunctions_RandomSign();
-    YVel = random(0.00025, 0.0005) * OtherFunctions_RandomSign();
+    PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
+    XVel = random(0.00025, 0.0005) * RandomSign();
+    YVel = random(0.00025, 0.0005) * RandomSign();
     ShouldBeRemoved = !OverrideCellCheck && IsInCell(); // Destroy particle if strating in cell
   }
   
@@ -52,9 +52,9 @@ public class Particle {
     ParticleType = ParticleTypeIn;
     XPos = XPosIn;
     YPos = YPosIn;
-    PrevOccupiedCell = OtherFunctions_GetCellAtPosition (XPos, YPos);
-    XVel = random(0.00025, 0.0005) * OtherFunctions_RandomSign();
-    YVel = random(0.00025, 0.0005) * OtherFunctions_RandomSign();
+    PrevOccupiedCell = GetCellAtPosition (XPos, YPos);
+    XVel = random(0.00025, 0.0005) * RandomSign();
+    YVel = random(0.00025, 0.0005) * RandomSign();
     ShouldBeRemoved = !OverrideCellCheck && IsInCell(); // Destroy particle if strating in cell
   }
   
@@ -110,7 +110,7 @@ public class Particle {
   
   
   public void DamageTransitioningCells() {
-    Cell CurrOccupiedCell = OtherFunctions_GetCellAtPosition (XPos, YPos);
+    Cell CurrOccupiedCell = GetCellAtPosition (XPos, YPos);
     if (CurrOccupiedCell != PrevOccupiedCell) {
       if (PrevOccupiedCell != null) PrevOccupiedCell.DamageWall();
       if (CurrOccupiedCell != null) CurrOccupiedCell.DamageWall();
@@ -121,11 +121,11 @@ public class Particle {
   
   
   public void BounceOffCenterBlocks() {
-    CenterBlock CurrOccupiedCenterBlock = OtherFunctions_GetCenterBlockAtPosition (XPos, YPos);
+    CenterBlock CurrOccupiedCenterBlock = GetCenterBlockAtPosition (XPos, YPos);
     if (CurrOccupiedCenterBlock != null) {
-      CenterBlock PrevXBlock = OtherFunctions_GetCenterBlockAtPosition (XPos - XVel, YPos);
+      CenterBlock PrevXBlock = GetCenterBlockAtPosition (XPos - XVel, YPos);
       if (PrevXBlock == null) XVel *= -1;
-      CenterBlock PrevYBlock = OtherFunctions_GetCenterBlockAtPosition (XPos, YPos - YVel);
+      CenterBlock PrevYBlock = GetCenterBlockAtPosition (XPos, YPos - YVel);
       if (PrevYBlock == null) YVel *= -1;
     }
   }
@@ -133,9 +133,9 @@ public class Particle {
   
   
   public void BounceWithinCell() {
-    Cell CurrCell  = OtherFunctions_GetCellAtPosition (XPos, YPos);
-    Cell NextXCell = OtherFunctions_GetCellAtPosition (XPos + XVel, YPos);
-    Cell NextYCell = OtherFunctions_GetCellAtPosition (XPos, YPos + YVel);
+    Cell CurrCell  = GetCellAtPosition (XPos, YPos);
+    Cell NextXCell = GetCellAtPosition (XPos + XVel, YPos);
+    Cell NextYCell = GetCellAtPosition (XPos, YPos + YVel);
     if (CurrCell != NextXCell) { // This would also need Curr extists && Prev exists, but that will always be true if Curr != Prev
       XVel *= -1;
       if (NextXCell != null) NextXCell.DamageWall();
@@ -155,13 +155,13 @@ public class Particle {
     int ThisXLoc = floor (XPos / CellWidth);
     int ThisYLoc = floor (YPos / CellHeight);
     
-    if (OtherFunctions_GetCellAtLocation (ThisXLoc - 1, ThisYLoc) == null && OtherFunctions_GetCenterBlockAtLocation (ThisXLoc - 1, ThisYLoc) == null) {
+    if (GetCellAtLocation (ThisXLoc - 1, ThisYLoc) == null && GetCenterBlockAtLocation (ThisXLoc - 1, ThisYLoc) == null) {
       XPos = (ThisXLoc - 0.1) * CellWidth;
-    } else if (OtherFunctions_GetCellAtLocation (ThisXLoc, ThisYLoc - 1) == null && OtherFunctions_GetCenterBlockAtLocation (ThisXLoc, ThisYLoc - 1) == null) {
+    } else if (GetCellAtLocation (ThisXLoc, ThisYLoc - 1) == null && GetCenterBlockAtLocation (ThisXLoc, ThisYLoc - 1) == null) {
       YPos = (ThisYLoc - 0.1) * CellHeight;
-    } else if (OtherFunctions_GetCellAtLocation (ThisXLoc + 1, ThisYLoc) == null && OtherFunctions_GetCenterBlockAtLocation (ThisXLoc + 1, ThisYLoc) == null) {
+    } else if (GetCellAtLocation (ThisXLoc + 1, ThisYLoc) == null && GetCenterBlockAtLocation (ThisXLoc + 1, ThisYLoc) == null) {
       XPos = (ThisXLoc + 1.1) * CellWidth;
-    } else if (OtherFunctions_GetCellAtLocation (ThisXLoc, ThisYLoc + 1) == null && OtherFunctions_GetCenterBlockAtLocation (ThisXLoc, ThisYLoc + 1) == null) {
+    } else if (GetCellAtLocation (ThisXLoc, ThisYLoc + 1) == null && GetCenterBlockAtLocation (ThisXLoc, ThisYLoc + 1) == null) {
       YPos = (ThisYLoc + 1.1) * CellHeight;
     }
     
@@ -170,7 +170,7 @@ public class Particle {
   
   
   public boolean IsInCell() {
-    return OtherFunctions_GetCellAtPosition (XPos, YPos) != null || OtherFunctions_GetCenterBlockAtPosition (XPos, YPos) != null;
+    return GetCellAtPosition (XPos, YPos) != null || GetCenterBlockAtPosition (XPos, YPos) != null;
   }
   
   

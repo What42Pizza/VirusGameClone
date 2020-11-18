@@ -5,7 +5,7 @@ ElementType:
 TextButton
 
 ButtonAction:
-Enable all.ConfirmExit
+Toggle all.ConfirmExit
 
 XPos:
 0.89

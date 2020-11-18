@@ -1,11 +1,11 @@
 Name:
-CancleButton
+CancelButton
 
 ElementType:
 TextButton
 
 Text:
-Cancle
+Cancel
 
 ButtonAction:
 Disable this.Parent.Parent

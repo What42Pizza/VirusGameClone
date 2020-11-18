@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 11/12/20
+// Last updated 11/18/20
 
 
 
@@ -96,9 +96,9 @@ final float Cell_Energy_Gain_Percent        = 0.33; // For Digest_Food
 final float Cell_Energy_Drain_Percent       = 0.5 ; // For Digest_Waste
 final float Cell_Energy_Loss_Percent        = 0.3 ; // For just existing
 final float Cell_Wall_Health_Gain_Percent   = 0.33; // For Repair_Wall
-final float Cell_Wall_Health_Gain_Cost      = 0.33; // X% of health gain takes X% of energy
+final float Cell_Wall_Health_Gain_Cost      = 0.5 ; // X% of health gain takes X*this% of energy
 final float Cell_Wall_Health_Drain_Percent  = 0.5 ; // For Digest_Wall
-final float Cell_Wall_Health_Drain_Cost     = 0.5 ; // X% of health gives 0.5X% of energy
+final float Cell_Wall_Health_Drain_Cost     = 0.33; // X% of health gives X*this% of energy
 final float Cell_Codon_Health_Drain_Percent = 0.33; // For Digest_Inward or Digest_RGL
 final float Cell_Codon_Damage_Percent_Low   = 0.01; // Random codon damage per update (low)
 final float Cell_Codon_Damage_Percent_High  = 0.02; // Random codon damage per update (high)
@@ -268,13 +268,13 @@ void setup() {
   frameRate (FrameRate);
   
   // Other setup
-  boolean SettingsAreValid = OtherFunctions_CheckIfSettingsAreValid();
-  AliveCells = OtherFunctions_CountAliveCells (Starting_Cells);
+  boolean SettingsAreValid = CheckIfSettingsAreValid();
+  AliveCells = CountAliveCells (Starting_Cells);
   if (!SettingsAreValid) exit();
-  OtherFunctions_CreateStartingCells();
+  CreateStartingCells();
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
-  GUIFunctions_InitGUI();
+  InitGUI();
   
   /*
   ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
@@ -298,9 +298,9 @@ void draw() {
   if (Camera == null) Camera = new Camera();
   noStroke();
   
-  DrawFunctions_DrawBackground();
+  DrawBackground();
   
-  UpdateFunctions_UpdateInputs();
+  UpdateInputs();
   
   /*
   if (!Paused) { // Tells you how many microseconds each update type is taking
@@ -331,12 +331,12 @@ void draw() {
   
   int UpdateStartMillis = millis();
   if (!Paused) {
-    UpdateFunctions_UpdateFoodParticles();
-    UpdateFunctions_UpdateWasteParticles();
-    UpdateFunctions_UpdateUGOs();
-    UpdateFunctions_UpdateCells();
+    UpdateFoodParticles();
+    UpdateWasteParticles();
+    UpdateUGOs();
+    UpdateCells();
   }
-  GUIFunctions_UpdateGUIs();
+  UpdateGUIs();
   
   int DrawStartMillis = millis();
   int UpdateMillis = DrawStartMillis - UpdateStartMillis; // End - start; DrawStart = UpdateEnd
@@ -345,21 +345,21 @@ void draw() {
     pushMatrix();
     translate (Camera.XPos, Camera.YPos);
     scale (Camera.Zoom);
-    DrawFunctions_DrawCells();
-    DrawFunctions_DrawCenterBlocks();
-    DrawFunctions_DrawFoodParticles();
-    DrawFunctions_DrawWasteParticles();
-    DrawFunctions_DrawUGOs();
+    DrawCells();
+    DrawCenterBlocks();
+    DrawFoodParticles();
+    DrawWasteParticles();
+    DrawUGOs();
     popMatrix();
-    GUIFunctions_RenderGUIs();
+    RenderGUIs();
   }
   
-  UpdateFunctions_UpdateKeys();
+  UpdateKeys();
   
   int NewMillis = millis();
   int DrawMillis = NewMillis - DrawStartMillis;
   int TotalMillis = NewMillis - TotalStartMillis;
   
-  DrawFunctions_DrawFPSAndMillis (UpdateMillis, DrawMillis, TotalMillis);
+  DrawFPSAndMillis (UpdateMillis, DrawMillis, TotalMillis);
   
 }

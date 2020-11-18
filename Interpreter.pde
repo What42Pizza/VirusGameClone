@@ -44,7 +44,7 @@ public class Interpreter {
       case (Codon2_Food):
         if (!Cell.HandIsOutward()) return;
         for (Particle F : FoodParticles) {
-          if (OtherFunctions_ParticleIsInCell (F, Cell)) {
+          if (ParticleIsInCell (F, Cell)) {
             Cell.GainEnergy();
             Cell.DrawLineFromHandTo (F.XPos, F.YPos);
             F.Disapearing = true;
@@ -57,7 +57,7 @@ public class Interpreter {
       case (Codon2_Waste):
         if (!Cell.HandIsOutward()) return;
         for (Particle W : WasteParticles) {
-          if (OtherFunctions_ParticleIsInCell (W, Cell)) {
+          if (ParticleIsInCell (W, Cell)) {
             Cell.DrawLineFromHandTo (W.XPos, W.YPos);
             Cell.DrainEnergy();
             W.Disapearing = true;
@@ -119,7 +119,7 @@ public class Interpreter {
       case (Codon2_Food):
         if (!Cell.HandIsOutward()) return;
         for (Particle F : FoodParticles) {
-          if (OtherFunctions_ParticleIsInCell (F, Cell)) {
+          if (ParticleIsInCell (F, Cell)) {
             Cell.DrawLineFromHandTo (F.XPos, F.YPos);
             F.LeaveCell();
             Cell.DrawLineFromHandTo (F.XPos, F.YPos);
@@ -131,7 +131,7 @@ public class Interpreter {
       case (Codon2_Waste):
         if (!Cell.HandIsOutward()) return;
         for (Particle W : WasteParticles) {
-          if (OtherFunctions_ParticleIsInCell (W, Cell)) {
+          if (ParticleIsInCell (W, Cell)) {
             Cell.DrawLineFromHandTo (W.XPos, W.YPos);
             W.LeaveCell();
             Cell.DrawLineFromHandTo (W.XPos, W.YPos);
@@ -187,7 +187,7 @@ public class Interpreter {
       case (Codon2_UGO):
         if (!Cell.HandIsOutward()) return;
         for (UGO U : UGOs) {
-          if (OtherFunctions_ParticleIsInCell (U, Cell)) {
+          if (ParticleIsInCell (U, Cell)) {
             Cell.DrawLineFromHandTo (U.XPos, U.YPos);
             U.LeaveCell();
             Cell.DrawLineFromHandTo (U.XPos, U.YPos);
@@ -278,7 +278,7 @@ public class Interpreter {
       
       case (Codon2_Inward):
         if (!Cell.HandIsInward()) return;
-        Cell.CodonMemory = OtherFunctions_ProcessCodonsIntoInfo (Cell.Codons);
+        Cell.CodonMemory = ProcessCodonsIntoInfo (Cell.Codons);
         for (int i = 0; i < Cell.Codons.size(); i ++) {
           float[] CodonPos = Cell.GetCodonPosition (i);
           Cell.DrawLineFromHandTo (CodonPos[0], CodonPos[1]);
@@ -296,15 +296,15 @@ public class Interpreter {
           CodonsToProcess.add (Cell.Codons.get(I));
           Cell.DrawLineFromHandToCodon(I);
         }
-        Cell.CodonMemory = OtherFunctions_ProcessCodonsIntoInfo (CodonsToProcess);
+        Cell.CodonMemory = ProcessCodonsIntoInfo (CodonsToProcess);
         return;
       
       case (Codon2_UGO):
         if (!Cell.HandIsOutward()) return;
         for (UGO U : UGOs) {
-          if (OtherFunctions_ParticleIsInCell (U, Cell)) {
+          if (ParticleIsInCell (U, Cell)) {
             Cell.DrawLineFromHandTo (U.XPos, U.YPos);
-            Cell.CodonMemory = OtherFunctions_ProcessCodonsIntoInfo (U.Codons);
+            Cell.CodonMemory = ProcessCodonsIntoInfo (U.Codons);
             return;
           }
         }
@@ -349,7 +349,7 @@ public class Interpreter {
       
       case (Codon2_Inward):
         if (!Cell.HandIsInward()) return;
-        Cell.SetCodons (OtherFunctions_ProcessInfoIntoCodons (Cell.CodonMemory));
+        Cell.SetCodons (ProcessInfoIntoCodons (Cell.CodonMemory));
         for (int i = 0; i < Cell.Codons.size(); i ++)
           Cell.DrawLineFromHandToCodon (i);
         Cell.CodonsChanged = true;
@@ -360,7 +360,7 @@ public class Interpreter {
       
       case (Codon2_RGL):
         int RGLStart = GetHandRGLLocation (Cell, Codon.Info[2]);
-        ArrayList <Codon> CodonsToWrite = OtherFunctions_ProcessInfoIntoCodons (Cell.CodonMemory);
+        ArrayList <Codon> CodonsToWrite = ProcessInfoIntoCodons (Cell.CodonMemory);
         Cell.ReplaceCodons (RGLStart, CodonsToWrite);
         for (int i = RGLStart; i < RGLStart + CodonsToWrite.size(); i ++)
           Cell.DrawLineFromHandToCodon (i);
@@ -370,7 +370,7 @@ public class Interpreter {
       case (Codon2_UGO):
         if (!Cell.HandIsOutward()) return;
         CellHandPos = Cell.GetHandPoint();
-        ArrayList <Codon> UGOCodons = OtherFunctions_ProcessInfoIntoCodons (Cell.CodonMemory);
+        ArrayList <Codon> UGOCodons = ProcessInfoIntoCodons (Cell.CodonMemory);
         UGOs.add (new UGO (CellHandPos[0], CellHandPos[1], UGOCodons, true));
         Cell.DrainEnergyFromCodons (UGOCodons.size());
         return;

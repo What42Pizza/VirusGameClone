@@ -1,4 +1,4 @@
-void DrawFunctions_DrawBackground() {
+void DrawBackground() {
   
   background (191); // 3/4 of 256 - 1 // Outer background
   fill (255);
@@ -12,7 +12,7 @@ void DrawFunctions_DrawBackground() {
 
 
 
-void DrawFunctions_DrawFoodParticles() {
+void DrawFoodParticles() {
   noStroke();
   for (Particle F : FoodParticles) {
     F.Draw();
@@ -21,7 +21,7 @@ void DrawFunctions_DrawFoodParticles() {
 
 
 
-void DrawFunctions_DrawWasteParticles() {
+void DrawWasteParticles() {
   noStroke();
   for (Particle W : WasteParticles) {
     W.Draw();
@@ -30,7 +30,7 @@ void DrawFunctions_DrawWasteParticles() {
 
 
 
-void DrawFunctions_DrawUGOs() {
+void DrawUGOs() {
   for (UGO UGO : UGOs) {
     UGO.Draw();
   }
@@ -38,7 +38,7 @@ void DrawFunctions_DrawUGOs() {
 
 
 
-void DrawFunctions_DrawCells() {
+void DrawCells() {
   for (Cell C : Cells) {
     C.Draw();
   }
@@ -46,7 +46,7 @@ void DrawFunctions_DrawCells() {
 
 
 
-void DrawFunctions_DrawCenterBlocks() {
+void DrawCenterBlocks() {
   for (CenterBlock C : CenterBlocks) {
     C.Draw();
   }
@@ -54,7 +54,7 @@ void DrawFunctions_DrawCenterBlocks() {
 
 
 
-void DrawFunctions_DrawFPSAndMillis (int UpdateMillis, int DrawMillis, int TotalMillis) {
+void DrawFPSAndMillis (int UpdateMillis, int DrawMillis, int TotalMillis) {
   if (!(Debug_Show_FPS || Debug_Show_Millis)) return;
   
   float TextSize = max (width / 100, 15);
@@ -80,7 +80,7 @@ void DrawFunctions_DrawFPSAndMillis (int UpdateMillis, int DrawMillis, int Total
 
 
 
-void DrawFunctions_DrawCodons (ArrayList <Codon> CodonsIn, float XPos, float YPos) {
+void DrawCodons (ArrayList <Codon> CodonsIn, float XPos, float YPos) {
   fill (0);
   int Num = CodonsIn.size();
   for (int i = 0; i < Num; i ++) {
@@ -88,9 +88,9 @@ void DrawFunctions_DrawCodons (ArrayList <Codon> CodonsIn, float XPos, float YPo
     fill (0);
     ellipse (XPos, YPos, CellWidth * 0.09, CellHeight * 0.09);
     ShapeRenderer.Render (Codon_Shape , XPos, YPos, (float) i / Num * PI * 2, Num / 3.9, 1);
-    fill (OtherFunctions_GetColorFromCodon2(C));
+    fill (GetColorFromCodon2(C));
     ShapeRenderer.Render (Codon2_Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
-    fill (OtherFunctions_GetColorFromCodon1(C));
+    fill (GetColorFromCodon1(C));
     ShapeRenderer.Render (Codon1_Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
   }
 }
