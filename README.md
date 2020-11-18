@@ -16,7 +16,8 @@ This is a clone of https://github.com/carykh/VirusGame/.
 
 ### Missing features:
 - GUI
+- UGO Creation
 
 <br />
 
-Readme last updated 11/06/20
+Readme last updated 11/18/20

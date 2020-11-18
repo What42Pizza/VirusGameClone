@@ -23,7 +23,10 @@ float StartCameraYPos = 0;
 
 void UpdateInputs() {
   
-  if (mousePressed && mouseButton == RIGHT && !PrevMousePressed && !MouseIsOverGUI()) StartMouseDrag();
+  if (mousePressed && !PrevMousePressed && !MouseIsOverGUI()) {
+    StartMouseDrag(); // It needs to be done like this because of StartMouseX&Y
+    if (mouseButton == RIGHT) MouseIsDragging = true;
+  }
   
   if (MouseIsDragging) MoveCameraToMouse();
   
@@ -56,7 +59,6 @@ void UpdateInputs() {
 
 
 void StartMouseDrag() {
-  MouseIsDragging = true;
   StartMouseX = mouseX;
   StartMouseY = mouseY;
   StartCameraXPos = Camera.XPos;

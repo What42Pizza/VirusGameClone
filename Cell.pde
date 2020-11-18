@@ -55,6 +55,7 @@ public class Cell {
   
   public void Draw() {
     if (!IsOnScreen()) return;
+    DrawCellBackground();
     DrawHand();
     DrawHandTrack();
     DrawInterpHand();
@@ -74,6 +75,19 @@ public class Cell {
       (YPos + CellHeight) * Camera.Zoom + Camera.YPos > 0      &&
       (YPos)              * Camera.Zoom + Camera.YPos < height
    ;
+  }
+  
+  
+  
+  private void DrawCellBackground() {
+    if (SelectedCell == this) {
+      fill (Color_Cell_Background_Selected);
+    } else if (Modified) {
+      fill (Color_Cell_Background_Modified);
+    } else {
+      fill (Color_Cell_Background);
+    }
+    rect (XPos, YPos, CellWidth, CellHeight);
   }
   
   
@@ -107,7 +121,9 @@ public class Cell {
   
   private void DrawEnergySymbol() {
     fill (Color_Cell_Energy_Symbol);
-    ShapeRenderer.Render (Cell_Energy_Symbol, XMid, YMid, new float[] {100.0 / Energy, 100.0 / Energy});
+    float EnergyVoidPercent = (100.0 - Energy) / 100.0; // Percentage of missing energy
+    float EnergySymbolSize = 1 / (1.0 - EnergyVoidPercent * EnergyVoidPercent);
+    ShapeRenderer.Render (Cell_Energy_Symbol, XMid, YMid, new float[] {EnergySymbolSize, EnergySymbolSize});
   }
   
   
@@ -172,6 +188,7 @@ public class Cell {
     if (Energy > 0 && (frameCount % 60) == 30) {
       Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this, InterpCodonPos);
       InterpColorChange = 63;
+      Energy = max (0, Energy - Cell_Interpreter_Cost);
     }
     UpdateHandLines();
   }

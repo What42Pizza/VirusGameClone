@@ -91,10 +91,11 @@ final float FrameRate  = Debug_Super_Speed ? 10000 : Frame_Rate;
 
 
 
-final float Particle_Wall_Damage            = 1.5 ; // For particle collisions ---------------------------------------------------------------------------- Balance these
+final float Particle_Wall_Damage            = 0.5 ; // For particle collisions ---------------------------------------------------------------------------- Balance these
 final float Cell_Energy_Gain_Percent        = 0.33; // For Digest_Food
 final float Cell_Energy_Drain_Percent       = 0.5 ; // For Digest_Waste
 final float Cell_Energy_Loss_Percent        = 0.3 ; // For just existing
+final float Cell_Interpreter_Cost           = 2   ; // X% of energy is removed per codon interp
 final float Cell_Wall_Health_Gain_Percent   = 0.33; // For Repair_Wall
 final float Cell_Wall_Health_Gain_Cost      = 0.5 ; // X% of health gain takes X*this% of energy
 final float Cell_Wall_Health_Drain_Percent  = 0.5 ; // For Digest_Wall
@@ -104,8 +105,8 @@ final float Cell_Codon_Damage_Percent_Low   = 0.01; // Random codon damage per u
 final float Cell_Codon_Damage_Percent_High  = 0.02; // Random codon damage per update (high)
 final float Cell_Codon_Write_Cost           = 1.4 ; // For Write_
 
-final int Num_Of_Food_Particles  = 175;
-final int Num_Of_Waste_Particles = 100;
+final int Num_Of_Food_Particles  = 350;
+final int Num_Of_Waste_Particles = 200;
 
 
 
@@ -120,7 +121,10 @@ final int Particle_Removal_Age = 2 * 60 * 60; // 2 minutes
 
 final color Color_Food_Particle  = color (255, 0, 0);
 final color Color_Waste_Particle = color (127, 63, 0);
-final color Color_Cell_Wall = color (255, 63, 255);
+final color Color_Cell_Background = color (255, 191, 255);
+final color Color_Cell_Background_Modified = color (255, 191, 0);
+final color Color_Cell_Background_Selected = color (95, 223, 255);
+final color Color_Cell_Wall = color (159, 95, 191);
 final color Color_Cell_Hand = color (15, 239, 15);
 final color Color_Cell_Hand_Track = color (15, 223, 15);
 final color Color_Cell_Energy_Symbol = color (255, 255, 0);
@@ -263,7 +267,7 @@ void setup() {
   
   // Basic setup
   fullScreen();
-  //size (256, 256);
+  //size (512, 512);
   background (255);
   frameRate (FrameRate);
   

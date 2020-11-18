@@ -18,7 +18,7 @@ GUI_Element GUI_ConfirmExit;
 
 
 
-Cell CellBeingTracked = null;
+Cell SelectedCell = null;
 
 
 
@@ -57,9 +57,11 @@ void UpdateGUIs() {
     }
   }
   
-  if (CellBeingTracked != null) {
-    GUI_CellData_HealthText.Text = "Health: " + ceil (CellBeingTracked.WallHealth);
-    GUI_CellData_EnergyText.Text = "Energy: " + ceil (CellBeingTracked.Energy);
+  if (!GUI_CellData.Enabled || SelectedCell.ShouldBeRemoved) SelectedCell = null;
+  
+  if (SelectedCell != null) {
+    GUI_CellData_HealthText.Text = "Health: " + ceil (SelectedCell.WallHealth);
+    GUI_CellData_EnergyText.Text = "Energy: " + ceil (SelectedCell.Energy);
   }
   
   if (GUI_TopBar_ExitButton.JustClicked()) {
@@ -79,7 +81,7 @@ void OpenCellDataForCell (Cell ClickedCell) {
   
   GUI_UGOCreation.Enabled = false;
   GUI_CellData.Enabled = true;
-  CellBeingTracked = ClickedCell;
+  SelectedCell = ClickedCell;
   
 }
 
@@ -109,6 +111,11 @@ void RenderGUIs() {
 
 void EscKeyPressed() {
   
+  if (GUI_ConfirmExit.Enabled) {
+    GUI_ConfirmExit.Enabled = false;
+    return;
+  }
+  
   if (GUI_CellData.Enabled) {
     GUI_CellData.Enabled = false;
     return;
@@ -119,13 +126,8 @@ void EscKeyPressed() {
     return;
   }
   
-  if (GUI_ConfirmExit.Enabled) {
-    GUI_ConfirmExit.Enabled = false;
-    return;
-  }
-  
   // else
-  GUI_ConfirmExit.Enabled = true;
+  GUI_ConfirmExit.Enabled = true; // This toggles because of the first if statement
   GUI_ConfirmExit.XPos = 0.4;
   GUI_ConfirmExit.YPos = 0.4;
   return;
