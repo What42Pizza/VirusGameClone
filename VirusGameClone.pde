@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 11/18/20
+// Last updated 11/20/20
 
 
 
@@ -40,6 +40,31 @@ final int[] Starting_Codons = {
   Codon1_Read    , Codon2_RGL, 0, 0,
   Codon1_Write   , Codon2_RGL, 0, 0,
   Codon1_MoveHand, Codon2_Outward
+};
+
+
+
+final String[] Codon1_Names = {
+  "None",
+  "Digest",
+  "Remove",
+  "Move Hand",
+  "Read",
+  "Write",
+};
+
+
+
+final String[] Codon2_Names = {
+  "None",
+  "Food",
+  "Waste",
+  "Wall",
+  "Weakest Loc",
+  "Inward",
+  "Outward",
+  "RGL",
+  "UGO",
 };
 
 

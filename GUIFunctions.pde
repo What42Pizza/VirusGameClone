@@ -19,6 +19,7 @@ GUI_Element GUI_ConfirmExit;
 
 
 Cell SelectedCell = null;
+GUI_Element[] SelectedCellCodonElements;
 
 
 
@@ -82,6 +83,104 @@ void OpenCellDataForCell (Cell ClickedCell) {
   GUI_UGOCreation.Enabled = false;
   GUI_CellData.Enabled = true;
   SelectedCell = ClickedCell;
+  
+  CreateCodonGUIElements();
+  
+}
+
+
+
+
+
+void CreateCodonGUIElements() {
+  ArrayList <Codon> Codons = SelectedCell.Codons;
+  GUI_Element CodonsFrame = GUI_CellData.Child("CodonsFrame");
+  GUI_Element CodonsText = GUI_CellData.Child("CodonsText");
+  float ElementHeight = CodonsText.YSize / CodonsFrame.YSize; // Calc what percentage CodonsText.YSize is of CodonsFrame.YSize, and that will be the YSize of the new elements
+  SelectedCellCodonElements = new GUI_Element [Codons.size()];
+  
+  for (int i = 0; i < SelectedCellCodonElements.length; i ++) {
+    
+    Codon ThisCodon = Codons.get(i);
+    
+    GUI_Element ThisCodonHolder = new GUI_Element (new String[] {
+      "Name:", "Codon " + i,
+      "ElementType:", "Holder",
+      "XPos:", "0",
+      "YPos:", Float.toString(i * ElementHeight),
+      "XSize:", "1",
+      "YSize:", Float.toString(ElementHeight),
+    });
+    
+    ThisCodonHolder.AddChild(new GUI_Element (new String[] {
+      "Name:", "LeftDecay",
+      "XPos:", "0",
+      "YPos:", "0",
+      "XSize:", "0.25",
+      "YSize:", "1",
+      "BackgroundColor:", "0",
+      "EdgeSize:", "0",
+    }));
+    
+    ThisCodonHolder.AddChild(new GUI_Element (new String[] {
+      "Name:", "LeftFill",
+      "XPos:", "0.25",
+      "YPos:", "0",
+      "XSize:", "0.25",
+      "YSize:", "1",
+      "BackgroundColor:", hex(GetColorFromCodon1(ThisCodon)),
+      "EdgeSize:", "0",
+    }));
+    
+    ThisCodonHolder.AddChild(new GUI_Element (new String[] {
+      "Name:", "RightDecay",
+      "XPos:", "0.75",
+      "YPos:", "0",
+      "XSize:", "0.25",
+      "YSize:", "1",
+      "BackgroundColor:", "0",
+      "EdgeSize:", "0",
+    }));
+    
+    ThisCodonHolder.AddChild(new GUI_Element (new String[] {
+      "Name:", "RightFill",
+      "XPos:", "0.5",
+      "YPos:", "0",
+      "XSize:", "0.25",
+      "YSize:", "1",
+      "BackgroundColor:", hex(GetColorFromCodon2(ThisCodon)),
+      "EdgeSize:", "0",
+    }));
+    
+    ThisCodonHolder.AddChild(new GUI_Element (new String[] {
+      "Name:", "LeftText",
+      "ElementType:", "TextFrame",
+      "HasFrame:", "false",
+      "Text:", GetCodon1Name(ThisCodon),
+      "TextColor:", "FF",
+      "XPos:", "0",
+      "YPos:", "0",
+      "XSize:", "0.5",
+      "YSize:", "1",
+      "SizeIsConsistentWith:", "ITSELF",
+    }));
+    
+    ThisCodonHolder.AddChild(new GUI_Element (new String[] {
+      "Name:", "RightText",
+      "ElementType:", "TextFrame",
+      "HasFrame:", "false",
+      "Text:", GetCodon2Name(ThisCodon),
+      "TextColor:", "FF",
+      "XPos:", "0.5",
+      "YPos:", "0",
+      "XSize:", "0.5",
+      "YSize:", "1",
+      "SizeIsConsistentWith:", "ITSELF",
+    }));
+    
+    CodonsFrame.AddChild(ThisCodonHolder);
+    
+  }
   
 }
 

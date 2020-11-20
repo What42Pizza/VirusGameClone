@@ -194,6 +194,21 @@ color GetColorFromCodon2 (Codon CodonIn) {
 
 
 
+String GetCodon1Name (Codon CodonIn) {
+  return Codon1_Names[CodonIn.Info[0]];
+}
+
+String GetCodon2Name (Codon CodonIn) {
+  int CodonInfo = CodonIn.Info[1];
+  if (CodonInfo == Codon2_RGL) {
+    return Codon2_Names[Codon2_RGL] + ": " + CodonIn.Info[2] + " - " + CodonIn.Info[3];
+  } else {
+    return Codon2_Names[CodonInfo];
+  }
+}
+
+
+
 int CountAliveCells (int[][] CellsGrid) {
   int Output = 0;
   for (int[] Row : CellsGrid) {

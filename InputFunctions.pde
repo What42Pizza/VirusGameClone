@@ -98,6 +98,7 @@ boolean KeyJustPressed (char Key) {
 
 void mouseWheel (MouseEvent event) {
   GUIFunctions.mouseWheel(event);
+  if (MouseIsOverGUI()) return;
   float[] MousePosBeforeScroll = ConvertScreenPosToWorldPos (mouseX, mouseY);
   
   float ScrollAmount = event.getAmount(); // This is deprecated but I don't know what to replace it with

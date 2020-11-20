@@ -3,6 +3,10 @@ CodonsFrame
 
 ElementType:
 ScrollingFrame
+RenderChildrenNotInFrame:
+false
+UpdateChildrenNotInFrame:
+false
 
 XPos:
 0.1
