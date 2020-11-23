@@ -16,6 +16,8 @@ GUI_Element   GUI_CellData_EnergyText;
 GUI_Element GUI_UGOCreation;
 
 GUI_Element GUI_CodonEditor;
+GUI_Element   GUI_CodonEditor_AddCodon;
+GUI_Element   GUI_CodonEditor_RemoveCodon;
 
 GUI_Element GUI_ConfirmExit;
 
@@ -46,6 +48,8 @@ void InitGUI() {
   GUI_UGOCreation = new GUI_Element (new File (DataPath + "/GUI/Child.UGOCreation"));
   
   GUI_CodonEditor = new GUI_Element (new File (DataPath + "/GUI/Child.CodonEditor")) {@Override public void Update() {super.Update(); UpdateCodonGUIElements();}};
+    GUI_CodonEditor_AddCodon = GUI_CodonEditor.Child("AddCodon");
+    GUI_CodonEditor_RemoveCodon = GUI_CodonEditor.Child("RemoveCodon");
     GUI_CellData.AddChild(GUI_CodonEditor);
     GUI_UGOCreation.AddChild(GUI_CodonEditor);
   
@@ -89,6 +93,15 @@ void UpdateGUIs() {
     CreateCodonGUIElements(NewUGOCodons);
   }
   
+  if (GUI_CodonEditor_AddCodon.JustClicked()) {
+    CodonsBeingEdited.add(new Codon (new int[] {Codon1_None, Codon2_None}));
+    RemakeCodonGUIElements();
+  }
+  if (GUI_CodonEditor_RemoveCodon.JustClicked()) {
+    CodonsBeingEdited.remove(CodonsBeingEdited.size()-1);
+    RemakeCodonGUIElements();
+  }
+  
   MakingUGO = GUI_UGOCreation.Enabled;
   
 }
@@ -119,6 +132,8 @@ void CreateCodonGUIElements (ArrayList <Codon> Codons) {
   CodonElements = new GUI_Element [Codons.size()];
   GUI_Element CodonsFrame = GUI_CodonEditor.Child("CodonsFrame");
   CodonsFrame.MaxScrollY = (Codons.size() - MaxCodonsShown) * ElementHeight;
+  
+  CodonsFrame.DeleteChildren();
   
   for (int i = 0; i < CodonElements.length; i ++) {
     
@@ -204,6 +219,12 @@ void CreateCodonGUIElements (ArrayList <Codon> Codons) {
     
   }
   
+}
+
+
+
+void RemakeCodonGUIElements() {
+  CreateCodonGUIElements(CodonsBeingEdited);
 }
 
 

@@ -1,19 +1,23 @@
 Name:
-BottomCodonsCover
+RemoveCodon
+
+ElementType:
+TextButton
+
+Text:
+-
 
 XPos:
-0.04
+0.05
 YPos:
-0.9
+0.85
 XSize:
-0.42
+0.2
 YSize:
-0.1
+0.075
 
 BackgroundColor:
 5F
-EdgeSize:
-0
 
 RenderOrder:
 2

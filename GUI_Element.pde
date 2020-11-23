@@ -748,9 +748,7 @@ public class GUI_Element {
       }
     }
     
-    for (GUI_Element E : Children) { // Have all children delete themselves too
-      E.Delete();
-    }
+    DeleteChildren();
     
     if (Parent != null) {
       for (int i = 0; i < Parent.Children.size(); i ++) { // Remove this from Parent.Children
@@ -766,6 +764,18 @@ public class GUI_Element {
     
     Deleted = true; // Set as deleted in case user holds more pointers
     
+  }
+  
+  
+  
+  void DeleteChildren() {
+    ArrayList <GUI_Element> ChildrenCopy = new ArrayList <GUI_Element> ();
+    for (GUI_Element E : Children) {
+      ChildrenCopy.add(E);
+    }
+    for (GUI_Element E : ChildrenCopy) { // Have all children delete themselves too
+      E.Delete();
+    }
   }
   
   

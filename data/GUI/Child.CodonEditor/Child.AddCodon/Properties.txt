@@ -1,20 +1,23 @@
 Name:
-CodonsText
+AddCodon
 
 ElementType:
-TextFrame
+TextButton
 
 Text:
-Codons
++
 
 XPos:
-0.05
+0.25
 YPos:
-0.05
+0.85
 XSize:
-0.4
+0.2
 YSize:
-0.1
+0.075
 
 BackgroundColor:
 5F
+
+RenderOrder:
+2
