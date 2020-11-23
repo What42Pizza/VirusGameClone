@@ -8,13 +8,13 @@ Text:
 Codons
 
 XPos:
-0.1
-YPos:
-0.4
-XSize:
-0.5
-YSize:
 0.05
+YPos:
+0.1
+XSize:
+0.4
+YSize:
+0.1
 
 BackgroundColor:
 5F

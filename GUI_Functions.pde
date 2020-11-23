@@ -572,6 +572,10 @@ public class GUI_Functions {
     if (UpdateChildrenNotInFrame != null)
       Element.UpdateChildrenNotInFrame = boolean (UpdateChildrenNotInFrame);
     
+    String RenderOrder = GetSetting (Properties, "RenderOrder");
+    if (RenderOrder != null)
+      Element.RenderOrder = int (RenderOrder);
+    
     
     
     String Text = GetSetting (Properties, "Text");
@@ -693,6 +697,22 @@ public class GUI_Functions {
     String CurrScrollY = GetSetting (Properties, "CurrScrollY");
     if (CurrScrollY != null)
       Element.CurrScrollY = float (CurrScrollY);
+    
+    String MinScrollX = GetSetting (Properties, "MinScrollX");
+    if (MinScrollX != null)
+      Element.MinScrollX = float (MinScrollX);
+    
+    String MaxScrollX = GetSetting (Properties, "MaxScrollX");
+    if (MaxScrollX != null)
+      Element.MaxScrollX = float (MaxScrollX);
+    
+    String MinScrollY = GetSetting (Properties, "MinScrollY");
+    if (MinScrollY != null)
+      Element.MinScrollY = float (MinScrollY);
+    
+    String MaxScrollY = GetSetting (Properties, "MaxScrollY");
+    if (MaxScrollY != null)
+      Element.MaxScrollY = float (MaxScrollY);
     
     String ReachTargetSpeed = GetSetting (Properties, "ReachTargetSpeed");
     if (ReachTargetSpeed != null)

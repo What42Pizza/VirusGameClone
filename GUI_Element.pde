@@ -27,6 +27,7 @@ public class GUI_Element {
   public boolean Enabled   = true ;
   public boolean RenderChildrenNotInFrame = true;
   public boolean UpdateChildrenNotInFrame = true;
+  public int RenderOrder = 1;
   
   public String  Text = "Error: text not set";
   public String  PlaceholderText = "Click to enter text";
@@ -65,6 +66,10 @@ public class GUI_Element {
   public float   TargetScrollY = 0;
   public float   CurrScrollX = 0;
   public float   CurrScrollY = 0;
+  public float   MinScrollX = 0;
+  public float   MinScrollY = 0;
+  public float   MaxScrollX = 1000;
+  public float   MaxScrollY = 1000;
   public float   ReachTargetSpeed = 0.4;
   
   public ArrayList <GUI_Element> Children = new ArrayList <GUI_Element> ();
@@ -395,7 +400,7 @@ public class GUI_Element {
     
     if (CanScroll && HasMouseHovering()) {
       
-      float MouseScrollAmount = GUIFunctions.GetScrollAmount(); // Get amount scrolled
+      float MouseScrollAmount = GUIFunctions.GetScrollAmount() * -1; // Get amount scrolled
       if (MouseScrollAmount != 0) {
         
         float TotalScreenPercentX = (float) ScreenXSize / width ; // Get screen size because smaller frames need more scroll added to ScrollAmount
@@ -404,8 +409,8 @@ public class GUI_Element {
         float ScrollAmountX = (float) 1/TotalScreenPercentX * ScrollSpeedX / 75 * MouseScrollAmount; // Determin amount of scrolling needed
         float ScrollAmountY = (float) 1/TotalScreenPercentY * ScrollSpeedY / 75 * MouseScrollAmount; // 1/TotalScPer is because a frame of 1/3 size of screen needs 3x more scrolling. * ScrollSpeed is to make it faster. / 100 is to slow it down because normally it's way too much. * MouseScrollAmount is to make it react to the actual amount of scrolling.
         
-        TargetScrollX += ScrollAmountX; // Add scrolling
-        TargetScrollY += ScrollAmountY;
+        TargetScrollX = constrain(TargetScrollX + ScrollAmountX, MaxScrollX * -1, MinScrollX); // Add scrolling
+        TargetScrollY = constrain(TargetScrollY + ScrollAmountY, MaxScrollY * -1, MinScrollY); // Scrolling down makes this negative, so I guess that's why this is weird?
         
       }
     }
@@ -590,14 +595,26 @@ public class GUI_Element {
   
   
   public void AddChild (GUI_Element NewChild) {
+    
     if (NewChild == null) {
       println ("Error in " + this + ": You cannot add a null child.");
       return;
     }
-    Children.add (NewChild);
+    
+    boolean Added = false;
+    for (int i = Children.size() - 1; i >= 0; i --) {
+      if (NewChild.RenderOrder >= Children.get(i).RenderOrder) {
+        Children.add(i+1, NewChild);
+        Added = true;
+        break;
+      }
+    }
+    if (!Added) Children.add(0, NewChild);
+    
     NewChild.Parent = this;
     NewChild.FamilyLevel = FamilyLevel + 1;
     NewChild.FullName = this.FullName + "." + NewChild.Name;
+    
   }
   
   
@@ -749,6 +766,35 @@ public class GUI_Element {
     
     Deleted = true; // Set as deleted in case user holds more pointers
     
+  }
+  
+  
+  
+  
+  
+  void SetRenderOrder (int NewOrder) {
+    RenderOrder = NewOrder;
+    if (Parent != null) {
+      
+      ArrayList <GUI_Element> PChildren = Parent.Children; // Remove from Parent's children
+      for (int i = 0; i < PChildren.size(); i ++) {
+        if (PChildren.get(i) == this) {
+          PChildren.remove(i);
+          break;
+        }
+      }
+      
+      boolean Added = false;
+      for (int i = PChildren.size() - 1; i >= 0; i --) { // Add to Parent's children in correct location
+        if (RenderOrder > PChildren.get(i).RenderOrder) {
+          PChildren.add(i, this);
+          Added = true;
+          break;
+        }
+      }
+      if (!Added) PChildren.add(0, this);
+      
+    }
   }
   
   

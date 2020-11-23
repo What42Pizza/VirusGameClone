@@ -6,6 +6,7 @@ GUI_Functions GUIFunctions = new GUI_Functions();
 
 GUI_Element GUI_TopBar;
 GUI_Element   GUI_TopBar_CellsData;
+GUI_Element   GUI_TopBar_CreateUGO;
 GUI_Element   GUI_TopBar_ExitButton;
 
 GUI_Element GUI_CellData;
@@ -14,12 +15,17 @@ GUI_Element   GUI_CellData_EnergyText;
 
 GUI_Element GUI_UGOCreation;
 
+GUI_Element GUI_CodonEditor;
+
 GUI_Element GUI_ConfirmExit;
 
 
 
 Cell SelectedCell = null;
-GUI_Element[] SelectedCellCodonElements;
+GUI_Element[] CodonElements;
+ArrayList <Codon> CodonsBeingEdited;
+
+final int MaxCodonsShown = 8;
 
 
 
@@ -30,6 +36,7 @@ void InitGUI() {
   
   GUI_TopBar = new GUI_Element (new File (DataPath + "/GUI/Child.TopBar"));
     GUI_TopBar_CellsData = GUI_TopBar.Child("CellsData");
+    GUI_TopBar_CreateUGO = GUI_TopBar.Child("CreateUGO");
     GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
   
   GUI_CellData = new GUI_Element (new File (DataPath + "/GUI/Child.CellData"));
@@ -37,6 +44,10 @@ void InitGUI() {
     GUI_CellData_EnergyText = GUI_CellData.Child("EnergyText");
   
   GUI_UGOCreation = new GUI_Element (new File (DataPath + "/GUI/Child.UGOCreation"));
+  
+  GUI_CodonEditor = new GUI_Element (new File (DataPath + "/GUI/Child.CodonEditor")) {@Override public void Update() {super.Update(); UpdateCodonGUIElements();}};
+    GUI_CellData.AddChild(GUI_CodonEditor);
+    GUI_UGOCreation.AddChild(GUI_CodonEditor);
   
   GUI_ConfirmExit = new GUI_Element (new File (DataPath + "/GUI/Child.ConfirmExit"));
   
@@ -70,6 +81,14 @@ void UpdateGUIs() {
     GUI_ConfirmExit.YPos = 0.4; // It also toggles ConfirmExit by its ButtonAction
   }
   
+  if (GUI_TopBar_CreateUGO.JustClicked()) {
+    ArrayList <Codon> NewUGOCodons = new ArrayList <Codon> ();
+    for (int i = 0; i < MaxCodonsShown; i ++) {
+      NewUGOCodons.add(new Codon(new int[] {Codon1_None, Codon2_None}));
+    }
+    CreateCodonGUIElements(NewUGOCodons);
+  }
+  
   MakingUGO = GUI_UGOCreation.Enabled;
   
 }
@@ -84,7 +103,7 @@ void OpenCellDataForCell (Cell ClickedCell) {
   GUI_CellData.Enabled = true;
   SelectedCell = ClickedCell;
   
-  CreateCodonGUIElements();
+  CreateCodonGUIElements (ClickedCell.Codons);
   
 }
 
@@ -92,14 +111,16 @@ void OpenCellDataForCell (Cell ClickedCell) {
 
 
 
-void CreateCodonGUIElements() {
-  ArrayList <Codon> Codons = SelectedCell.Codons;
-  GUI_Element CodonsFrame = GUI_CellData.Child("CodonsFrame");
-  GUI_Element CodonsText = GUI_CellData.Child("CodonsText");
-  float ElementHeight = CodonsText.YSize / CodonsFrame.YSize; // Calc what percentage CodonsText.YSize is of CodonsFrame.YSize, and that will be the YSize of the new elements
-  SelectedCellCodonElements = new GUI_Element [Codons.size()];
+void CreateCodonGUIElements (ArrayList <Codon> Codons) {
   
-  for (int i = 0; i < SelectedCellCodonElements.length; i ++) {
+  final float ElementHeight = 1.0/MaxCodonsShown;
+  
+  CodonsBeingEdited = Codons;
+  CodonElements = new GUI_Element [Codons.size()];
+  GUI_Element CodonsFrame = GUI_CodonEditor.Child("CodonsFrame");
+  CodonsFrame.MaxScrollY = (Codons.size() - MaxCodonsShown) * ElementHeight;
+  
+  for (int i = 0; i < CodonElements.length; i ++) {
     
     Codon ThisCodon = Codons.get(i);
     
@@ -130,6 +151,7 @@ void CreateCodonGUIElements() {
       "YSize:", "1",
       "BackgroundColor:", hex(GetColorFromCodon1(ThisCodon)),
       "EdgeSize:", "0",
+      "RenderOrder:", "0",
     }));
     
     ThisCodonHolder.AddChild(new GUI_Element (new String[] {
@@ -139,7 +161,6 @@ void CreateCodonGUIElements() {
       "XSize:", "0.25",
       "YSize:", "1",
       "BackgroundColor:", "0",
-      "EdgeSize:", "0",
     }));
     
     ThisCodonHolder.AddChild(new GUI_Element (new String[] {
@@ -154,7 +175,7 @@ void CreateCodonGUIElements() {
     
     ThisCodonHolder.AddChild(new GUI_Element (new String[] {
       "Name:", "LeftText",
-      "ElementType:", "TextFrame",
+      "ElementType:", "TextButton",
       "HasFrame:", "false",
       "Text:", GetCodon1Name(ThisCodon),
       "TextColor:", "FF",
@@ -167,7 +188,7 @@ void CreateCodonGUIElements() {
     
     ThisCodonHolder.AddChild(new GUI_Element (new String[] {
       "Name:", "RightText",
-      "ElementType:", "TextFrame",
+      "ElementType:", "TextButton",
       "HasFrame:", "false",
       "Text:", GetCodon2Name(ThisCodon),
       "TextColor:", "FF",
@@ -179,6 +200,37 @@ void CreateCodonGUIElements() {
     }));
     
     CodonsFrame.AddChild(ThisCodonHolder);
+    CodonElements[i] = ThisCodonHolder;
+    
+  }
+  
+}
+
+
+
+
+
+void UpdateCodonGUIElements() {
+  
+  if (SelectedCell != null && SelectedCell.CodonsChanged) {
+    CreateCodonGUIElements(SelectedCell.Codons);
+  }
+  
+  for (int i = 0; i < CodonElements.length; i ++) {
+    GUI_Element E = CodonElements[i];
+    Codon C = CodonsBeingEdited.get(i);
+    
+    GUI_Element LeftDecay  = E.Child("LeftDecay" );
+    GUI_Element LeftFill   = E.Child("LeftFill"  );
+    GUI_Element RightDecay = E.Child("RightDecay");
+    GUI_Element RightFill  = E.Child("RightFill" );
+    
+    LeftDecay .XSize = (1 - C.Health) / 2.0;
+    LeftFill  .XPos  = (1 - C.Health) / 2.0;
+    LeftFill  .XSize = C.Health / 2.0;
+    RightFill .XSize = C.Health / 2.0;
+    RightDecay.XPos  = 0.5 + C.Health / 2.0;
+    RightDecay.XSize = (1 - C.Health) / 2.0;
     
   }
   

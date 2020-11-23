@@ -39,7 +39,7 @@ final int[] Starting_Codons = {
   Codon1_MoveHand, Codon2_WeakestLocation,
   Codon1_Read    , Codon2_RGL, 0, 0,
   Codon1_Write   , Codon2_RGL, 0, 0,
-  Codon1_MoveHand, Codon2_Outward
+  Codon1_MoveHand, Codon2_Outward,
 };
 
 
