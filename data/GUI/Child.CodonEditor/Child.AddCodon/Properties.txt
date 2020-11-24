@@ -14,7 +14,7 @@ YPos:
 XSize:
 0.2
 YSize:
-0.075
+0.1
 
 BackgroundColor:
 5F

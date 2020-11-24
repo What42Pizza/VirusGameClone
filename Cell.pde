@@ -185,7 +185,8 @@ public class Cell {
     InterpColorChange = InterpColorChange + (int) ((255 - InterpColorChange) * 0.1);
     if (Energy > 0 && (frameCount % 60) == 0) // I know locking it at 60 isn't great, but nothing else responds to framerate so I guess that's the route I'm going
       AdvanceInterpHand();
-    if (Energy > 0 && (frameCount % 60) == 30) {
+    if (Energy > 0 && (frameCount % 60) == 30 && Codons.size() > 0) {
+      InterpCodonPos %= Codons.size();
       Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this, InterpCodonPos);
       InterpColorChange = 63;
       Energy = max (0, Energy - Cell_Interpreter_Cost);
@@ -242,7 +243,7 @@ public class Cell {
   
   private void AdvanceInterpHand() {
     InterpCodonPos ++;
-    InterpCodonPos %= Codons.size();
+    if (Codons.size() > 0) InterpCodonPos %= Codons.size();
   }
   
   

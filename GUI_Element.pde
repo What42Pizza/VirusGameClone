@@ -409,8 +409,10 @@ public class GUI_Element {
         float ScrollAmountX = (float) 1/TotalScreenPercentX * ScrollSpeedX / 75 * MouseScrollAmount; // Determin amount of scrolling needed
         float ScrollAmountY = (float) 1/TotalScreenPercentY * ScrollSpeedY / 75 * MouseScrollAmount; // 1/TotalScPer is because a frame of 1/3 size of screen needs 3x more scrolling. * ScrollSpeed is to make it faster. / 100 is to slow it down because normally it's way too much. * MouseScrollAmount is to make it react to the actual amount of scrolling.
         
-        TargetScrollX = constrain(TargetScrollX + ScrollAmountX, MaxScrollX * -1, MinScrollX); // Add scrolling
-        TargetScrollY = constrain(TargetScrollY + ScrollAmountY, MaxScrollY * -1, MinScrollY); // Scrolling down makes this negative, so I guess that's why this is weird?
+        TargetScrollX += ScrollAmountX; // Add scrolling
+        TargetScrollY += ScrollAmountY;
+        
+        ConstrainScroll();
         
       }
     }
@@ -418,6 +420,13 @@ public class GUI_Element {
     CurrScrollX += (TargetScrollX - CurrScrollX) * ReachTargetSpeed;
     CurrScrollY += (TargetScrollY - CurrScrollY) * ReachTargetSpeed;
     
+  }
+  
+  
+  
+  public void ConstrainScroll() {
+    TargetScrollX = constrain(TargetScrollX, MaxScrollX * -1, MinScrollX); // Add scrolling
+    TargetScrollY = constrain(TargetScrollY, MaxScrollY * -1, MinScrollY); // Scrolling down makes this negative, so I guess that's why this is weird?
   }
   
   
@@ -594,6 +603,16 @@ public class GUI_Element {
   
   
   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   public void AddChild (GUI_Element NewChild) {
     
     if (NewChild == null) {
@@ -732,6 +751,11 @@ public class GUI_Element {
     }
     return Output;
   }
+  
+  
+  
+  
+  
   
   
   
@@ -877,7 +901,7 @@ public class GUI_Element {
   
   
   public String toString() {
-    return "[GUI_Element " + Name + ']';
+    return "[GUI_Element " + FullName + ']';
   }
   
   
