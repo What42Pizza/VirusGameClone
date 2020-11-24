@@ -60,6 +60,7 @@ public class GUI_Element {
   public String  ButtonAction = "None";
   
   public boolean CanScroll = false;
+  public boolean InvertedScrolling = false;
   public float   ScrollSpeedX = 0;
   public float   ScrollSpeedY = 1;
   public float   TargetScrollX = 0;
@@ -400,7 +401,7 @@ public class GUI_Element {
     
     if (CanScroll && HasMouseHovering()) {
       
-      float MouseScrollAmount = GUIFunctions.GetScrollAmount() * -1; // Get amount scrolled
+      float MouseScrollAmount = GUIFunctions.GetScrollAmount() * (InvertedScrolling ? 1 : -1); // Get amount scrolled
       if (MouseScrollAmount != 0) {
         
         float TotalScreenPercentX = (float) ScreenXSize / width ; // Get screen size because smaller frames need more scroll added to ScrollAmount
@@ -425,8 +426,13 @@ public class GUI_Element {
   
   
   public void ConstrainScroll() {
-    TargetScrollX = constrain(TargetScrollX, MaxScrollX * -1, MinScrollX); // Add scrolling
-    TargetScrollY = constrain(TargetScrollY, MaxScrollY * -1, MinScrollY); // Scrolling down makes this negative, so I guess that's why this is weird?
+    if (InvertedScrolling) {
+      TargetScrollX = constrain(TargetScrollX, MinScrollX, MaxScrollX);
+      TargetScrollY = constrain(TargetScrollY, MinScrollY, MaxScrollY);
+    } else {
+      TargetScrollX = constrain(TargetScrollX, MaxScrollX * -1, MinScrollX);
+      TargetScrollY = constrain(TargetScrollY, MaxScrollY * -1, MinScrollY);
+    }
   }
   
   
@@ -494,22 +500,16 @@ public class GUI_Element {
   
   public void CalcScreenData() {
     
-    float ParentScrollX = 0, ParentScrollY = 0;
-    if (Parent != null) {
-      ParentScrollX = Parent.CurrScrollX;
-      ParentScrollY = Parent.CurrScrollY;
-    }
-    
-    ScreenXPos  = GUIFunctions.GetScreenX (ParentScrollX + XPos);
-    ScreenYPos  = GUIFunctions.GetScreenY (ParentScrollY + YPos);
+    ScreenXPos = GUIFunctions.GetScreenX(XPos);
+    ScreenYPos = GUIFunctions.GetScreenY(YPos);
     
     switch (SizeIsConsistentWith) {
       
       case ("POSITION"):
         int ScreenXEnd, ScreenYEnd;
-        ScreenXEnd  = GUIFunctions.GetScreenX (ParentScrollX + XPos + XSize);
+        ScreenXEnd  = GUIFunctions.GetScreenX (XPos + XSize);
         ScreenXSize = ScreenXEnd - ScreenXPos;
-        ScreenYEnd  = GUIFunctions.GetScreenY (ParentScrollY + YPos + YSize);
+        ScreenYEnd  = GUIFunctions.GetScreenY (YPos + YSize);
         ScreenYSize = ScreenYEnd - ScreenYPos;
         break;
       
@@ -541,11 +541,7 @@ public class GUI_Element {
   
   public void RenderChildren() {
     PushMatrix();
-    if (Parent != null) {
-      Translate (XPos + Parent.CurrScrollX, YPos + Parent.CurrScrollY);
-    } else {
-      Translate (XPos, YPos);
-    }
+    Translate (XPos + CurrScrollX * XSize, YPos + CurrScrollY * YSize);
     Scale (1 / XSize, 1 / YSize);
     
     /*

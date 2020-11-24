@@ -674,6 +674,10 @@ public class GUI_Functions {
     if (CanScroll != null)
       Element.CanScroll = boolean (CanScroll);
     
+    String InvertedScrolling = GetSetting (Properties, "InvertedScrolling");
+    if (InvertedScrolling != null)
+      Element.InvertedScrolling = boolean (InvertedScrolling);
+    
     String ScrollSpeedX = GetSetting (Properties, "ScrollSpeedX");
     if (ScrollSpeedX != null)
       Element.ScrollSpeedX = float (ScrollSpeedX);
