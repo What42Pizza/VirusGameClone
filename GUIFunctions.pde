@@ -20,6 +20,7 @@ GUI_Element GUI_CodonEditor;
 GUI_Element   GUI_CodonEditor_CodonsFrame;
 GUI_Element   GUI_CodonEditor_AddCodon;
 GUI_Element   GUI_CodonEditor_RemoveCodon;
+GUI_Element   GUI_CodonEditor_ReplaceCodonFrame;
 
 GUI_Element GUI_ConfirmExit;
 
@@ -43,10 +44,11 @@ void InitGUI() {
   
   GUI_UGOCreation = new GUI_Element (new File (DataPath + "/GUI/Child.UGOCreation"));
   
-  GUI_CodonEditor = new GUI_Element (new File (DataPath + "/GUI/Child.CodonEditor")) {@Override public void Update() {super.Update(); CodonEditor.UpdateCodonGUIElements();}};
+  GUI_CodonEditor = new GUI_Element (new File (DataPath + "/GUI/Child.CodonEditor")) {@Override public void Update() {super.Update(); CodonEditor.UpdateCodonGUIElements();}}; // this probably isn't the best way to do it but IDK of a better way that isn't weird
     GUI_CodonEditor_CodonsFrame = GUI_CodonEditor.Child("CodonsFrame");
     GUI_CodonEditor_AddCodon = GUI_CodonEditor.Child("AddCodon");
     GUI_CodonEditor_RemoveCodon = GUI_CodonEditor.Child("RemoveCodon");
+    GUI_CodonEditor_ReplaceCodonFrame = GUI_CodonEditor.Child("ReplaceCodonFrame");
     GUI_CellData.AddChild(GUI_CodonEditor);
     GUI_UGOCreation.AddChild(GUI_CodonEditor);
   
@@ -60,34 +62,52 @@ void InitGUI() {
 
 void UpdateGUIs() {
   
+  
+  
+  // Select cell
   if (MouseJustReleased) {
     float[] WorldMousePos = ConvertScreenPosToWorldPos (StartMouseX, StartMouseY);
     Cell ClickedCell = GetCellAtPosition (WorldMousePos[0], WorldMousePos[1]);
     if (ClickedCell != null) {
       CodonEditor.OpenCellDataForCell (ClickedCell);
+      GUI_UGOCreation.Enabled = false;
     } else {
       GUI_CellData.Enabled = false;
     }
   }
   
-  if (!GUI_CellData.Enabled || SelectedCell.ShouldBeRemoved) {
-    SelectedCell = null;
-    GUI_CellData.Enabled = false;
-  }
   
+  
+  // CellData
   if (SelectedCell != null) {
-    GUI_CellData_HealthText.Text = "Health: " + ceil (SelectedCell.WallHealth);
-    GUI_CellData_EnergyText.Text = "Energy: " + ceil (SelectedCell.Energy);
+    if (!GUI_CellData.Enabled || SelectedCell.ShouldBeRemoved) {
+      SelectedCell = null;
+      GUI_CellData.Enabled = false;
+    } else {
+      GUI_CellData_HealthText.Text = "Health: " + ceil (SelectedCell.WallHealth);
+      GUI_CellData_EnergyText.Text = "Energy: " + ceil (SelectedCell.Energy);
+    }
   }
   
+  
+  
+  // Confirm exit
   if (GUI_TopBar_ExitButton.JustClicked()) {
     GUI_ConfirmExit.XPos = 0.4;
     GUI_ConfirmExit.YPos = 0.4; // It also toggles ConfirmExit by its ButtonAction
   }
   
+  
+  
+  // CreateUGO button
   if (GUI_TopBar_CreateUGO.JustClicked()) {
     CodonEditor.ResetCodons();
+    GUI_CellData.Enabled = false;
   }
+  
+  
+  
+  // CodonEditor
   if (GUI_CodonEditor_AddCodon.JustClicked()) {
     CodonEditor.AddCodon(new Codon (new int[] {Codon1_None, Codon2_None}));
   }
@@ -95,6 +115,9 @@ void UpdateGUIs() {
     CodonEditor.RemoveCodon();
   }
   
+  
+  
+  // Update vars
   MakingUGO = GUI_UGOCreation.Enabled;
   
 }

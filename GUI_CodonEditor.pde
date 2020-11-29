@@ -9,6 +9,8 @@ public class CodonEditor {
   
   ArrayList <GUI_Element> CodonGUIElements;
   ArrayList <Codon> CodonsBeingEdited;
+  int SelectedCodonIndex = -1;
+  int SelectedCodonSide = 0;
   
   
   
@@ -20,7 +22,6 @@ public class CodonEditor {
     
     SelectedCell = ClickedCell;
     
-    GUI_UGOCreation.Enabled = false;
     GUI_CellData.Enabled = true;
     GUI_CodonEditor_CodonsFrame.TargetScrollY = 0;
     GUI_CodonEditor_CodonsFrame.CurrScrollY = 0;
@@ -44,7 +45,7 @@ public class CodonEditor {
   
   
   void AddCodon (Codon CodonIn) {
-    AddCodonToGUI (CodonIn);
+    AddCodonToGUI (CodonIn, true);
     if (SelectedCell != null) {
       SelectedCell.Codons.add(CodonIn);
     }
@@ -74,19 +75,25 @@ public class CodonEditor {
     //CodonsFrame.MaxScrollY = (Codons.size() - MaxCodonsShown) * ElementHeight;
     
     for (int i = 0; i < Codons.size(); i ++) {
-      AddCodonToGUI (Codons.get(i));
+      AddCodonToGUI (Codons.get(i), false);
     }
     
   }
   
   
   
-  void AddCodonToGUI (Codon NewCodon) {
+  void AddCodonToGUI (Codon NewCodon, boolean AutoMove) {
+    GUI_Element CodonsFrame = GUI_CodonEditor_CodonsFrame; // Rename; add codon to list
     CodonsBeingEdited.add (NewCodon);
-    GUI_Element NewElement = CreateElementFromCodon (NewCodon, CodonGUIElements.size());
+    
+    GUI_Element NewElement = CreateElementFromCodon (NewCodon, CodonGUIElements.size()); // Create new GUI_Element
     CodonGUIElements.add (NewElement);
     GUI_CodonEditor_CodonsFrame.AddChild(NewElement);
-    GUI_CodonEditor_CodonsFrame.MaxScrollY = max ((CodonsBeingEdited.size() - MaxCodonsShown) * ElementHeight, 0);
+    
+    float NewMaxScrollY = max ((CodonsBeingEdited.size() - MaxCodonsShown) * ElementHeight, 0);
+    if (AutoMove && CodonsFrame.TargetScrollY == CodonsFrame.MaxScrollY * -1) CodonsFrame.TargetScrollY = NewMaxScrollY * -1; // Update scrolling
+    CodonsFrame.MaxScrollY = NewMaxScrollY;
+    
   }
   
   
@@ -120,7 +127,7 @@ public class CodonEditor {
       "YPos:", "0",
       "XSize:", "0.25",
       "YSize:", "1",
-      "BackgroundColor:", hex(GetColorFromCodon1(CodonIn)),
+      "BackgroundColor:", hex(GetCodon1Color(CodonIn)),
       "EdgeSize:", "0",
       "RenderOrder:", "0",
     }));
@@ -132,6 +139,7 @@ public class CodonEditor {
       "XSize:", "0.25",
       "YSize:", "1",
       "BackgroundColor:", "0",
+      "EdgeSize:", "0",
     }));
     
     CodonElement.AddChild(new GUI_Element (new String[] {
@@ -140,12 +148,12 @@ public class CodonEditor {
       "YPos:", "0",
       "XSize:", "0.25",
       "YSize:", "1",
-      "BackgroundColor:", hex(GetColorFromCodon2(CodonIn)),
+      "BackgroundColor:", hex(GetCodon2Color(CodonIn)),
       "EdgeSize:", "0",
     }));
     
     CodonElement.AddChild(new GUI_Element (new String[] {
-      "Name:", "LeftText",
+      "Name:", "LeftTextButton",
       "ElementType:", "TextButton",
       "HasFrame:", "false",
       "Text:", GetCodon1Name(CodonIn),
@@ -158,7 +166,7 @@ public class CodonEditor {
     }));
     
     CodonElement.AddChild(new GUI_Element (new String[] {
-      "Name:", "RightText",
+      "Name:", "RightTextButton",
       "ElementType:", "TextButton",
       "HasFrame:", "false",
       "Text:", GetCodon2Name(CodonIn),
@@ -178,7 +186,14 @@ public class CodonEditor {
   
   
   
+  int CodonSelectStartFrame = 0;
+  
   void UpdateCodonGUIElements() {
+    
+    if (GUI_CodonEditor.JustClicked() && !(GUI_CodonEditor_CodonsFrame.JustClicked() || GUI_CodonEditor_ReplaceCodonFrame.JustClicked())) {
+      ResetSelectedCodonColors();
+      SelectedCodonIndex = -1;
+    }
     
     if (SelectedCell != null && SelectedCell.CodonsChanged) {
       CreateCodonGUIElements(SelectedCell.Codons);
@@ -192,6 +207,8 @@ public class CodonEditor {
       GUI_Element LeftFill   = E.Child("LeftFill"  );
       GUI_Element RightDecay = E.Child("RightDecay");
       GUI_Element RightFill  = E.Child("RightFill" );
+      GUI_Element LeftText   = E.Child("LeftTextButton" );
+      GUI_Element RightText  = E.Child("RightTextButton");
       
       LeftDecay .XSize = (1 - C.Health) / 2.0;
       LeftFill  .XPos  = (1 - C.Health) / 2.0;
@@ -200,8 +217,56 @@ public class CodonEditor {
       RightDecay.XPos  = 0.5 + C.Health / 2.0;
       RightDecay.XSize = (1 - C.Health) / 2.0;
       
+      if (LeftText.JustClicked()) {
+        ResetSelectedCodonColors();
+        SelectedCodonIndex = i;
+        SelectedCodonSide = LEFT; // IDR what these constants are supposed to be used for but I'll just use them here anyway
+        CodonSelectStartFrame = frameCount;
+      }
+      if (RightText.JustClicked()) {
+        ResetSelectedCodonColors();
+        SelectedCodonIndex = i;
+        SelectedCodonSide = RIGHT;
+        CodonSelectStartFrame = frameCount;
+      }
+      
+      color Codon1Color = GetCodon1Color(C);
+      color Codon2Color = GetCodon2Color(C);
+      if (i == SelectedCodonIndex) {
+        colorMode(HSB);
+        int FrameDelta = frameCount - CodonSelectStartFrame;
+        float FlashAmount = (sin (FrameDelta / 5.0) / 2.0 + 0.5) * 191;
+        if (SelectedCodonSide == LEFT) {
+          LeftDecay.BackgroundColor = color (FlashAmount);
+          LeftFill.BackgroundColor = color (hue(Codon1Color), 255 - FlashAmount, brightness (Codon1Color));
+        } else {
+          RightDecay.BackgroundColor = color (FlashAmount);
+          RightFill.BackgroundColor = color (hue(Codon2Color), 255 - FlashAmount, brightness (Codon2Color));
+        }
+        colorMode(RGB);
+      }
+      
     }
     
+    GUI_CodonEditor_ReplaceCodonFrame.Enabled = SelectedCodonIndex != -1;
+    
+  }
+  
+  
+  
+  
+  
+  void ResetSelectedCodonColors() {
+    if (SelectedCodonIndex == -1) return;
+    GUI_Element PrevSelectedElement = CodonGUIElements.get(SelectedCodonIndex);
+    Codon PrevSelectedCodon = CodonsBeingEdited.get(SelectedCodonIndex);
+    if (SelectedCodonSide == LEFT) {
+      PrevSelectedElement.Child("LeftDecay").BackgroundColor = color (0);
+      PrevSelectedElement.Child("LeftFill" ).BackgroundColor = GetCodon1Color (PrevSelectedCodon);
+    } else {
+      PrevSelectedElement.Child("RightDecay").BackgroundColor = color (0);
+      PrevSelectedElement.Child("RightFill" ).BackgroundColor = GetCodon2Color (PrevSelectedCodon);
+    }
   }
   
   

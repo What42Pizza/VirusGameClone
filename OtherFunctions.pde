@@ -163,7 +163,7 @@ boolean ParticleIsInCell (Particle P, Cell C) {
 
 
 
-color GetColorFromCodon1 (Codon CodonIn) {
+color GetCodon1Color (Codon CodonIn) {
   switch (CodonIn.Info[0]) {
     case (Codon1_None    ): return Color_Codon1_None    ;
     case (Codon1_Digest  ): return Color_Codon1_Digest  ;
@@ -177,7 +177,7 @@ color GetColorFromCodon1 (Codon CodonIn) {
 
 
 
-color GetColorFromCodon2 (Codon CodonIn) {
+color GetCodon2Color (Codon CodonIn) {
   switch (CodonIn.Info[1]) {
     case (Codon2_None           ): return Color_Codon2_None            ;
     case (Codon2_Food           ): return Color_Codon2_Food            ;

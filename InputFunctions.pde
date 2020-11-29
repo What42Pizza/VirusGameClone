@@ -5,8 +5,9 @@
 boolean[] Keys     = new boolean [128];
 boolean[] PrevKeys = new boolean [128];
 
-boolean PrevMousePressed = false;
+boolean MouseJustPressed = false;
 boolean MouseJustReleased = false;
+boolean PrevMousePressed = false;
 boolean MouseIsDragging = false;
 int StartMouseX = 0;
 int StartMouseY = 0;
@@ -23,12 +24,11 @@ float StartCameraYPos = 0;
 
 void UpdateInputs() {
   
-  if (mousePressed && !PrevMousePressed && !MouseIsOverGUI()) {
-    StartMouseDrag(); // It needs to be done like this because of StartMouseX&Y
-    if (mouseButton == RIGHT) MouseIsDragging = true;
-  }
   
-  if (MouseIsDragging) MoveCameraToMouse();
+  
+  // MouseJP && MouseJR
+  
+  MouseJustPressed = mousePressed && !PrevMousePressed;
   
   MouseJustReleased = false; // This is one of the first functions called in draw(), so this should be okay
   if (!mousePressed && PrevMousePressed) {
@@ -39,13 +39,30 @@ void UpdateInputs() {
     }
   }
   
-  if (mousePressed) {
-    if (MakingUGO) {
-      
-    }
-  } else {
-    MouseIsDragging = false;
+  
+  
+  // Dragging
+  
+  if (MouseJustPressed && !MouseIsOverGUI()) {
+    StartMouseDrag(); // It needs to be done like this because StartMouseX&Y are used elsewhere
+    if (mouseButton == RIGHT) MouseIsDragging = true;
   }
+  
+  if (!mousePressed) MouseIsDragging = false;
+  
+  if (MouseIsDragging) MoveCameraToMouse();
+  
+  
+  
+  // Making UGOs
+  
+  if (mousePressed && MakingUGO) {
+    
+  }
+  
+  
+  
+  // Updating keys
   
   if (KeyJustPressed(' ')) Paused = !Paused;
   
@@ -54,7 +71,11 @@ void UpdateInputs() {
   if (Keys['s']) Camera.YPos -= Camera_Speed;
   if (Keys['d']) Camera.XPos -= Camera_Speed;
   
+  
+  
 }
+
+
 
 
 
