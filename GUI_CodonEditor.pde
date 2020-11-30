@@ -78,6 +78,8 @@ public class CodonEditor {
       AddCodonToGUI (Codons.get(i), false);
     }
     
+    GUI_CodonEditor_CodonsFrame.ConstrainScroll();
+    
   }
   
   
@@ -199,6 +201,8 @@ public class CodonEditor {
       CreateCodonGUIElements(SelectedCell.Codons);
     }
     
+    boolean CodonsFrameClicked = GUI_CodonEditor_CodonsFrame.JustClicked();
+    
     for (int i = 0; i < CodonGUIElements.size(); i ++) {
       GUI_Element E = CodonGUIElements.get(i);
       Codon C = CodonsBeingEdited.get(i);
@@ -217,33 +221,31 @@ public class CodonEditor {
       RightDecay.XPos  = 0.5 + C.Health / 2.0;
       RightDecay.XSize = (1 - C.Health) / 2.0;
       
-      if (LeftText.JustClicked()) {
-        ResetSelectedCodonColors();
-        SelectedCodonIndex = i;
-        SelectedCodonSide = LEFT; // IDR what these constants are supposed to be used for but I'll just use them here anyway
-        CodonSelectStartFrame = frameCount;
-      }
-      if (RightText.JustClicked()) {
-        ResetSelectedCodonColors();
-        SelectedCodonIndex = i;
-        SelectedCodonSide = RIGHT;
-        CodonSelectStartFrame = frameCount;
+      if (CodonsFrameClicked) {
+        if (LeftText.JustClicked()) {
+          ResetSelectedCodonColors();
+          SelectedCodonIndex = i;
+          SelectedCodonSide = LEFT; // IDR what these constants are supposed to be used for but I'll just use them here anyway
+          CodonSelectStartFrame = frameCount;
+        }
+        if (RightText.JustClicked()) {
+          ResetSelectedCodonColors();
+          SelectedCodonIndex = i;
+          SelectedCodonSide = RIGHT;
+          CodonSelectStartFrame = frameCount;
+        }
       }
       
-      color Codon1Color = GetCodon1Color(C);
-      color Codon2Color = GetCodon2Color(C);
       if (i == SelectedCodonIndex) {
-        colorMode(HSB);
         int FrameDelta = frameCount - CodonSelectStartFrame;
-        float FlashAmount = (sin (FrameDelta / 5.0) / 2.0 + 0.5) * 191;
+        float FlashAmount = (sin (FrameDelta / 5.0) / 2.0 + 0.5);
         if (SelectedCodonSide == LEFT) {
-          LeftDecay.BackgroundColor = color (FlashAmount);
-          LeftFill.BackgroundColor = color (hue(Codon1Color), 255 - FlashAmount, brightness (Codon1Color));
+          LeftDecay.BackgroundColor = color (FlashAmount * 223);
+          LeftFill.BackgroundColor = lerpColor (GetCodon1Color(C), color (223), FlashAmount);
         } else {
-          RightDecay.BackgroundColor = color (FlashAmount);
-          RightFill.BackgroundColor = color (hue(Codon2Color), 255 - FlashAmount, brightness (Codon2Color));
+          RightDecay.BackgroundColor = color (FlashAmount * 223);
+          RightFill.BackgroundColor = lerpColor (GetCodon2Color(C), color (223), FlashAmount);
         }
-        colorMode(RGB);
       }
       
     }
