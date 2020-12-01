@@ -2,7 +2,7 @@ public class CodonEditor {
   
   
   
-  // Vars
+  
   
   final int MaxCodonsShown = 8;
   final float ElementHeight = 1.0/MaxCodonsShown;
@@ -16,7 +16,75 @@ public class CodonEditor {
   
   
   
-  // Functions
+  
+  
+  
+  
+  
+  void InitReplaceCodonFrames() {
+    
+    GUI_Element Codon1Frame = GUI_CodonEditor_ReplaceCodon1Frame;
+    GUI_Element Codon2Frame = GUI_CodonEditor_ReplaceCodon2Frame;
+    
+    float MinScroll = ElementHeight * 0.2;
+    
+    Codon1Frame.MinScrollY = MinScroll;
+    Codon1Frame.MaxScrollY = max ((Codon1_Names.length - MaxCodonsShown) * ElementHeight, MinScroll * -1);
+    Codon1Frame.TargetScrollY = MinScroll;
+    Codon1Frame.CurrScrollY = MinScroll;
+    
+    Codon2Frame.MinScrollY = MinScroll;
+    Codon2Frame.MaxScrollY = max ((Codon2_Names.length - MaxCodonsShown) * ElementHeight, MinScroll * -1);
+    Codon2Frame.TargetScrollY = MinScroll;
+    Codon2Frame.CurrScrollY = MinScroll;
+    
+    for (int i = 0; i < Codon1_Names.length; i ++) {
+      String CodonName = Codon1_Names[i];
+      color CodonColor = GetCodon1ColorFromID (i);
+      GUI_Element NewButton = new GUI_Element (new String[] {
+        "Name:", "ReplaceCodon_" + CodonName,
+        "ElementType:", "TextButton",
+        "UsePressedColor:", "false",
+        "Text:", CodonName,
+        "SizeIsConsistentWith:", "ITSELF",
+        "TextColor:", hex(color(255)),
+        "BackgroundColor:", hex (CodonColor),
+        "EdgeColor:", hex (lerpColor (CodonColor, color (0), 0.15)),
+        "EdgeSize:", Integer.toString((int)(width * 0.003)),
+        "XPos:", "0.1",
+        "YPos:", Float.toString(ElementHeight * i),
+        "XSize:", "0.8",
+        "YSize:", Float.toString(ElementHeight * 0.8),
+      });
+      Codon1Frame.AddChild(NewButton);
+    }
+    
+    for (int i = 0; i < Codon2_Names.length; i ++) {
+      String CodonName = Codon2_Names[i];
+      color CodonColor = GetCodon2ColorFromID (i);
+      GUI_Element NewButton = new GUI_Element (new String[] {
+        "Name:", "ReplaceCodon_" + CodonName,
+        "ElementType:", "TextButton",
+        "UsePressedColor:", "false",
+        "Text:", CodonName,
+        "SizeIsConsistentWith:", "ITSELF",
+        "TextColor:", hex(color(255)),
+        "BackgroundColor:", hex (CodonColor),
+        "EdgeColor:", hex (lerpColor (CodonColor, color (0), 0.15)),
+        "EdgeSize:", Integer.toString((int)(width * 0.003)),
+        "XPos:", "0.1",
+        "YPos:", Float.toString(ElementHeight * i),
+        "XSize:", "0.8",
+        "YSize:", Float.toString(ElementHeight * 0.8),
+      });
+      Codon2Frame.AddChild(NewButton);
+    }
+    
+  }
+  
+  
+  
+  
   
   void OpenCellDataForCell (Cell ClickedCell) {
     
@@ -55,14 +123,19 @@ public class CodonEditor {
   
   void RemoveCodon() {
     int CodonIndex = CodonsBeingEdited.size() - 1;
+    
     CodonsBeingEdited.remove(CodonIndex);
+    
     CodonGUIElements.get(CodonIndex).Delete();
     CodonGUIElements.remove(CodonIndex);
+    
     GUI_CodonEditor_CodonsFrame.MaxScrollY = max ((CodonsBeingEdited.size() - MaxCodonsShown) * ElementHeight, 0);
     GUI_CodonEditor_CodonsFrame.ConstrainScroll();
-    if (SelectedCell != null) {
-      SelectedCell.Codons.remove(CodonIndex);
-    }
+    
+    if (SelectedCell != null) SelectedCell.Codons.remove(CodonIndex);
+    
+    if (SelectedCodonIndex >= CodonsBeingEdited.size()) ResetSelectedCodonWOColor();
+    
   }
   
   
@@ -192,9 +265,12 @@ public class CodonEditor {
   
   void UpdateCodonGUIElements() {
     
-    if (GUI_CodonEditor.JustClicked() && !(GUI_CodonEditor_CodonsFrame.JustClicked() || GUI_CodonEditor_ReplaceCodonFrame.JustClicked())) {
-      ResetSelectedCodonColors();
-      SelectedCodonIndex = -1;
+    if (SelectedCodonIndex != -1) {
+      UpdateCodonFlashing();
+    }
+    
+    if (GUI_CodonEditor.JustClicked() && !(GUI_CodonEditor_CodonsFrame.JustClicked() || GUI_CodonEditor_ReplaceCodon1Frame.JustClicked())) {
+      ResetSelectedCodon();
     }
     
     if (SelectedCell != null && SelectedCell.CodonsChanged) {
@@ -222,20 +298,11 @@ public class CodonEditor {
       RightDecay.XSize = (1 - C.Health) / 2.0;
       
       if (CodonsFrameClicked) {
-        if (LeftText.JustClicked()) {
-          ResetSelectedCodonColors();
-          SelectedCodonIndex = i;
-          SelectedCodonSide = LEFT; // IDR what these constants are supposed to be used for but I'll just use them here anyway
-          CodonSelectStartFrame = frameCount;
-        }
-        if (RightText.JustClicked()) {
-          ResetSelectedCodonColors();
-          SelectedCodonIndex = i;
-          SelectedCodonSide = RIGHT;
-          CodonSelectStartFrame = frameCount;
-        }
+        if (LeftText .JustClicked()) SetSelectedCodon (i, LEFT ); // IDR what these constants are supposed to be used for, but I'll just use them anyway
+        if (RightText.JustClicked()) SetSelectedCodon (i, RIGHT);
       }
       
+      /*
       if (i == SelectedCodonIndex) {
         int FrameDelta = frameCount - CodonSelectStartFrame;
         float FlashAmount = (sin (FrameDelta / 5.0) / 2.0 + 0.5);
@@ -247,14 +314,59 @@ public class CodonEditor {
           RightFill.BackgroundColor = lerpColor (GetCodon2Color(C), color (223), FlashAmount);
         }
       }
+      */
       
     }
-    
-    GUI_CodonEditor_ReplaceCodonFrame.Enabled = SelectedCodonIndex != -1;
     
   }
   
   
+  
+  
+  
+  void UpdateCodonFlashing() {
+    GUI_Element SelectedCodon = CodonGUIElements.get(SelectedCodonIndex);
+    Codon C = CodonsBeingEdited.get(SelectedCodonIndex);
+    int FrameDelta = frameCount - CodonSelectStartFrame;
+    float FlashAmount = (sin (FrameDelta / 5.0) / 2.0 + 0.5);
+    if (SelectedCodonSide == LEFT) {
+      SelectedCodon.Child("LeftDecay" ).BackgroundColor = color (FlashAmount * 223);
+      SelectedCodon.Child("LeftFill"  ).BackgroundColor = lerpColor (GetCodon1Color(C), color (223), FlashAmount);
+    } else {
+      SelectedCodon.Child("RightDecay").BackgroundColor = color (FlashAmount * 223);
+      SelectedCodon.Child("RightFill" ).BackgroundColor = lerpColor (GetCodon2Color(C), color (223), FlashAmount);
+    }
+  }
+  
+  
+  
+  
+  
+  void SetSelectedCodon (int CodonIndex, int CodonSide) {
+    ResetSelectedCodon();
+    SelectedCodonIndex = CodonIndex;
+    SelectedCodonSide = CodonSide;
+    CodonSelectStartFrame = frameCount;
+    if (CodonSide == LEFT) {
+      GUI_CodonEditor_ReplaceCodon1Frame.Enabled = true;
+    } else {
+      GUI_CodonEditor_ReplaceCodon2Frame.Enabled = true;
+    }
+  }
+  
+  
+  
+  void ResetSelectedCodon() {
+    ResetSelectedCodonColors();
+    ResetSelectedCodonWOColor();
+  }
+  
+  void ResetSelectedCodonWOColor() {
+    SelectedCodonIndex = -1;
+    SelectedCodonSide = 0;
+    GUI_CodonEditor_ReplaceCodon1Frame.Enabled = false;
+    GUI_CodonEditor_ReplaceCodon2Frame.Enabled = false;
+  }
   
   
   

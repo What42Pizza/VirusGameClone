@@ -164,21 +164,29 @@ boolean ParticleIsInCell (Particle P, Cell C) {
 
 
 color GetCodon1Color (Codon CodonIn) {
-  switch (CodonIn.Info[0]) {
+  return GetCodon1ColorFromID (CodonIn.Info[0]);
+}
+
+color GetCodon1ColorFromID (int CodonID) {
+  switch (CodonID) {
     case (Codon1_None    ): return Color_Codon1_None    ;
     case (Codon1_Digest  ): return Color_Codon1_Digest  ;
     case (Codon1_Remove  ): return Color_Codon1_Remove  ;
     case (Codon1_MoveHand): return Color_Codon1_MoveHand;
     case (Codon1_Read    ): return Color_Codon1_Read    ;
     case (Codon1_Write   ): return Color_Codon1_Write   ;
+    default: return color (255, 0, 255);
   }
-  return color (255, 0, 255);
 }
 
 
 
 color GetCodon2Color (Codon CodonIn) {
-  switch (CodonIn.Info[1]) {
+  return GetCodon2ColorFromID (CodonIn.Info[1]);
+}
+
+color GetCodon2ColorFromID (int CodonID) {
+  switch (CodonID) {
     case (Codon2_None           ): return Color_Codon2_None            ;
     case (Codon2_Food           ): return Color_Codon2_Food            ;
     case (Codon2_Waste          ): return Color_Codon2_Waste           ;
@@ -188,8 +196,8 @@ color GetCodon2Color (Codon CodonIn) {
     case (Codon2_Outward        ): return Color_Codon2_Outward         ;
     case (Codon2_RGL            ): return Color_Codon2_RGL             ;
     case (Codon2_UGO            ): return Color_Codon2_UGO             ;
+    default: return color (255, 0, 255);
   }
-  return color (255, 0, 255);
 }
 
 

@@ -1,11 +1,13 @@
 Name:
-ReplaceCodonFrame
+ReplaceCodon1Frame
 
 Enabled:
 false
 
 ElementType:
 ScrollingFrame
+RenderChildrenNotInFrame:
+false
 
 XPos:
 0.5

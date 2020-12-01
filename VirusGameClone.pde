@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 11/30/20
+// Last updated 12/01/20
 
 
 
@@ -304,6 +304,7 @@ void setup() {
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
   for (int i = 0; i < Num_Of_Waste_Particles; i ++) WasteParticles.add (new Particle (ParticleTypes.Waste));
   InitGUI();
+  CodonEditor.InitReplaceCodonFrames();
   
   /*
   ArrayList <Codon> UGOCodons = new ArrayList <Codon> ();
