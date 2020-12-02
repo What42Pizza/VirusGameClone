@@ -1,0 +1,17 @@
+Name:
+ReplaceCodonsFrame
+
+Enabled:
+false
+
+ElementType:
+Holder
+
+XPos:
+0.5
+YPos:
+0.05
+XSize:
+0.4
+YSize:
+0.9

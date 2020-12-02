@@ -1,0 +1,20 @@
+Name:
+ReplaceCodonsText
+
+ElementType:
+TextFrame
+
+Text:
+Replace Codon
+
+XPos:
+0
+YPos:
+0
+XSize:
+1
+YSize:
+0.11111
+
+BackgroundColor:
+5F

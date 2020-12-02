@@ -1,0 +1,20 @@
+Name:
+RGLStartOrEnd
+
+ElementType:
+TextButton
+
+Text:
+RGL Start
+
+XPos:
+0
+YPos:
+0
+XSize:
+0.6
+YSize:
+1
+
+BackgroundColor:
+5F

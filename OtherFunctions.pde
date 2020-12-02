@@ -226,3 +226,16 @@ int CountAliveCells (int[][] CellsGrid) {
   }
   return Output;
 }
+
+
+
+
+
+int[] IncreaseArraySize (int[] ArrayIn, int NewSize) {
+  if (ArrayIn.length == NewSize) return ArrayIn;
+  int[] Output = new int[NewSize];
+  for (int i = 0; i < ArrayIn.length; i ++) {
+    Output[i] = ArrayIn[i];
+  }
+  return Output;
+}

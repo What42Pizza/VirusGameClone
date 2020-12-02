@@ -12,6 +12,9 @@ public class CodonEditor {
   int SelectedCodonIndex = -1;
   int SelectedCodonSide = 0;
   
+  int RGLStart = 0;
+  int RGLEnd = 0;
+  
   
   
   
@@ -23,20 +26,20 @@ public class CodonEditor {
   
   void InitReplaceCodonFrames() {
     
-    GUI_Element Codon1Frame = GUI_CodonEditor_ReplaceCodon1Frame;
-    GUI_Element Codon2Frame = GUI_CodonEditor_ReplaceCodon2Frame;
+    GUI_Element Codon1sFrame = GUI_CodonEditor_Codon1sFrame;
+    GUI_Element Codon2sFrame = GUI_CodonEditor_Codon2sFrame;
     
     float MinScroll = ElementHeight * 0.2;
     
-    Codon1Frame.MinScrollY = MinScroll;
-    Codon1Frame.MaxScrollY = max ((Codon1_Names.length - MaxCodonsShown) * ElementHeight, MinScroll * -1);
-    Codon1Frame.TargetScrollY = MinScroll;
-    Codon1Frame.CurrScrollY = MinScroll;
+    Codon1sFrame.MinScrollY = MinScroll;
+    Codon1sFrame.MaxScrollY = max ((Codon1_Names.length - MaxCodonsShown) * ElementHeight, MinScroll * -1);
+    Codon1sFrame.TargetScrollY = MinScroll;
+    Codon1sFrame.CurrScrollY = MinScroll;
     
-    Codon2Frame.MinScrollY = MinScroll;
-    Codon2Frame.MaxScrollY = max ((Codon2_Names.length - MaxCodonsShown) * ElementHeight, MinScroll * -1);
-    Codon2Frame.TargetScrollY = MinScroll;
-    Codon2Frame.CurrScrollY = MinScroll;
+    Codon2sFrame.MinScrollY = MinScroll;
+    Codon2sFrame.MaxScrollY = max ((Codon2_Names.length - MaxCodonsShown) * ElementHeight, MinScroll * -1);
+    Codon2sFrame.TargetScrollY = MinScroll;
+    Codon2sFrame.CurrScrollY = MinScroll;
     
     for (int i = 0; i < Codon1_Names.length; i ++) {
       String CodonName = Codon1_Names[i];
@@ -56,7 +59,7 @@ public class CodonEditor {
         "XSize:", "0.8",
         "YSize:", Float.toString(ElementHeight * 0.8),
       });
-      Codon1Frame.AddChild(NewButton);
+      Codon1sFrame.AddChild(NewButton);
     }
     
     for (int i = 0; i < Codon2_Names.length; i ++) {
@@ -77,8 +80,10 @@ public class CodonEditor {
         "XSize:", "0.8",
         "YSize:", Float.toString(ElementHeight * 0.8),
       });
-      Codon2Frame.AddChild(NewButton);
+      Codon2sFrame.AddChild(NewButton);
     }
+    
+    UpdateReplaceCodonRGL();
     
   }
   
@@ -94,7 +99,7 @@ public class CodonEditor {
     GUI_CodonEditor_CodonsFrame.TargetScrollY = 0;
     GUI_CodonEditor_CodonsFrame.CurrScrollY = 0;
     
-    CodonEditor.CreateCodonGUIElements (ClickedCell.Codons);
+    CreateCodonGUIElements (ClickedCell.Codons);
     
   }
   
@@ -163,7 +168,7 @@ public class CodonEditor {
     
     GUI_Element NewElement = CreateElementFromCodon (NewCodon, CodonGUIElements.size()); // Create new GUI_Element
     CodonGUIElements.add (NewElement);
-    GUI_CodonEditor_CodonsFrame.AddChild(NewElement);
+    CodonsFrame.AddChild(NewElement);
     
     float NewMaxScrollY = max ((CodonsBeingEdited.size() - MaxCodonsShown) * ElementHeight, 0);
     if (AutoMove && CodonsFrame.TargetScrollY == CodonsFrame.MaxScrollY * -1) CodonsFrame.TargetScrollY = NewMaxScrollY * -1; // Update scrolling
@@ -261,20 +266,45 @@ public class CodonEditor {
   
   
   
+  
+  
+  
+  
+  
   int CodonSelectStartFrame = 0;
   
   void UpdateCodonGUIElements() {
+    
+    UpdateRGLEdit();
     
     if (SelectedCodonIndex != -1) {
       UpdateCodonFlashing();
     }
     
-    if (GUI_CodonEditor.JustClicked() && !(GUI_CodonEditor_CodonsFrame.JustClicked() || GUI_CodonEditor_ReplaceCodon1Frame.JustClicked())) {
+    if (GUI_CodonEditor.JustClicked() && !(GUI_CodonEditor_CodonsFrame.JustClicked() || GUI_CodonEditor_ReplaceCodonsFrame.JustClicked())) {
       ResetSelectedCodon();
     }
     
     if (SelectedCell != null && SelectedCell.CodonsChanged) {
       CreateCodonGUIElements(SelectedCell.Codons);
+    }
+    
+    if (GUI_CodonEditor_Codon1sFrame.Enabled) {
+      for (int i = 0; i < Codon1_Names.length; i ++) {
+        GUI_Element E = GUI_CodonEditor_Codon1sFrame.Children.get(i);
+        if (E.JustClicked()) {
+          ReplaceCodon1(i);
+        }
+      }
+    }
+    
+    if (GUI_CodonEditor_Codon2sFrame.Enabled) {
+      for (int i = 0; i < Codon2_Names.length; i ++) {
+        GUI_Element E = GUI_CodonEditor_Codon2sFrame.Children.get(i);
+        if (E.JustClicked()) {
+          ReplaceCodon2(i);
+        }
+      }
     }
     
     boolean CodonsFrameClicked = GUI_CodonEditor_CodonsFrame.JustClicked();
@@ -302,22 +332,85 @@ public class CodonEditor {
         if (RightText.JustClicked()) SetSelectedCodon (i, RIGHT);
       }
       
-      /*
-      if (i == SelectedCodonIndex) {
-        int FrameDelta = frameCount - CodonSelectStartFrame;
-        float FlashAmount = (sin (FrameDelta / 5.0) / 2.0 + 0.5);
-        if (SelectedCodonSide == LEFT) {
-          LeftDecay.BackgroundColor = color (FlashAmount * 223);
-          LeftFill.BackgroundColor = lerpColor (GetCodon1Color(C), color (223), FlashAmount);
-        } else {
-          RightDecay.BackgroundColor = color (FlashAmount * 223);
-          RightFill.BackgroundColor = lerpColor (GetCodon2Color(C), color (223), FlashAmount);
-        }
-      }
-      */
-      
     }
     
+  }
+  
+  
+  
+  
+  
+  void ReplaceCodon1 (int Codon1NewID) {
+    Codon C = CodonsBeingEdited.get(SelectedCodonIndex);
+    C.Info[0] = Codon1NewID;
+    ReplaceCodonGUIElement (SelectedCodonIndex);
+  }
+  
+  
+  
+  void ReplaceCodon2 (int Codon2NewID) {
+    Codon C = CodonsBeingEdited.get(SelectedCodonIndex);
+    C.Info[1] = Codon2NewID;
+    if (Codon2NewID == Codon2_RGL) {
+      C.Info = IncreaseArraySize (C.Info, 4);
+      C.Info[2] = RGLStart;
+      C.Info[3] = RGLEnd;
+    }
+    ReplaceCodonGUIElement (SelectedCodonIndex);
+  }
+  
+  
+  
+  void ReplaceCodonGUIElement (int CodonIndex) {
+    GUI_Element NewCodonGUIElement = CreateElementFromCodon(CodonsBeingEdited.get(CodonIndex), CodonIndex);
+    CodonGUIElements.get(CodonIndex).Delete();
+    CodonGUIElements.remove(CodonIndex);
+    CodonGUIElements.add(CodonIndex, NewCodonGUIElement);
+    GUI_Element CodonsFrame = GUI_CodonEditor_CodonsFrame;
+    //CodonsFrame.Children.remove(SelectedCodonIndex); // This will be done by .Delete();
+    CodonsFrame.AddChild(NewCodonGUIElement);
+  }
+  
+  
+  
+  
+  
+  void UpdateRGLEdit() {
+    
+    GUI_Element RGLStartOrEnd = GUI_CodonEditor_RGLStartOrEnd;
+    if (RGLStartOrEnd.JustClicked()) {
+      if(RGLStartOrEnd.Text.equals("RGL Start")) {
+        RGLStartOrEnd.Text = "RGL End";
+      } else {
+        RGLStartOrEnd.Text = "RGL Start";
+      }
+    }
+    
+    if (GUI_CodonEditor_RGLPlus.JustClicked()) {
+      if (RGLStartOrEnd.Text.equals("RGL Start")) {
+        RGLStart ++;
+      } else {
+        RGLEnd ++;
+      }
+      UpdateReplaceCodonRGL();
+    }
+    
+    if (GUI_CodonEditor_RGLMinus.JustClicked()) {
+      if (RGLStartOrEnd.Text.equals("RGL Start")) {
+        RGLStart --;
+      } else {
+        RGLEnd --;
+      }
+      UpdateReplaceCodonRGL();
+    }
+    
+  }
+  
+  
+  
+  void UpdateReplaceCodonRGL() {
+    GUI_Element RGLCodon = GUI_CodonEditor_Codon2sFrame.Children.get(Codon2_RGL);
+    RGLCodon.Text = "RGL: " + RGLStart + " - " + RGLEnd;
   }
   
   
@@ -344,14 +437,28 @@ public class CodonEditor {
   
   void SetSelectedCodon (int CodonIndex, int CodonSide) {
     ResetSelectedCodon();
+    
     SelectedCodonIndex = CodonIndex;
     SelectedCodonSide = CodonSide;
+    
     CodonSelectStartFrame = frameCount;
+    
     if (CodonSide == LEFT) {
-      GUI_CodonEditor_ReplaceCodon1Frame.Enabled = true;
+      GUI_CodonEditor_Codon1sFrame.Enabled = true;
     } else {
-      GUI_CodonEditor_ReplaceCodon2Frame.Enabled = true;
+      GUI_CodonEditor_Codon2sFrame.Enabled = true;
     }
+    GUI_CodonEditor_ReplaceCodonsFrame.Enabled = true;
+    
+    RGLStart = 0;
+    RGLEnd = 0;
+    UpdateReplaceCodonRGL();
+    
+    GUI_CodonEditor_Codon1sFrame.TargetScrollY = ElementHeight * 0.2;
+    GUI_CodonEditor_Codon1sFrame.CurrScrollY = ElementHeight * 0.2;
+    GUI_CodonEditor_Codon2sFrame.TargetScrollY = ElementHeight * 0.2;
+    GUI_CodonEditor_Codon2sFrame.CurrScrollY = ElementHeight * 0.2;
+    
   }
   
   
@@ -364,8 +471,9 @@ public class CodonEditor {
   void ResetSelectedCodonWOColor() {
     SelectedCodonIndex = -1;
     SelectedCodonSide = 0;
-    GUI_CodonEditor_ReplaceCodon1Frame.Enabled = false;
-    GUI_CodonEditor_ReplaceCodon2Frame.Enabled = false;
+    GUI_CodonEditor_ReplaceCodonsFrame.Enabled = false;
+    GUI_CodonEditor_Codon1sFrame.Enabled = false;
+    GUI_CodonEditor_Codon2sFrame.Enabled = false;
   }
   
   

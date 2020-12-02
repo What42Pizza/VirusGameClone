@@ -20,8 +20,12 @@ GUI_Element GUI_CodonEditor;
 GUI_Element   GUI_CodonEditor_CodonsFrame;
 GUI_Element   GUI_CodonEditor_AddCodon;
 GUI_Element   GUI_CodonEditor_RemoveCodon;
-GUI_Element   GUI_CodonEditor_ReplaceCodon1Frame;
-GUI_Element   GUI_CodonEditor_ReplaceCodon2Frame;
+GUI_Element   GUI_CodonEditor_ReplaceCodonsFrame;
+GUI_Element   GUI_CodonEditor_Codon1sFrame;
+GUI_Element   GUI_CodonEditor_Codon2sFrame;
+GUI_Element   GUI_CodonEditor_RGLStartOrEnd;
+GUI_Element   GUI_CodonEditor_RGLPlus;
+GUI_Element   GUI_CodonEditor_RGLMinus;
 
 GUI_Element GUI_ConfirmExit;
 
@@ -49,8 +53,13 @@ void InitGUI() {
     GUI_CodonEditor_CodonsFrame = GUI_CodonEditor.Child("CodonsFrame");
     GUI_CodonEditor_AddCodon = GUI_CodonEditor.Child("AddCodon");
     GUI_CodonEditor_RemoveCodon = GUI_CodonEditor.Child("RemoveCodon");
-    GUI_CodonEditor_ReplaceCodon1Frame = GUI_CodonEditor.Child("ReplaceCodon1Frame");
-    GUI_CodonEditor_ReplaceCodon2Frame = GUI_CodonEditor.Child("ReplaceCodon2Frame");
+    GUI_CodonEditor_ReplaceCodonsFrame = GUI_CodonEditor.Child("ReplaceCodonsFrame");
+    GUI_CodonEditor_Codon1sFrame = GUI_CodonEditor_ReplaceCodonsFrame.Child("Codon1sFrame");
+    GUI_CodonEditor_Codon2sFrame = GUI_CodonEditor_ReplaceCodonsFrame.Child("Codon2sFrame");
+    GUI_Element RGLEdit = GUI_CodonEditor_ReplaceCodonsFrame.Child("RGLEdit");
+    GUI_CodonEditor_RGLStartOrEnd = RGLEdit.Child("RGLStartOrEnd");
+    GUI_CodonEditor_RGLPlus  = RGLEdit.Child("RGLPlus");
+    GUI_CodonEditor_RGLMinus = RGLEdit.Child("RGLMinus");
     GUI_CellData.AddChild(GUI_CodonEditor);
     GUI_UGOCreation.AddChild(GUI_CodonEditor);
   
