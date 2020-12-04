@@ -77,6 +77,13 @@ float[] ConvertScreenPosToWorldPos (int XPos, int YPos) {
   };
 }
 
+int[] ConvertWorldPosToScreenPos (float WorldX, float WorldY) {
+  return new int[] {
+    (int) (WorldX * Camera.Zoom + Camera.XPos),
+    (int) (WorldY * Camera.Zoom + Camera.YPos)
+  };
+}
+
 
 
 ArrayList <Codon> ProcessInfoIntoCodons (int[] In) {
@@ -175,7 +182,7 @@ color GetCodon1ColorFromID (int CodonID) {
     case (Codon1_MoveHand): return Color_Codon1_MoveHand;
     case (Codon1_Read    ): return Color_Codon1_Read    ;
     case (Codon1_Write   ): return Color_Codon1_Write   ;
-    default: return color (255, 0, 255);
+    default: return Color_Codon_Error;
   }
 }
 
@@ -196,7 +203,7 @@ color GetCodon2ColorFromID (int CodonID) {
     case (Codon2_Outward        ): return Color_Codon2_Outward         ;
     case (Codon2_RGL            ): return Color_Codon2_RGL             ;
     case (Codon2_UGO            ): return Color_Codon2_UGO             ;
-    default: return color (255, 0, 255);
+    default: return Color_Codon_Error;
   }
 }
 

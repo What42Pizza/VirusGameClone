@@ -3,9 +3,11 @@ public class Camera {
   float XPos = 0;
   float YPos = 0;
   float Zoom = 1;
+  float StartZoom = 1;
   
   public Camera() {
-    Zoom = min (width, height);
+    StartZoom = min (width, height);
+    Zoom = StartZoom;
     XPos = (width  - Zoom) / 2;
     YPos = (height - Zoom) / 2;
   }

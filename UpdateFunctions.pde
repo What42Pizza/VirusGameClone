@@ -50,7 +50,7 @@ void UpdateWasteParticles() {
 
 
 
-void UpdateUGOs(){
+void UpdateUGOs() {
   for (int i = 0; i < UGOs.size(); i ++) {
     UGO U = UGOs.get(i);
     U.Update();
@@ -58,6 +58,17 @@ void UpdateUGOs(){
       UGOs.remove(i);
       i --;
     }
+  }
+}
+
+
+
+void UpdateUGOMaking() {
+  if (MakingUGO && MouseIsDragging && StartMouseButton == LEFT) {
+    DrawUGOArrow();
+  }
+  if (MouseJustReleased && MakingUGO) {
+    exit(); // Doesn't work?
   }
 }
 

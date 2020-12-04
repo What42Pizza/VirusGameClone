@@ -145,6 +145,8 @@ public class CodonEditor {
   
   
   
+  
+  
   void CreateCodonGUIElements (ArrayList <Codon> Codons) {
     
     CodonsBeingEdited = new ArrayList <Codon> ();
@@ -175,6 +177,11 @@ public class CodonEditor {
     CodonsFrame.MaxScrollY = NewMaxScrollY;
     
   }
+  
+  
+  
+  
+  
   
   
   
@@ -276,6 +283,7 @@ public class CodonEditor {
   void UpdateCodonGUIElements() {
     
     UpdateRGLEdit();
+    UpdateReplaceCodonButtons();
     
     if (SelectedCodonIndex != -1) {
       UpdateCodonFlashing();
@@ -287,24 +295,6 @@ public class CodonEditor {
     
     if (SelectedCell != null && SelectedCell.CodonsChanged) {
       CreateCodonGUIElements(SelectedCell.Codons);
-    }
-    
-    if (GUI_CodonEditor_Codon1sFrame.Enabled) {
-      for (int i = 0; i < Codon1_Names.length; i ++) {
-        GUI_Element E = GUI_CodonEditor_Codon1sFrame.Children.get(i);
-        if (E.JustClicked()) {
-          ReplaceCodon1(i);
-        }
-      }
-    }
-    
-    if (GUI_CodonEditor_Codon2sFrame.Enabled) {
-      for (int i = 0; i < Codon2_Names.length; i ++) {
-        GUI_Element E = GUI_CodonEditor_Codon2sFrame.Children.get(i);
-        if (E.JustClicked()) {
-          ReplaceCodon2(i);
-        }
-      }
     }
     
     boolean CodonsFrameClicked = GUI_CodonEditor_CodonsFrame.JustClicked();
@@ -335,6 +325,11 @@ public class CodonEditor {
     }
     
   }
+  
+  
+  
+  
+  
   
   
   
@@ -411,6 +406,32 @@ public class CodonEditor {
   void UpdateReplaceCodonRGL() {
     GUI_Element RGLCodon = GUI_CodonEditor_Codon2sFrame.Children.get(Codon2_RGL);
     RGLCodon.Text = "RGL: " + RGLStart + " - " + RGLEnd;
+  }
+  
+  
+  
+  
+  
+  void UpdateReplaceCodonButtons() {
+    
+    if (GUI_CodonEditor_Codon1sFrame.Enabled && GUI_CodonEditor_Codon1sFrame.JustClicked()) {
+      for (int i = 0; i < Codon1_Names.length; i ++) {
+        GUI_Element E = GUI_CodonEditor_Codon1sFrame.Children.get(i);
+        if (E.JustClicked()) {
+          ReplaceCodon1(i);
+        }
+      }
+    }
+    
+    if (GUI_CodonEditor_Codon2sFrame.Enabled && GUI_CodonEditor_Codon2sFrame.JustClicked()) {
+      for (int i = 0; i < Codon2_Names.length; i ++) {
+        GUI_Element E = GUI_CodonEditor_Codon2sFrame.Children.get(i);
+        if (E.JustClicked()) {
+          ReplaceCodon2(i);
+        }
+      }
+    }
+    
   }
   
   

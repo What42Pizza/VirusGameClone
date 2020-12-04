@@ -157,6 +157,8 @@ final color Color_Cell_Interpreter_Hand = color (191);
 final color Color_Cell_Interpreter_Hand_Edge = color (159);
 final color Color_Cell_Hand_Lines = color (15, 191, 15);
 final color Color_Center_Block = color (191);
+final color Color_UGO_Arrow = color (0, 223, 0);
+final float UGO_Arrow_Size = 5;
 
 final color Color_Codon1_None = color (0);
 final color Color_Codon1_Digest = color (255, 95, 95);
@@ -381,6 +383,7 @@ void draw() {
     DrawWasteParticles();
     DrawUGOs();
     popMatrix();
+    UpdateUGOMaking(); // This also renders
     RenderGUIs();
   }
   

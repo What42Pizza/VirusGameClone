@@ -11,8 +11,11 @@ boolean PrevMousePressed = false;
 boolean MouseIsDragging = false;
 int StartMouseX = 0;
 int StartMouseY = 0;
+float StartMouseWorldX = 0;
+float StartMouseWorldY = 0;
 float StartCameraXPos = 0;
 float StartCameraYPos = 0;
+int StartMouseButton = 0;
 
 
 
@@ -43,22 +46,11 @@ void UpdateInputs() {
   
   // Dragging
   
-  if (MouseJustPressed && !MouseIsOverGUI()) {
-    StartMouseDrag(); // It needs to be done like this because StartMouseX&Y are used elsewhere
-    if (mouseButton == RIGHT) MouseIsDragging = true;
-  }
+  if (MouseJustPressed && !MouseIsOverGUI()) StartMouseDrag();
   
   if (!mousePressed) MouseIsDragging = false;
   
-  if (MouseIsDragging) MoveCameraToMouse();
-  
-  
-  
-  // Making UGOs
-  
-  if (mousePressed && MakingUGO) {
-    
-  }
+  if (MouseIsDragging && StartMouseButton == RIGHT) MoveCameraToMouse();
   
   
   
@@ -80,10 +72,15 @@ void UpdateInputs() {
 
 
 void StartMouseDrag() {
+  MouseIsDragging = true;
   StartMouseX = mouseX;
   StartMouseY = mouseY;
   StartCameraXPos = Camera.XPos;
   StartCameraYPos = Camera.YPos;
+  float[] StartWorldPos = ConvertScreenPosToWorldPos (mouseX, mouseY);
+  StartMouseWorldX = StartWorldPos[0];
+  StartMouseWorldY = StartWorldPos[1];
+  StartMouseButton = mouseButton;
 }
 
 

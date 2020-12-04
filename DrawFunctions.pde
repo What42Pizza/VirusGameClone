@@ -94,3 +94,30 @@ void DrawCodons (ArrayList <Codon> CodonsIn, float XPos, float YPos) {
     ShapeRenderer.Render (Codon1_Shape, XPos, YPos, (float) i / Num * PI * 2, Num / 4.0 / C.Health, 1);
   }
 }
+
+
+
+
+
+void DrawUGOArrow() {
+  float CameraZoom = Camera.Zoom / Camera.StartZoom;
+  float ArrowLineLengths = CameraZoom * 15;
+  int[] StartMousePos = ConvertWorldPosToScreenPos (StartMouseWorldX, StartMouseWorldY);
+  
+  float ArrowRot = atan2(mouseY - StartMousePos[1], mouseX - StartMousePos[0]); // yes, Y is first
+  float ArrowLeftLineRot  = ArrowRot + PI - 0.75;
+  float ArrowRightLineRot = ArrowRot + PI + 0.75;
+  
+  float ArrowLeftXPos  = mouseX + cos(ArrowLeftLineRot ) * ArrowLineLengths;
+  float ArrowLeftYPos  = mouseY + sin(ArrowLeftLineRot ) * ArrowLineLengths;
+  float ArrowRightXPos = mouseX + cos(ArrowRightLineRot) * ArrowLineLengths;
+  float ArrowRightYPos = mouseY + sin(ArrowRightLineRot) * ArrowLineLengths;
+  
+  stroke (Color_UGO_Arrow);
+  strokeWeight (UGO_Arrow_Size * CameraZoom);
+  line (StartMousePos[0], StartMousePos[1], mouseX, mouseY);
+  line (mouseX, mouseY, ArrowLeftXPos , ArrowLeftYPos );
+  line (mouseX, mouseY, ArrowRightXPos, ArrowRightYPos);
+  noStroke();
+  
+}
