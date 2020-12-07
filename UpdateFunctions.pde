@@ -1,15 +1,3 @@
-// Vars
-
-boolean MakingUGO = false; // Updated in GUIFunctions
-
-
-
-
-
-// Functions
-
-
-
 void UpdateFoodParticles() {
   
   while (FoodParticles.size() < Num_Of_Food_Particles) FoodParticles.add (new Particle (ParticleTypes.Food));
@@ -64,11 +52,13 @@ void UpdateUGOs() {
 
 
 void UpdateUGOMaking() {
-  if (MakingUGO && MouseIsDragging && StartMouseButton == LEFT) {
-    DrawUGOArrow();
-  }
-  if (MouseJustReleased && MakingUGO) {
-    exit(); // Doesn't work?
+  if (GUI_UGOCreation.Enabled) {
+    if (MouseIsDragging && StartMouseButton == LEFT) {
+      DrawUGOArrow();
+    }
+    if (MouseStoppedDragging && StartMouseButton == LEFT) {
+      CreateNewUGO();
+    }
   }
 }
 
@@ -83,4 +73,17 @@ void UpdateCells() {
       i --;
     }
   }
+}
+
+
+
+
+
+void CreateNewUGO() {
+  float[] MouseWorldPos = ConvertScreenPosToWorldPos (mouseX, mouseY);
+  float UGOVelDir = atan2(mouseY - StartMouseY, mouseX - StartMouseX);
+  float UGOXVel = cos(UGOVelDir) * 0.001;
+  float UGOYVel = sin(UGOVelDir) * 0.001;
+  UGO NewUGO = new UGO (MouseWorldPos[0], MouseWorldPos[1], UGOXVel, UGOYVel, CodonEditor.CodonsBeingEdited, false);
+  UGOs.add(NewUGO);
 }

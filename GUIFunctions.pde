@@ -128,9 +128,6 @@ void UpdateGUIs() {
   
   
   
-  // Update vars
-  MakingUGO = GUI_UGOCreation.Enabled;
-  
 }
 
 

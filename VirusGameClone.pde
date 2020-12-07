@@ -1,5 +1,19 @@
 // Start 09/11/20
-// Last updated 12/02/20
+// Last updated 12/06/20
+
+
+
+// To-do:
+
+/*
+
+Cell Data better health and energy
+ticks since X
+X UGOs, X un-modifies cells
+expection in ReplaceCodons() line 3: IndexOutOfBoundsException: Index: 35, Size: 35
+cell codon editor interp hand indicator
+
+*/
 
 
 

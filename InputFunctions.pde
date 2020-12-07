@@ -9,6 +9,8 @@ boolean MouseJustPressed = false;
 boolean MouseJustReleased = false;
 boolean PrevMousePressed = false;
 boolean MouseIsDragging = false;
+boolean MouseWasDragging = false;
+boolean MouseStoppedDragging = false;
 int StartMouseX = 0;
 int StartMouseY = 0;
 float StartMouseWorldX = 0;
@@ -51,6 +53,7 @@ void UpdateInputs() {
   if (!mousePressed) MouseIsDragging = false;
   
   if (MouseIsDragging && StartMouseButton == RIGHT) MoveCameraToMouse();
+  MouseStoppedDragging = MouseWasDragging && !MouseIsDragging;
   
   
   
@@ -138,4 +141,5 @@ void mouseWheel (MouseEvent event) {
 void UpdateKeys() {
   arrayCopy (Keys, PrevKeys); // This does PrevKeys = Keys;
   PrevMousePressed = mousePressed;
+  MouseWasDragging = MouseIsDragging;
 }

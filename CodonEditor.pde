@@ -159,6 +159,7 @@ public class CodonEditor {
     }
     
     GUI_CodonEditor_CodonsFrame.ConstrainScroll();
+    SelectedCodonIndex = -1;
     
   }
   

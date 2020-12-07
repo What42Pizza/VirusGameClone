@@ -31,6 +31,15 @@ public class UGO extends Particle {
     BounceInCell = BounceInCellIn;
   }
   
+  public UGO (float XPosIn, float YPosIn, float XVelIn, float YVelIn, ArrayList <Codon> CodonsIn, boolean BounceInCellIn) {
+    super (0, XPosIn, YPosIn, true);
+    XVel = XVelIn;
+    YVel = YVelIn;
+    Codons = CodonsIn;
+    StartingCell = GetCellAtPosition (XPos, YPos);
+    BounceInCell = BounceInCellIn;
+  }
+  
   
   
   
@@ -52,6 +61,7 @@ public class UGO extends Particle {
   @Override
   
   public void Update() {
+    if (StartingCell != null && StartingCell.ShouldBeRemoved) StartingCell = null;
     
     XPos += XVel + 1; // +1 is for correct negative world wrap
     YPos += YVel + 1;
@@ -64,7 +74,7 @@ public class UGO extends Particle {
       this.ShouldBeRemoved = true;
     }
     
-    if (BounceInCell)
+    if (EnteredCell == StartingCell && BounceInCell)
       BounceWithinCell();
     
     DamageTransitioningCells();

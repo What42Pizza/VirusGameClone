@@ -282,6 +282,7 @@ public class Cell {
     DeadCells ++;
     if (Modified) ModifiedCells --;
     ShouldBeRemoved = true;
+    CellsGrid[floor(XPos / CellWidth)][floor(YPos / CellHeight)] = null;
     ReplaceCodonsWithWaste();
     
     if (Debug_Explain_Cell_Death) {
