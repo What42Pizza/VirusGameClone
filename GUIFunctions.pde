@@ -7,6 +7,7 @@ CodonEditor CodonEditor = new CodonEditor();
 
 GUI_Element GUI_TopBar;
 GUI_Element   GUI_TopBar_CellsData;
+GUI_Element   GUI_TopBar_TicksSinceX;
 GUI_Element   GUI_TopBar_CreateUGO;
 GUI_Element   GUI_TopBar_ExitButton;
 
@@ -40,6 +41,7 @@ void InitGUI() {
   
   GUI_TopBar = new GUI_Element (new File (DataPath + "/GUI/Child.TopBar"));
     GUI_TopBar_CellsData = GUI_TopBar.Child("CellsData");
+    GUI_TopBar_TicksSinceX = GUI_TopBar.Child("TicksSinceX");
     GUI_TopBar_CreateUGO = GUI_TopBar.Child("CreateUGO");
     GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
   
@@ -102,6 +104,12 @@ void UpdateGUIs() {
   
   
   
+  // TopBar
+  GUI_TopBar_CellsData.Text = "Alive: " + AliveCells + ", Dead:" + DeadCells + ", Modified: " + ModifiedCells + ", Unmodified: " + UnmodifiedCells + ", UGOs: " + UGOs.size();
+  GUI_TopBar_TicksSinceX.Text = "Ticks Since Start: " + frameCount + ", Ticks Since Modified: " + (FirstModificationFrame == 0 ? "--" : Integer.toString(frameCount - FirstModificationFrame));
+  
+  
+  
   // Confirm exit
   if (GUI_TopBar_ExitButton.JustClicked()) {
     GUI_ConfirmExit.XPos = 0.4;
@@ -135,14 +143,10 @@ void UpdateGUIs() {
 
 
 void RenderGUIs() {
-  
-  GUI_TopBar_CellsData.Text = "Cells alive: " + AliveCells + ", Cells dead:" + DeadCells + ", Cells modified: " + ModifiedCells;
-  
   GUI_TopBar     .Render();
   GUI_CellData   .Render();
   GUI_UGOCreation.Render();
   GUI_ConfirmExit.Render();
-  
 }
 
 

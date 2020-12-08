@@ -3,21 +3,17 @@
 
 This is a clone of https://github.com/carykh/VirusGame/.
 
-## THIS IS A WORK IN PROGRESS
-
+<br />
+<br />
 <br />
 
 ### Biggest changes:
-- There is a new UGO codon which is used for creating UGOs
-- GUI layout is completely different
-- The codon Repair_Wall has been replaced with Write_Wall
+- There is a new UGO codon which is used for creating and removing UGOs
+- The GUI layout is completely different
+- The codon pair Repair_Wall has been replaced with Write_Wall
 
 <br />
-
-### Missing features:
-- GUI
-- UGO Creation
-
+<br />
 <br />
 
-Readme last updated 11/18/20
+Readme last updated 12/08/20

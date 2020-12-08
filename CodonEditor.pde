@@ -159,7 +159,7 @@ public class CodonEditor {
     }
     
     GUI_CodonEditor_CodonsFrame.ConstrainScroll();
-    SelectedCodonIndex = -1;
+    ResetSelectedCodon();
     
   }
   
@@ -337,6 +337,7 @@ public class CodonEditor {
   
   
   void ReplaceCodon1 (int Codon1NewID) {
+    if (SelectedCell != null) SelectedCell.SetAsModified();
     Codon C = CodonsBeingEdited.get(SelectedCodonIndex);
     C.Info[0] = Codon1NewID;
     ReplaceCodonGUIElement (SelectedCodonIndex);
@@ -345,6 +346,7 @@ public class CodonEditor {
   
   
   void ReplaceCodon2 (int Codon2NewID) {
+    if (SelectedCell != null) SelectedCell.SetAsModified();
     Codon C = CodonsBeingEdited.get(SelectedCodonIndex);
     C.Info[1] = Codon2NewID;
     if (Codon2NewID == Codon2_RGL) {

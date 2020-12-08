@@ -280,7 +280,11 @@ public class Cell {
     Alive = false;
     AliveCells --;
     DeadCells ++;
-    if (Modified) ModifiedCells --;
+    if (Modified) {
+      ModifiedCells --;
+    } else {
+      UnmodifiedCells --;
+    }
     ShouldBeRemoved = true;
     CellsGrid[floor(XPos / CellWidth)][floor(YPos / CellHeight)] = null;
     ReplaceCodonsWithWaste();
@@ -313,6 +317,17 @@ public class Cell {
       Codon C = Codons.get(i);
       float[] WastePos = GetCodonPosition(i);
       WasteParticles.add (new Particle (ParticleTypes.Waste, WastePos[0], WastePos[1], true));
+    }
+  }
+  
+  
+  
+  public void SetAsModified() {
+    if (!Modified) {
+      if (FirstModificationFrame == 0) FirstModificationFrame = frameCount;
+      Modified = true;
+      ModifiedCells ++;
+      UnmodifiedCells --;
     }
   }
   

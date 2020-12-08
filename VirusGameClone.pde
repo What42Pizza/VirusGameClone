@@ -1,5 +1,9 @@
 // Start 09/11/20
-// Last updated 12/06/20
+// Last updated 12/07/20
+
+// V 1.0.1
+
+
 
 
 
@@ -8,12 +12,38 @@
 /*
 
 Cell Data better health and energy
-ticks since X
-X UGOs, X un-modifies cells
 expection in ReplaceCodons() line 3: IndexOutOfBoundsException: Index: 35, Size: 35
 cell codon editor interp hand indicator
+restart simulation button
 
 */
+
+
+
+
+
+// Change log:
+
+/*
+
+V 1.0.1: 12/07/20
+More Cells Data (Unmodified & #UGOs)
+Ticks Since X
+Added Change Log
+Over 3000 lines of code! (not even including GUISystem2)
+
+
+
+V 1.0.0: 12/06/20
+Game is now in function form
+Added Todo
+
+*/
+
+
+
+
+
 
 
 
@@ -287,6 +317,9 @@ ArrayList <CenterBlock> CenterBlocks = new ArrayList <CenterBlock> ();
 int AliveCells;
 int DeadCells;
 int ModifiedCells;
+int UnmodifiedCells;
+
+int FirstModificationFrame = 0;
 
 Camera Camera;
 Interpreter Interpreter = new Interpreter();
@@ -315,6 +348,7 @@ void setup() {
   // Other setup
   boolean SettingsAreValid = CheckIfSettingsAreValid();
   AliveCells = CountAliveCells (Starting_Cells);
+  UnmodifiedCells = AliveCells;
   if (!SettingsAreValid) exit();
   CreateStartingCells();
   for (int i = 0; i < Num_Of_Food_Particles ; i ++) FoodParticles .add (new Particle (ParticleTypes.Food ));
