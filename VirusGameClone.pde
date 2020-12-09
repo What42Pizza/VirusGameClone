@@ -1,7 +1,7 @@
 // Start 09/11/20
 // Last updated 12/07/20
 
-// V 1.0.1
+// V1.0.2
 
 
 
@@ -11,7 +11,7 @@
 
 /*
 
-Cell Data better health and energy
+UGOs should emerg from arrow start
 expection in ReplaceCodons() line 3: IndexOutOfBoundsException: Index: 35, Size: 35
 cell codon editor interp hand indicator
 restart simulation button
@@ -26,7 +26,12 @@ restart simulation button
 
 /*
 
-V 1.0.1: 12/07/20
+V1.0.2: 12/08/20
+Added arrow key time speed control
+CellData energy and health now look beter
+Added UGO_Infect_Chance
+
+V1.0.1: 12/07/20
 More Cells Data (Unmodified & #UGOs)
 Ticks Since X
 Added Change Log
@@ -34,7 +39,7 @@ Over 3000 lines of code! (not even including GUISystem2)
 
 
 
-V 1.0.0: 12/06/20
+V1.0.0: 12/06/20
 Game is now in function form
 Added Todo
 
@@ -160,21 +165,22 @@ final float FrameRate  = Debug_Super_Speed ? 10000 : Frame_Rate;
 
 
 
-final float Particle_Wall_Damage            = 0.5 ; // For particle collisions ---------------------------------------------------------------------------- Balance these
-final float Cell_Energy_Gain_Percent        = 0.33; // For Digest_Food
+final float Particle_Wall_Damage            = 0.6 ; // For particle collisions ---------------------------------------------------------------------------- Balance these
+final float Cell_Energy_Gain_Percent        = 0.4 ; // For Digest_Food
 final float Cell_Energy_Drain_Percent       = 0.5 ; // For Digest_Waste
-final float Cell_Energy_Loss_Percent        = 0.3 ; // For just existing
+final float Cell_Energy_Loss_Percent        = 0.2 ; // For just existing
 final float Cell_Interpreter_Cost           = 2   ; // X% of energy is removed per codon interp
-final float Cell_Wall_Health_Gain_Percent   = 0.33; // For Repair_Wall
-final float Cell_Wall_Health_Gain_Cost      = 0.5 ; // X% of health gain takes X*this% of energy
+final float Cell_Wall_Health_Gain_Percent   = 0.3 ; // For Repair_Wall
+final float Cell_Wall_Health_Gain_Cost      = 0.45; // X% of health gain takes X*this% of energy
 final float Cell_Wall_Health_Drain_Percent  = 0.5 ; // For Digest_Wall
 final float Cell_Wall_Health_Drain_Cost     = 0.33; // X% of health gives X*this% of energy
 final float Cell_Codon_Health_Drain_Percent = 0.33; // For Digest_Inward or Digest_RGL
 final float Cell_Codon_Damage_Percent_Low   = 0.01; // Random codon damage per update (low)
 final float Cell_Codon_Damage_Percent_High  = 0.02; // Random codon damage per update (high)
-final float Cell_Codon_Write_Cost           = 1.4 ; // For Write_
+final float Cell_Codon_Write_Cost           = 1.3 ; // For Write_
+final float UGO_Infect_Chance               = 0.5 ; // For when a UGO collides with a cell
 
-final int Num_Of_Food_Particles  = 350;
+final int Num_Of_Food_Particles  = 500;
 final int Num_Of_Waste_Particles = 200;
 
 
@@ -194,6 +200,8 @@ final color Color_Cell_Background = color (255, 191, 255);
 final color Color_Cell_Background_Modified = color (255, 191, 0);
 final color Color_Cell_Background_Selected = color (95, 223, 255);
 final color Color_Cell_Wall = color (159, 95, 191);
+final color Color_Cell_Wall_Text = color (255, 95, 255);
+final color Color_Cell_Energy_Text = color (255, 255, 0);
 final color Color_Cell_Hand = color (15, 239, 15);
 final color Color_Cell_Hand_Track = color (15, 223, 15);
 final color Color_Cell_Energy_Symbol = color (255, 255, 0);
@@ -230,7 +238,7 @@ final float Camera_Scroll_Speed = 0.075;
 
 
 
-final float Render_Buffer_Extension = 0.0005;
+final float Render_Buffer_Extension = 0.0003;
 
 
 
@@ -307,6 +315,7 @@ final float[][] Cell_Energy_Symbol = {
 // Vars
 
 boolean Paused = false;
+int UpdatesPerFrame = 1;
 
 ArrayList <Particle> FoodParticles  = new ArrayList <Particle> ();
 ArrayList <Particle> WasteParticles = new ArrayList <Particle> ();
@@ -319,7 +328,8 @@ int DeadCells;
 int ModifiedCells;
 int UnmodifiedCells;
 
-int FirstModificationFrame = 0;
+int CurrentTick = 0;
+int FirstModificationTick = -1;
 
 Camera Camera;
 Interpreter Interpreter = new Interpreter();
@@ -411,10 +421,13 @@ void draw() {
   
   int UpdateStartMillis = millis();
   if (!Paused) {
-    UpdateFoodParticles();
-    UpdateWasteParticles();
-    UpdateUGOs();
-    UpdateCells();
+    for (int i = 0; i < UpdatesPerFrame; i ++) {
+      UpdateFoodParticles();
+      UpdateWasteParticles();
+      UpdateUGOs();
+      UpdateCells();
+      CurrentTick ++;
+    }
   }
   UpdateGUIs();
   

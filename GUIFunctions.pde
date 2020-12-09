@@ -12,8 +12,14 @@ GUI_Element   GUI_TopBar_CreateUGO;
 GUI_Element   GUI_TopBar_ExitButton;
 
 GUI_Element GUI_CellData;
-GUI_Element   GUI_CellData_HealthText;
-GUI_Element   GUI_CellData_EnergyText;
+GUI_Element   GUI_CellData_HealthFrame;
+GUI_Element     GUI_CellData_HealthText;
+GUI_Element     GUI_CellData_HealthFill;
+GUI_Element     GUI_CellData_HealthVoid;
+GUI_Element   GUI_CellData_EnergyFrame;
+GUI_Element     GUI_CellData_EnergyText;
+GUI_Element     GUI_CellData_EnergyFill;
+GUI_Element     GUI_CellData_EnergyVoid;
 
 GUI_Element GUI_UGOCreation;
 
@@ -46,8 +52,14 @@ void InitGUI() {
     GUI_TopBar_ExitButton = GUI_TopBar.Child("ExitButton");
   
   GUI_CellData = new GUI_Element (new File (DataPath + "/GUI/Child.CellData"));
-    GUI_CellData_HealthText = GUI_CellData.Child("HealthText");
-    GUI_CellData_EnergyText = GUI_CellData.Child("EnergyText");
+    GUI_CellData_HealthFrame = GUI_CellData.Child("HealthFrame");
+      GUI_CellData_HealthText = GUI_CellData_HealthFrame.Child("HealthText");
+      GUI_CellData_HealthFill = GUI_CellData_HealthFrame.Child("HealthFill");
+      GUI_CellData_HealthVoid = GUI_CellData_HealthFrame.Child("HealthVoid");
+    GUI_CellData_EnergyFrame = GUI_CellData.Child("EnergyFrame");
+      GUI_CellData_EnergyText = GUI_CellData_EnergyFrame.Child("EnergyText");
+      GUI_CellData_EnergyFill = GUI_CellData_EnergyFrame.Child("EnergyFill");
+      GUI_CellData_EnergyVoid = GUI_CellData_EnergyFrame.Child("EnergyVoid");
   
   GUI_UGOCreation = new GUI_Element (new File (DataPath + "/GUI/Child.UGOCreation"));
   
@@ -66,6 +78,9 @@ void InitGUI() {
     GUI_UGOCreation.AddChild(GUI_CodonEditor);
   
   GUI_ConfirmExit = new GUI_Element (new File (DataPath + "/GUI/Child.ConfirmExit"));
+  
+  GUI_CellData_HealthFill.BackgroundColor = Color_Cell_Wall_Text;
+  GUI_CellData_EnergyFill.BackgroundColor = Color_Cell_Energy_Text;
   
 }
 
@@ -98,7 +113,13 @@ void UpdateGUIs() {
       GUI_CellData.Enabled = false;
     } else {
       GUI_CellData_HealthText.Text = "Health: " + ceil (SelectedCell.WallHealth);
+      GUI_CellData_HealthFill.XSize = SelectedCell.WallHealth / 100;
+      GUI_CellData_HealthVoid.XPos  = SelectedCell.WallHealth / 100;
+      GUI_CellData_HealthVoid.XSize = 1 - SelectedCell.WallHealth / 100;
       GUI_CellData_EnergyText.Text = "Energy: " + ceil (SelectedCell.Energy);
+      GUI_CellData_EnergyFill.XSize = SelectedCell.Energy / 100;
+      GUI_CellData_EnergyVoid.XPos  = SelectedCell.Energy / 100;
+      GUI_CellData_EnergyVoid.XSize = 1 - SelectedCell.Energy / 100;
     }
   }
   
@@ -106,7 +127,7 @@ void UpdateGUIs() {
   
   // TopBar
   GUI_TopBar_CellsData.Text = "Alive: " + AliveCells + ", Dead:" + DeadCells + ", Modified: " + ModifiedCells + ", Unmodified: " + UnmodifiedCells + ", UGOs: " + UGOs.size();
-  GUI_TopBar_TicksSinceX.Text = "Ticks Since Start: " + frameCount + ", Ticks Since Modified: " + (FirstModificationFrame == 0 ? "--" : Integer.toString(frameCount - FirstModificationFrame));
+  GUI_TopBar_TicksSinceX.Text = "Ticks Since Start: " + CurrentTick + ", Ticks Since Modified: " + (FirstModificationTick == -1 ? "--" : Integer.toString(CurrentTick - FirstModificationTick));
   
   
   

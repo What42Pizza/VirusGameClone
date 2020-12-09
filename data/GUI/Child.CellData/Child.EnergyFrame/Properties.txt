@@ -1,0 +1,14 @@
+Name:
+EnergyFrame
+
+ElementType:
+Holder
+
+XPos:
+0.05
+YPos:
+0.16
+XSize:
+0.75
+YSize:
+0.05

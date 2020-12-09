@@ -69,12 +69,12 @@ public class UGO extends Particle {
     YPos %= 1;
     
     Cell EnteredCell = GetCellAtPosition (XPos, YPos);
-    if (EnteredCell != StartingCell && EnteredCell != null) {
+    if (EnteredCell != StartingCell && EnteredCell != null && random(1) < UGO_Infect_Chance) {
       InfectCell (EnteredCell);
       this.ShouldBeRemoved = true;
     }
     
-    if (EnteredCell == StartingCell && BounceInCell)
+    if (StartingCell != null && EnteredCell == StartingCell && BounceInCell)
       BounceWithinCell();
     
     DamageTransitioningCells();
@@ -98,6 +98,7 @@ public class UGO extends Particle {
     
     CellToInfect.InterpCodonPos += Codons.size();
     CellToInfect.SetAsModified();
+    CellToInfect.CodonsChanged = true;
     
   }
   

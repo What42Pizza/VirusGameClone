@@ -361,7 +361,14 @@ public class Interpreter {
       case (Codon2_RGL):
         int RGLStart = GetHandRGLLocation (Cell, Codon.Info[2]);
         ArrayList <Codon> CodonsToWrite = ProcessInfoIntoCodons (Cell.CodonMemory);
-        Cell.ReplaceCodons (RGLStart, CodonsToWrite);
+        try {
+          Cell.ReplaceCodons (RGLStart, CodonsToWrite);
+        } catch (Exception e) {
+          println ("Error in cell at (" + Cell.XPos + ", " + Cell.YPos + ": " + e);
+          println ("RGLStart: " + RGLStart);
+          println ("Codons size: " + CodonsToWrite.size());
+          exit();
+        }
         for (int i = RGLStart; i < RGLStart + CodonsToWrite.size(); i ++)
           Cell.DrawLineFromHandToCodon (i);
         Cell.CodonsChanged = true;

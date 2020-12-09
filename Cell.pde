@@ -183,9 +183,9 @@ public class Cell {
     DamageCodons();
     LoseEnergy();
     InterpColorChange = InterpColorChange + (int) ((255 - InterpColorChange) * 0.1);
-    if (Energy > 0 && (frameCount % 60) == 0) // I know locking it at 60 isn't great, but nothing else responds to framerate so I guess that's the route I'm going
+    if (Energy > 0 && (CurrentTick % 60) == 0) // I know locking it at 60 isn't great, but nothing else responds to framerate so I guess that's the route I'm going
       AdvanceInterpHand();
-    if (Energy > 0 && (frameCount % 60) == 30 && Codons.size() > 0) {
+    if (Energy > 0 && (CurrentTick % 60) == 30 && Codons.size() > 0) {
       InterpCodonPos %= Codons.size();
       Interpreter.InterpretCodon (Codons.get(InterpCodonPos), this, InterpCodonPos);
       InterpColorChange = 63;
@@ -324,7 +324,7 @@ public class Cell {
   
   public void SetAsModified() {
     if (!Modified) {
-      if (FirstModificationFrame == 0) FirstModificationFrame = frameCount;
+      if (FirstModificationTick == -1) FirstModificationTick = CurrentTick;
       Modified = true;
       ModifiedCells ++;
       UnmodifiedCells --;
@@ -395,7 +395,11 @@ public class Cell {
   
   
   public void ReplaceCodons (int StartPos, ArrayList <Codon> NewCodons) {
+    //println();
+    //println ("Replacing codons");
+    //println ("Start: " + StartPos + ", Size: " + NewCodons.size());
     for (int i = 0; i < NewCodons.size(); i ++) {
+      //println ("Replacing " + (StartPos + i));
       Codons.remove (StartPos + i);
       Codons.add (StartPos + i, NewCodons.get(i));
     }

@@ -1,0 +1,17 @@
+Name:
+EnergyFill
+
+ElementType:
+Frame
+
+XPos:
+0
+YPos:
+0
+XSize:
+0.5
+YSize:
+1
+
+EdgeSize:
+0

@@ -101,6 +101,8 @@ void keyPressed() {
   GUIFunctions.keyPressed();
   if (key < 128) Keys[key] = true;
   if (key == 27) {EscKeyPressed(); key = 0;}
+  if (keyCode == UP) UpdatesPerFrame = min (1024, UpdatesPerFrame * 2);
+  if (keyCode == DOWN) UpdatesPerFrame = max (1, UpdatesPerFrame / 2);
 }
 
 
