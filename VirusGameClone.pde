@@ -1,5 +1,5 @@
 // Start 09/11/20
-// Last updated 12/07/20
+// Last updated 12/09/20
 
 // V1.0.2
 
@@ -26,7 +26,7 @@ restart simulation button
 
 /*
 
-V1.0.2: 12/08/20
+V1.0.2: 12/09/20
 Added arrow key time speed control
 CellData energy and health now look beter
 Added UGO_Infect_Chance
