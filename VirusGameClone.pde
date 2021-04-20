@@ -11,7 +11,7 @@
 
 /*
 
-UGOs should emerg from arrow start
+UGOs should emerg from arrow start (?)
 expection in ReplaceCodons() line 3: IndexOutOfBoundsException: Index: 35, Size: 35
 cell codon editor interp hand indicator
 restart simulation button
